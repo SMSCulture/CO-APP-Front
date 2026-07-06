@@ -9,7 +9,10 @@ import { ErrorState, LoadingState, Screen } from '../../components/ui';
 import { DEFAULT_CITY } from '../../config/constants';
 import { spacing } from '../../design/tokens';
 import { useEventsFeed } from '../../queries/events.queries';
+import { CategoryBrowseSection } from './components/CategoryBrowseSection';
+import { CuratedCollectionsSection } from './components/CuratedCollectionsSection';
 import { FeaturedEventsSection } from './components/FeaturedEventsSection';
+import { HeroDiscoverySection } from './components/HeroDiscoverySection';
 import { NearbyEventsSection } from './components/NearbyEventsSection';
 import { WeekendPicksSection } from './components/WeekendPicksSection';
 
@@ -25,7 +28,8 @@ export function HomeScreen() {
 
   return (
     <Screen scroll>
-      <AppHeader title="Discover" subtitle={city} />
+      <AppHeader title="CultureOwl" subtitle={city} />
+      <HeroDiscoverySection city={city} />
       <View style={{ gap: spacing.md }}>
         <FilterBar city={city} onCityChange={setCity} />
         <CategoryChips selected={genre} onSelect={setGenre} />
@@ -38,8 +42,12 @@ export function HomeScreen() {
       ) : (
         <>
           <FeaturedEventsSection events={events} />
+          <SectionHeader title="Collections" />
+          <CuratedCollectionsSection />
           <SectionHeader title="This weekend" />
           <WeekendPicksSection events={events} />
+          <SectionHeader title="Browse by category" />
+          <CategoryBrowseSection onSelect={setGenre} />
           <SectionHeader title="Near you" />
           <NearbyEventsSection events={events} />
         </>
