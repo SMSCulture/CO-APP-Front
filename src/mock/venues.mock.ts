@@ -1,0 +1,37 @@
+import type { Venue } from '../types/venue';
+
+export const mockVenues: Venue[] = [
+  {
+    id: 'ven-1',
+    name: 'Bayfront Park Amphitheater',
+    slug: 'bayfront-park-amphitheater',
+    city: 'Miami',
+    state: 'FL',
+    address: '301 Biscayne Blvd, Miami, FL 33132',
+    imageUrl: 'https://picsum.photos/seed/bayfront/1200/800',
+    description: 'Open-air waterfront amphitheater in downtown Miami.',
+    coordinates: { latitude: 25.7753, longitude: -80.1865 },
+  },
+  {
+    id: 'ven-3',
+    name: 'Broward Center for the Performing Arts',
+    slug: 'broward-center',
+    city: 'Fort Lauderdale',
+    state: 'FL',
+    address: '201 SW 5th Ave, Fort Lauderdale, FL 33312',
+    imageUrl: 'https://picsum.photos/seed/broward/1200/800',
+    description: 'One of the most visited performing arts centers in the country.',
+    coordinates: { latitude: 26.1204, longitude: -80.1494 },
+  },
+  {
+    id: 'ven-5',
+    name: 'Adrienne Arsht Center',
+    slug: 'adrienne-arsht-center',
+    city: 'Miami',
+    state: 'FL',
+    address: '1300 Biscayne Blvd, Miami, FL 33132',
+    imageUrl: 'https://picsum.photos/seed/arsht/1200/800',
+    description: 'Miami’s home for ballet, opera, Broadway, and jazz.',
+    coordinates: { latitude: 25.7862, longitude: -80.1885 },
+  },
+];

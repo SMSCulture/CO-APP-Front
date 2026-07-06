@@ -1,0 +1,23 @@
+/** CultureOwl brand palette — primitive color tokens. */
+export const palette = {
+  blue: '#3d98d3',
+  blueDark: '#2d7bb0',
+  blueLight: '#e3f1fa',
+  red: '#e74e3d',
+  orange: '#f47d30',
+  darkGray: '#373939',
+  black: '#161717',
+  white: '#ffffff',
+  gray50: '#f8f9fa',
+  gray100: '#f0f1f2',
+  gray200: '#e2e4e6',
+  gray300: '#c9cccf',
+  gray400: '#9ba0a4',
+  gray500: '#6d7276',
+  gray600: '#4f5457',
+  gray700: '#373939',
+  gray800: '#272929',
+  gray900: '#1c1e1e',
+  success: '#2e9e5b',
+  warning: '#f4b630',
+} as const;
