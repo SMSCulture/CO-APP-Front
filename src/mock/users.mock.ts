@@ -7,4 +7,5 @@ export const mockUser: User = {
   lastName: 'User',
   role: 'CULTURAL_MEMBER',
   avatarUrl: null,
+  authProvider: 'google',
 };

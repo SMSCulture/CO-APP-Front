@@ -5,8 +5,18 @@ import { CategoryChips } from '../../components/discovery/CategoryChips';
 import { EventCard } from '../../components/discovery/EventCard';
 import { MapButton } from '../../components/discovery/MapButton';
 import { AppHeader } from '../../components/layout/AppHeader';
-import { EmptyState, ErrorState, Input, LoadingState, Screen } from '../../components/ui';
+import {
+  EmptyState,
+  ErrorState,
+  IconButton,
+  Input,
+  LoadingState,
+  Screen,
+  Text,
+} from '../../components/ui';
+import { DEFAULT_CITY } from '../../config/constants';
 import { spacing } from '../../design/tokens';
+import { trackEvent } from '../../lib/analytics';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useEventSearch } from '../../queries/search.queries';
 
@@ -23,14 +33,23 @@ export function SearchScreen() {
     <Screen>
       <AppHeader title="Search" />
       <View style={{ gap: spacing.md, marginBottom: spacing.lg }}>
-        <Input
-          placeholder="Search events, venues, cities…"
-          value={term}
-          onChangeText={setTerm}
-          autoCorrect={false}
-          returnKeyType="search"
-          accessibilityLabel="Search events"
-        />
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
+          <Input
+            placeholder={`Discover ${DEFAULT_CITY} — concerts, exhibitions…`}
+            value={term}
+            onChangeText={setTerm}
+            autoCorrect={false}
+            returnKeyType="search"
+            accessibilityLabel="Search events"
+            style={{ flex: 1, borderRadius: 999 }}
+          />
+          <IconButton
+            accessibilityLabel="Filters"
+            onPress={() => trackEvent('search_filters_placeholder_tap')}
+          >
+            <Text variant="subheading">⚙</Text>
+          </IconButton>
+        </View>
         <CategoryChips selected={genre} onSelect={setGenre} />
       </View>
 

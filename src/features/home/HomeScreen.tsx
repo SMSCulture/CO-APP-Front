@@ -10,6 +10,7 @@ import { DEFAULT_CITY } from '../../config/constants';
 import { spacing } from '../../design/tokens';
 import { useEventsFeed } from '../../queries/events.queries';
 import { CategoryBrowseSection } from './components/CategoryBrowseSection';
+import { CultureNewsSection } from './components/CultureNewsSection';
 import { CuratedCollectionsSection } from './components/CuratedCollectionsSection';
 import { FeaturedEventsSection } from './components/FeaturedEventsSection';
 import { HeroDiscoverySection } from './components/HeroDiscoverySection';
@@ -44,8 +45,10 @@ export function HomeScreen() {
           <FeaturedEventsSection events={events} />
           <SectionHeader title="Collections" />
           <CuratedCollectionsSection />
-          <SectionHeader title="This weekend" />
+          <SectionHeader title="This weekend" actionLabel="See all" onAction={() => setGenre(null)} />
           <WeekendPicksSection events={events} />
+          <SectionHeader title="Culture news" />
+          <CultureNewsSection />
           <SectionHeader title="Browse by category" />
           <CategoryBrowseSection onSelect={setGenre} />
           <SectionHeader title="Near you" />

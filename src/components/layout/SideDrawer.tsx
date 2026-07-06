@@ -1,11 +1,14 @@
 import { router } from 'expo-router';
-import { Modal, Pressable, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Animated, Modal, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DIRECTORY_LINKS } from '../../config/constants';
 import { spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
 import { Divider, IconButton, Text } from '../ui';
+
+const DRAWER_WIDTH = 300;
 
 interface SideDrawerProps {
   visible: boolean;
@@ -14,11 +17,25 @@ interface SideDrawerProps {
 
 /**
  * Right-side directories panel — mirrors the web frontend's top-nav drawer.
- * Opened from the top-right icon in AppHeader.
+ * Slides in from the right with a fading scrim; the Modal fades on close.
  */
 export function SideDrawer({ visible, onClose }: SideDrawerProps) {
   const theme = useAppTheme();
   const insets = useSafeAreaInsets();
+  const [translateX] = useState(() => new Animated.Value(DRAWER_WIDTH));
+  const [scrim] = useState(() => new Animated.Value(0));
+
+  useEffect(() => {
+    if (visible) {
+      Animated.parallel([
+        Animated.timing(translateX, { toValue: 0, duration: 240, useNativeDriver: true }),
+        Animated.timing(scrim, { toValue: 1, duration: 240, useNativeDriver: true }),
+      ]).start();
+    } else {
+      translateX.setValue(DRAWER_WIDTH);
+      scrim.setValue(0);
+    }
+  }, [visible, translateX, scrim]);
 
   const navigate = (route: string) => {
     onClose();
@@ -27,19 +44,25 @@ export function SideDrawer({ visible, onClose }: SideDrawerProps) {
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
-      <Pressable
-        accessibilityLabel="Close menu"
-        onPress={onClose}
-        style={{ flex: 1, backgroundColor: theme.colors.overlay, flexDirection: 'row' }}
-      >
-        <View style={{ flex: 1 }} />
-        <Pressable
-          onPress={(e) => e.stopPropagation()}
+      <View style={{ flex: 1, flexDirection: 'row' }}>
+        <Animated.View
           style={{
-            width: 300,
+            position: 'absolute',
+            inset: 0,
+            backgroundColor: theme.colors.overlay,
+            opacity: scrim,
+          }}
+        >
+          <Pressable accessibilityLabel="Close menu" onPress={onClose} style={{ flex: 1 }} />
+        </Animated.View>
+        <View style={{ flex: 1 }} pointerEvents="none" />
+        <Animated.View
+          style={{
+            width: DRAWER_WIDTH,
             backgroundColor: theme.colors.background,
             paddingTop: insets.top + spacing.lg,
             paddingHorizontal: spacing.xl,
+            transform: [{ translateX }],
           }}
         >
           <View
@@ -70,8 +93,8 @@ export function SideDrawer({ visible, onClose }: SideDrawerProps) {
               </Pressable>
             </View>
           ))}
-        </Pressable>
-      </Pressable>
+        </Animated.View>
+      </View>
     </Modal>
   );
 }
