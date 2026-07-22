@@ -1,4 +1,4 @@
-import type { NewsArticle } from '../types/news';
+import type { NewsArticle, NewsArticleDetail } from '../types/news';
 
 export const mockNews: NewsArticle[] = [
   {
@@ -7,8 +7,10 @@ export const mockNews: NewsArticle[] = [
     slug: 'immersive-art-wynwood-fall',
     authorName: 'CultureOwl Staff',
     heroImageUrl: 'https://picsum.photos/seed/newsart/1200/628',
+    heroImageAlt: 'Immersive art installation',
     publishedAt: '2026-07-01',
     excerpt: 'Three new installations are transforming warehouse spaces into walk-through worlds.',
+    category: 'Visual Arts',
   },
   {
     id: 'news-2',
@@ -16,8 +18,10 @@ export const mockNews: NewsArticle[] = [
     slug: 'mcb-2026-27-season',
     authorName: 'CultureOwl Staff',
     heroImageUrl: 'https://picsum.photos/seed/newsballet/1200/628',
+    heroImageAlt: 'Miami City Ballet dancers',
     publishedAt: '2026-06-28',
     excerpt: 'Swan Lake returns alongside two world premieres from resident choreographers.',
+    category: 'Dance',
   },
   {
     id: 'news-3',
@@ -25,7 +29,19 @@ export const mockNews: NewsArticle[] = [
     slug: 'free-museum-nights-summer',
     authorName: 'CultureOwl Staff',
     heroImageUrl: 'https://picsum.photos/seed/newsmuseum/1200/628',
+    heroImageAlt: 'Museum gallery at night',
     publishedAt: '2026-06-20',
     excerpt: 'From Frost Science after-dark to PAMM free Fridays — plan your month.',
+    category: 'Museums',
   },
 ];
+
+export const mockNewsDetails: Record<string, NewsArticleDetail> = Object.fromEntries(
+  mockNews.map((article) => [
+    article.slug,
+    {
+      ...article,
+      body: `<p>${article.excerpt}</p><p>Full article body would appear here once connected to the real backend.</p>`,
+    },
+  ]),
+);

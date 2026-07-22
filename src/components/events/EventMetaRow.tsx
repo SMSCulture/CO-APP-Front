@@ -1,10 +1,11 @@
+import type { ReactNode } from 'react';
 import { View } from 'react-native';
 
 import { spacing } from '../../design/tokens';
 import { Text } from '../ui';
 
 interface EventMetaRowProps {
-  icon: string;
+  icon: ReactNode;
   primary: string;
   secondary?: string | null;
 }
@@ -12,7 +13,7 @@ interface EventMetaRowProps {
 export function EventMetaRow({ icon, primary, secondary }: EventMetaRowProps) {
   return (
     <View style={{ flexDirection: 'row', gap: spacing.md, alignItems: 'flex-start' }}>
-      <Text variant="subheading">{icon}</Text>
+      <View style={{ width: 24, alignItems: 'center', paddingTop: 2 }}>{icon}</View>
       <View style={{ flex: 1 }}>
         <Text variant="bodyBold">{primary}</Text>
         {secondary ? (

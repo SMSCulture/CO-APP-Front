@@ -11,6 +11,7 @@ export const mockVenues: Venue[] = [
     imageUrl: 'https://picsum.photos/seed/bayfront/1200/800',
     description: 'Open-air waterfront amphitheater in downtown Miami.',
     coordinates: { latitude: 25.7753, longitude: -80.1865 },
+    venueType: 'AMPHITHEATRE',
   },
   {
     id: 'ven-3',
@@ -22,6 +23,7 @@ export const mockVenues: Venue[] = [
     imageUrl: 'https://picsum.photos/seed/broward/1200/800',
     description: 'One of the most visited performing arts centers in the country.',
     coordinates: { latitude: 26.1204, longitude: -80.1494 },
+    venueType: 'PERFORMING_ARTS_CENTER',
   },
   {
     id: 'ven-5',
@@ -33,5 +35,6 @@ export const mockVenues: Venue[] = [
     imageUrl: 'https://picsum.photos/seed/arsht/1200/800',
     description: 'Miami’s home for ballet, opera, Broadway, and jazz.',
     coordinates: { latitude: 25.7862, longitude: -80.1885 },
+    venueType: 'PERFORMING_ARTS_CENTER',
   },
 ];

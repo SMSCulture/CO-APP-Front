@@ -19,7 +19,7 @@ export function TicketsScreen() {
   if (!isAuthenticated) {
     return (
       <Screen>
-        <AppHeader title="Tickets" />
+        <AppHeader title="Tickets" showLocation={false} />
         <EmptyState
           title="Sign in to see your tickets"
           message="Your upcoming and past tickets will live here."

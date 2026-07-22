@@ -1,66 +1,133 @@
 import { router } from 'expo-router';
 import { View } from 'react-native';
 
-import { AppHeader } from '../../components/layout/AppHeader';
 import { SectionHeader } from '../../components/layout/SectionHeader';
-import { Button, EmptyState, Screen, Text } from '../../components/ui';
+import { GearIcon, HeartIcon, HelpIcon, MapPinIcon, StarIcon, TicketIcon } from '../../components/layout/icons/MenuIcons';
+import { Button, IconButton, Screen, Text } from '../../components/ui';
 import { DEFAULT_CITY } from '../../config/constants';
 import { spacing } from '../../design/tokens';
+import { useAppTheme } from '../../design/useAppTheme';
 import { useAuth } from '../../auth/useAuth';
 import { trackEvent } from '../../lib/analytics';
-import { AppearanceToggle } from './components/AppearanceToggle';
+import { useFavoritesStore } from '../../store/favoritesStore';
+import { useInterestsStore } from '../../store/interestsStore';
 import { FriendsSection } from './components/FriendsSection';
+import { IconMenuRow } from './components/IconMenuRow';
 import { ProfileHeader } from './components/ProfileHeader';
-import { ProfileMenuItem } from './components/ProfileMenuItem';
 
+/**
+ * Profile's own minimal top row — deliberately not the shared AppHeader,
+ * which always shows a location-switcher trigger. Profile doesn't need one
+ * (per explicit request to remove it here); just a title and a settings
+ * gear on the right. Gear goes to "Personal" (per explicit request — not
+ * labeled "Settings" from this entry point).
+ */
+function ProfileTopBar() {
+  const theme = useAppTheme();
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: spacing.lg }}>
+      <Text variant="title">Profile</Text>
+      <IconButton accessibilityLabel="Personal settings" onPress={() => router.push('/settings')} transparent size={44}>
+        <GearIcon color={String(theme.colors.text)} size={26} />
+      </IconButton>
+    </View>
+  );
+}
+
+/** Guest-state stand-in for ProfileHeader — same layout, no avatar/name to show yet. */
+function GuestHeader() {
+  const theme = useAppTheme();
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: spacing.xl }}>
+      <View
+        style={{
+          width: 64,
+          height: 64,
+          borderRadius: 32,
+          backgroundColor: theme.colors.chipBackground,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Text variant="heading">👤</Text>
+      </View>
+      <View style={{ flex: 1 }}>
+        <Text variant="heading">Guest</Text>
+        <Text variant="caption" muted>
+          Sign in to save favorites and get tickets
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+/**
+ * The full menu (City/Favorites/Interests/Tickets/Help) is always visible,
+ * signed in or not — favorites/interests already work locally without auth
+ * (see favoritesStore.ts/interestsStore.ts), so there's no reason to hide
+ * them behind a sign-in wall. Only actions that genuinely require an
+ * account (Tickets) redirect to sign-in when tapped while signed out.
+ */
 export function ProfileScreen() {
-  const { isAuthenticated, user, signOut } = useAuth();
-
-  if (!isAuthenticated || !user) {
-    return (
-      <Screen scroll>
-        <AppHeader title="Profile" />
-        <EmptyState
-          title="Welcome to CultureOwl"
-          message="Sign in to save events, get tickets, and follow the culture in your city."
-        />
-        <Button
-          label="Sign in or create account"
-          fullWidth
-          onPress={() => router.push('/(public)/login')}
-        />
-        <View style={{ marginTop: spacing['2xl'] }}>
-          <AppearanceToggle />
-        </View>
-      </Screen>
-    );
-  }
+  const { isAuthenticated, user } = useAuth();
+  const theme = useAppTheme();
+  const favoritesCount = useFavoritesStore((s) => s.getFavoriteCount());
+  const interestsCount = useInterestsStore((s) => s.selectedGenreIds.length);
+  const iconColor = String(theme.colors.text);
 
   return (
     <Screen scroll>
-      <ProfileHeader user={user} />
-      <FriendsSection />
+      <ProfileTopBar />
+      {isAuthenticated && user ? (
+        <>
+          <ProfileHeader user={user} />
+          <FriendsSection />
+        </>
+      ) : (
+        <>
+          <GuestHeader />
+          <Button
+            label="Sign in or create account"
+            fullWidth
+            onPress={() => router.push('/(public)/login')}
+            style={{ marginBottom: spacing.lg }}
+          />
+        </>
+      )}
 
       <SectionHeader title="Settings" />
-      <ProfileMenuItem
+      <IconMenuRow
+        icon={<MapPinIcon color={iconColor} />}
         label="City"
+        description="Change city"
         right={<Text muted>{DEFAULT_CITY}</Text>}
         onPress={() => trackEvent('city_setting_placeholder_tap')}
       />
-      <ProfileMenuItem
+      <IconMenuRow
+        icon={<HeartIcon color={iconColor} />}
         label="Favorites"
-        onPress={() => trackEvent('favorites_placeholder_tap')}
+        description="Find your favorite events, arts groups and destinations"
+        right={favoritesCount > 0 ? <Text muted>{favoritesCount}</Text> : undefined}
+        onPress={() => router.push('/favorites')}
       />
-      <ProfileMenuItem label="Tickets" onPress={() => router.push('/(tabs)/tickets')} />
-      <ProfileMenuItem label="Appearance" onPress={() => router.push('/settings/appearance')} />
-      <ProfileMenuItem label="Help" onPress={() => trackEvent('support_placeholder_tap')} />
-      <ProfileMenuItem
-        label="Sign out"
-        destructive
-        onPress={() => {
-          signOut();
-          trackEvent('sign_out');
-        }}
+      <IconMenuRow
+        icon={<StarIcon color={iconColor} />}
+        label="Interests"
+        description="Tell us what you're into so we can show you more of it"
+        right={interestsCount > 0 ? <Text muted>{interestsCount}</Text> : undefined}
+        onPress={() => router.push('/profile/interests')}
+      />
+      <IconMenuRow
+        icon={<TicketIcon color={iconColor} />}
+        label="Tickets"
+        description="All the tickets you purchased are stored here safe"
+        onPress={() => (isAuthenticated ? router.push('/(tabs)/tickets') : router.push('/(public)/login'))}
+      />
+      <IconMenuRow
+        icon={<HelpIcon color={iconColor} />}
+        label="Help"
+        description="Any questions or issues? We are here to help"
+        onPress={() => trackEvent('support_placeholder_tap')}
       />
     </Screen>
   );

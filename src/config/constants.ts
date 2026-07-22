@@ -1,19 +1,5 @@
 export const APP_NAME = 'CultureOwl';
 
-/** Mirrors the web frontend's genre/tag chips (genre-feed + discover nav). */
-export const GENRES = [
-  { id: 'music', name: 'Music' },
-  { id: 'theatre', name: 'Theatre' },
-  { id: 'dance', name: 'Dance' },
-  { id: 'art', name: 'Visual Arts' },
-  { id: 'museums', name: 'Museums' },
-  { id: 'film', name: 'Film' },
-  { id: 'family', name: 'Family' },
-  { id: 'food', name: 'Art & Dine' },
-  { id: 'festivals', name: 'Festivals' },
-  { id: 'comedy', name: 'Comedy' },
-] as const;
-
 /** Florida markets, matching the web frontend's city switcher. */
 export const CITIES = ['Miami', 'Fort Lauderdale', 'West Palm Beach', 'Orlando', 'Tampa'] as const;
 

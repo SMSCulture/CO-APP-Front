@@ -1,10 +1,13 @@
-import { Text, type ColorValue } from 'react-native';
+import type { ColorValue } from 'react-native';
 
-const ICONS: Record<string, string> = {
-  home: '⌂',
-  search: '⌕',
-  tickets: '⧉',
-  profile: '◯',
+import { DiscoverTabIcon, HomeTabIcon, ProfileTabIcon, SearchTabIcon, TicketTabIcon } from './icons/TabIcons';
+
+const ICONS = {
+  home: HomeTabIcon,
+  search: SearchTabIcon,
+  discover: DiscoverTabIcon,
+  tickets: TicketTabIcon,
+  profile: ProfileTabIcon,
 };
 
 interface TabBarIconProps {
@@ -14,11 +17,12 @@ interface TabBarIconProps {
 }
 
 /**
- * Simple glyph tab icons for the foundation. Swap for the CultureOwl icon set
- * (SVG or expo-symbols) once brand assets are exported.
+ * Real SVG tab icons (react-native-svg) — replaces the earlier text/Unicode-
+ * glyph placeholders. Fixed size regardless of focus state — active/inactive
+ * is communicated by color alone (matches the reference), not by resizing,
+ * which was causing the bar to clip/jump.
  */
-export function TabBarIcon({ name, color, focused }: TabBarIconProps) {
-  return (
-    <Text style={{ fontSize: focused ? 22 : 20, color, lineHeight: 26 }}>{ICONS[name] ?? '•'}</Text>
-  );
+export function TabBarIcon({ name, color }: TabBarIconProps) {
+  const Icon = ICONS[name];
+  return <Icon color={String(color)} size={24} />;
 }

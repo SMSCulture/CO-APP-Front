@@ -1,11 +1,13 @@
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
-import { fetchOrganization, fetchOrganizations } from '../api/modules/organizations.api';
+import { fetchOrganization, fetchOrganizationsPage } from '../api/modules/organizations.api';
 
-export function useOrganizations(city?: string) {
-  return useQuery({
-    queryKey: ['organizations', 'list', city] as const,
-    queryFn: () => fetchOrganizations(city),
+export function useOrganizationsInfinite() {
+  return useInfiniteQuery({
+    queryKey: ['organizations', 'list'] as const,
+    queryFn: ({ pageParam }) => fetchOrganizationsPage(pageParam),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) => (lastPage.hasNextPage ? lastPage.endCursor ?? undefined : undefined),
   });
 }
 

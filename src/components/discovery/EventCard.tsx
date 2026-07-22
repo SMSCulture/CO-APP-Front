@@ -29,9 +29,7 @@ export function EventCard({ event, width }: EventCardProps) {
         accessibilityLabel={event.title}
       />
       <View style={{ padding: spacing.lg, gap: spacing.xs }}>
-        <Text variant="caption" color={theme.colors.primary}>
-          {formatDateSlot(event.nextEventDate, event.startDate)}
-        </Text>
+        <Text variant="caption">{formatDateSlot(event.nextEventDate, event.startDate)}</Text>
         <Text variant="subheading" numberOfLines={2}>
           {event.title}
         </Text>

@@ -12,6 +12,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 
 import { AuthProvider } from '../auth/AuthProvider';
+import { ToastHost } from '../components/layout/ToastHost';
 import { ThemeProvider } from '../design/ThemeProvider';
 import { useAppTheme } from '../design/useAppTheme';
 
@@ -59,6 +60,7 @@ function ThemedStack() {
           contentStyle: { backgroundColor: theme.colors.background },
         }}
       />
+      <ToastHost />
     </>
   );
 }

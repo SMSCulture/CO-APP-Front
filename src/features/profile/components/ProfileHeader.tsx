@@ -1,8 +1,7 @@
-import { router } from 'expo-router';
 import { Image } from 'expo-image';
 import { View } from 'react-native';
 
-import { IconButton, Text } from '../../../components/ui';
+import { Text } from '../../../components/ui';
 import { radius, spacing } from '../../../design/tokens';
 import { useAppTheme } from '../../../design/useAppTheme';
 import type { User } from '../../../types/user';
@@ -14,8 +13,9 @@ const PROVIDER_LABELS: Record<User['authProvider'], string> = {
 };
 
 /**
- * Profile header: avatar + name top-left, connection type under the name,
- * account settings gear top-right.
+ * Profile header: avatar + name + connection type. No settings gear here
+ * anymore — ProfileScreen's own top bar has one gear for the whole page,
+ * this used to duplicate it.
  */
 export function ProfileHeader({ user }: { user: User }) {
   const theme = useAppTheme();
@@ -61,12 +61,6 @@ export function ProfileHeader({ user }: { user: User }) {
           {PROVIDER_LABELS[user.authProvider]}
         </Text>
       </View>
-      <IconButton
-        accessibilityLabel="Account settings"
-        onPress={() => router.push('/settings/account')}
-      >
-        <Text variant="subheading">⚙</Text>
-      </IconButton>
     </View>
   );
 }

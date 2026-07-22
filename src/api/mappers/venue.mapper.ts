@@ -11,6 +11,7 @@ interface RawVenue {
   description?: string | null;
   latitude?: number | null;
   longitude?: number | null;
+  venueType?: string | null;
 }
 
 export function mapRawVenue(raw: RawVenue): Venue {
@@ -23,6 +24,7 @@ export function mapRawVenue(raw: RawVenue): Venue {
     address: raw.address ?? null,
     imageUrl: raw.imageUrl ?? null,
     description: raw.description ?? null,
+    venueType: raw.venueType ?? null,
     coordinates:
       raw.latitude != null && raw.longitude != null
         ? { latitude: raw.latitude, longitude: raw.longitude }

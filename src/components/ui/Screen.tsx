@@ -27,7 +27,7 @@ export function Screen({ children, scroll = false, padded = true, style }: Scree
     return (
       <ScrollView
         style={[base, style]}
-        contentContainerStyle={[padding, { paddingBottom: spacing['3xl'] }]}
+        contentContainerStyle={[padding, { paddingBottom: spacing['3xl'] + insets.bottom + 40 }]}
         showsVerticalScrollIndicator={false}
       >
         {children}

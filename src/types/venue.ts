@@ -8,4 +8,5 @@ export interface Venue {
   imageUrl: string | null;
   description: string | null;
   coordinates: { latitude: number; longitude: number } | null;
+  venueType: string | null;
 }
