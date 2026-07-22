@@ -1,5 +1,4 @@
 import { router } from 'expo-router';
-import { useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -8,19 +7,22 @@ import { EventHero } from '../../components/events/EventHero';
 import { EventInfoPanel } from '../../components/events/EventInfoPanel';
 import { EventOrganizerCard } from '../../components/events/EventOrganizerCard';
 import { SimilarEvents } from '../../components/events/SimilarEvents';
+import { ChevronLeftIcon } from '../../components/layout/icons/MenuIcons';
 import { Button, ErrorState, IconButton, LoadingState, Screen, Text } from '../../components/ui';
 import { spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
 import { trackEvent } from '../../lib/analytics';
 import { useEvent, useEventsFeed } from '../../queries/events.queries';
+import { useFavoriteToggle } from '../../queries/favorites.queries';
 
 export function EventDetailScreen({ eventId }: { eventId: string }) {
   const theme = useAppTheme();
   const insets = useSafeAreaInsets();
   const { data: event, isLoading, isError, refetch } = useEvent(eventId);
   const { data: feed } = useEventsFeed({});
-  // TODO(backend): saved state should come from MyFavorites once auth is wired.
-  const [saved, setSaved] = useState(false);
+  // Called before the early returns (rules of hooks) — useFavoriteToggle
+  // tolerates `event` being undefined while still loading.
+  const { isFavorite: saved, toggle } = useFavoriteToggle('event', event);
 
   if (isLoading) {
     return (
@@ -48,11 +50,7 @@ export function EventDetailScreen({ eventId }: { eventId: string }) {
             <Text variant="title" style={{ flex: 1 }}>
               {event.title}
             </Text>
-            <EventActions
-              eventId={event.id}
-              saved={saved}
-              onToggleSave={() => setSaved((s) => !s)}
-            />
+            <EventActions eventId={event.id} saved={saved} onToggleSave={toggle} />
           </View>
           <EventInfoPanel event={event} />
           <Text variant="heading">About</Text>
@@ -65,7 +63,7 @@ export function EventDetailScreen({ eventId }: { eventId: string }) {
       {/* Back button over the hero */}
       <View style={{ position: 'absolute', top: insets.top + spacing.sm, left: spacing.lg }}>
         <IconButton accessibilityLabel="Go back" onPress={() => router.back()}>
-          <Text variant="subheading">‹</Text>
+          <ChevronLeftIcon color="#ffffff" size={20} />
         </IconButton>
       </View>
 

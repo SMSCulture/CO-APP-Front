@@ -13,7 +13,7 @@ const variantStyles: Record<TextVariant, TextStyle> = {
   bodyBold: { fontFamily: fontFamily.semiBold, fontSize: fontSize.base, lineHeight: 22 },
   caption: { fontFamily: fontFamily.regular, fontSize: fontSize.sm, lineHeight: 18 },
   label: {
-    fontFamily: fontFamily.semiBold,
+    fontFamily: fontFamily.medium,
     fontSize: fontSize.xs,
     lineHeight: 15,
     letterSpacing: 0.6,

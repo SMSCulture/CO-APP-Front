@@ -1,11 +1,13 @@
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
-import { fetchVenue, fetchVenues } from '../api/modules/venues.api';
+import { fetchVenue, fetchVenuesPage } from '../api/modules/venues.api';
 
-export function useVenues(city?: string) {
-  return useQuery({
+export function useVenuesInfinite(city?: string) {
+  return useInfiniteQuery({
     queryKey: ['venues', 'list', city] as const,
-    queryFn: () => fetchVenues(city),
+    queryFn: ({ pageParam }) => fetchVenuesPage(city, pageParam),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) => (lastPage.hasNextPage ? lastPage.endCursor ?? undefined : undefined),
   });
 }
 

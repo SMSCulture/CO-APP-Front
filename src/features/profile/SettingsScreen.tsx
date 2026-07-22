@@ -1,4 +1,4 @@
-import { AppHeader } from '../../components/layout/AppHeader';
+import { DetailScreenHeader } from '../../components/layout/DetailScreenHeader';
 import { Screen, Text } from '../../components/ui';
 import { spacing } from '../../design/tokens';
 import { useAuth } from '../../auth/useAuth';
@@ -10,7 +10,7 @@ export function SettingsScreen() {
 
   return (
     <Screen scroll>
-      <AppHeader title="Account" />
+      <DetailScreenHeader title="Account" />
       <Text muted style={{ marginBottom: spacing.lg }}>
         Account management is coming soon. Signed in as {user?.email ?? 'guest'}.
       </Text>
