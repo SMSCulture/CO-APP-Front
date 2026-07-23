@@ -22,7 +22,7 @@ export function VenuesRow({ city }: { city: string }) {
 
   return (
     <>
-      <SectionHeader title="Venues" actionLabel="View All" onAction={() => router.push('/venues')} />
+      <SectionHeader title="Venues" actionLabel="View All" onAction={() => router.push('/venues')} spacious />
       <HorizontalCarousel>
         {venues.map((venue) => (
           <VenueCard key={venue.id} venue={venue} width={CARD_WIDTH} />

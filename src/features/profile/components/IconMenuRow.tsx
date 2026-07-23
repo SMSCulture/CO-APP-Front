@@ -11,6 +11,8 @@ interface IconMenuRowProps {
   description?: string;
   right?: ReactNode;
   onPress?: () => void;
+  /** Red label text — pair with a red-tinted icon for destructive rows (Delete Account, Logout). */
+  destructive?: boolean;
 }
 
 /**
@@ -19,7 +21,7 @@ interface IconMenuRowProps {
  * value (e.g. the city name) sits directly next to the title, not pinned
  * to the far edge of the card.
  */
-export function IconMenuRow({ icon, label, description, right, onPress }: IconMenuRowProps) {
+export function IconMenuRow({ icon, label, description, right, onPress, destructive = false }: IconMenuRowProps) {
   const theme = useAppTheme();
   return (
     <Pressable
@@ -43,8 +45,6 @@ export function IconMenuRow({ icon, label, description, right, onPress }: IconMe
         style={{
           width: 44,
           height: 44,
-          borderRadius: radius.md,
-          backgroundColor: theme.colors.chipBackground,
           alignItems: 'center',
           justifyContent: 'center',
         }}
@@ -53,7 +53,9 @@ export function IconMenuRow({ icon, label, description, right, onPress }: IconMe
       </View>
       <View style={{ flex: 1 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
-          <Text variant="bodyBold">{label}</Text>
+          <Text variant="bodyBold" color={destructive ? theme.colors.danger : undefined}>
+            {label}
+          </Text>
           {right}
         </View>
         {description ? (

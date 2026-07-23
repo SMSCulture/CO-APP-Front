@@ -60,13 +60,13 @@ export function SearchBarPill({
   const pillStyle = {
     flexDirection: 'row' as const,
     alignItems: 'center' as const,
-    minHeight: 52,
+    minHeight: 42,
     backgroundColor: theme.colors.surface,
     borderWidth: 1,
     borderColor: theme.colors.border,
     borderRadius: radius.full,
-    paddingLeft: spacing.lg,
-    paddingRight: spacing.sm,
+    paddingLeft: spacing.md,
+    paddingRight: spacing.xs,
   };
 
   const content = (
@@ -94,15 +94,15 @@ export function SearchBarPill({
       {showFilterIcon ? (
         <>
           {/* Grey vertical divider before the filter icon — not just a bare gear icon. */}
-          <View style={{ width: 1, height: 28, backgroundColor: theme.colors.border, marginHorizontal: spacing.sm }} />
+          <View style={{ width: 1, height: 18, backgroundColor: theme.colors.border, marginHorizontal: spacing.xs }} />
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Filters"
             onPress={onFilterPress}
             hitSlop={8}
             style={({ pressed }) => ({
-              width: 40,
-              height: 40,
+              width: 28,
+              height: 28,
               borderRadius: radius.full,
               backgroundColor: hasActiveFilters ? theme.colors.primary : 'transparent',
               alignItems: 'center',
@@ -110,7 +110,7 @@ export function SearchBarPill({
               opacity: pressed ? 0.7 : 1,
             })}
           >
-            <SlidersIcon color={hasActiveFilters ? '#ffffff' : String(theme.colors.text)} size={20} />
+            <SlidersIcon color={hasActiveFilters ? '#ffffff' : String(theme.colors.text)} size={16} />
           </Pressable>
         </>
       ) : null}

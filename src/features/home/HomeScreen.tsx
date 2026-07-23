@@ -13,6 +13,7 @@ import { DEFAULT_EVENT_FILTERS, type EventFiltersState } from '../../types/filte
 import { CultureNewsSection } from './components/CultureNewsSection';
 import { GenreEventRows } from './components/GenreEventRows';
 import { HomeHeader } from './components/HomeHeader';
+import { InviteExploreCard } from './components/InviteExploreCard';
 import { LocationRow } from './components/LocationRow';
 import { RestaurantsRow } from './components/RestaurantsRow';
 import { VenuesRow } from './components/VenuesRow';
@@ -66,6 +67,7 @@ export function HomeScreen() {
       {/* 3. Categories — moved up from the bottom (was "Discover more"). */}
       <SectionHeader title="Categories" />
       <CategoryRectangleRow
+        variant="row"
         onSelect={(genreId) => genreId && router.push({ pathname: '/(tabs)/search', params: { tagIds: genreId } })}
       />
 
@@ -80,6 +82,7 @@ export function HomeScreen() {
             title="Events Near You"
             actionLabel="View All"
             onAction={() => router.push('/(tabs)/search')}
+            spacious
           />
           <EventCarousel events={events} />
 
@@ -93,8 +96,11 @@ export function HomeScreen() {
           <RestaurantsRow city={city} />
 
           {/* 7. Culture News — mirrors CulturalNewsSection on web. */}
-          <SectionHeader title="Culture news" actionLabel="View All" onAction={goToNews} />
+          <SectionHeader title="Culture news" actionLabel="View All" onAction={goToNews} spacious />
           <CultureNewsSection />
+
+          {/* 8. Invite Friends / Explore — brand-voice closer at the bottom of Home. */}
+          <InviteExploreCard />
         </>
       )}
 

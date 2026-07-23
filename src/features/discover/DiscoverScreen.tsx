@@ -34,6 +34,7 @@ export function DiscoverScreen() {
       <IconMenuRow icon={<BuildingIcon color={iconColor} />} label="Venues" onPress={() => router.push('/venues')} />
       <IconMenuRow icon={<BuildingIcon color={iconColor} />} label="Arts Groups" onPress={() => router.push('/organizations')} />
       <IconMenuRow icon={<RestaurantIcon color={iconColor} />} label="Restaurants" onPress={() => router.push('/restaurants')} />
+      <IconMenuRow icon={<RestaurantIcon color={iconColor} />} label="Art & Dine" onPress={() => router.push('/art-and-dine')} />
       <IconMenuRow icon={<NewspaperIcon color={iconColor} />} label="Culture News" onPress={() => router.push('/news')} />
       <IconMenuRow icon={<MapIcon color={iconColor} />} label="Map" onPress={() => router.push('/map')} />
     </Screen>

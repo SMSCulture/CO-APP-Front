@@ -11,10 +11,10 @@ import { SearchBarPill } from '../../components/discovery/SearchBarPill';
 import { SearchResultRow } from '../../components/discovery/SearchResultRow';
 import { SortModal, type SortOption } from '../../components/discovery/SortModal';
 import { SectionHeader } from '../../components/layout/SectionHeader';
-import { DetailScreenHeader } from '../../components/layout/DetailScreenHeader';
 import { EmptyState, ErrorState, LoadingState, Screen } from '../../components/ui';
 import { spacing } from '../../design/tokens';
 import { useDebounce } from '../../hooks/useDebounce';
+import { useMainGenres } from '../../queries/genres.queries';
 import { useEventSearch } from '../../queries/search.queries';
 import type { EventSummary } from '../../types/event';
 import { DEFAULT_EVENT_FILTERS, hasActiveFilters, type DateFilterType, type EventFiltersState } from '../../types/filters';
@@ -69,6 +69,13 @@ export function SearchScreen() {
   const [openFilterSection, setOpenFilterSection] = useState<'date' | 'category' | null>(null);
   const [sortModalOpen, setSortModalOpen] = useState(false);
 
+  const { data: genres } = useMainGenres();
+  // The selected category's name shows on the Category filter pill (see
+  // FilterPillRow's categoryLabel), NOT in the search box — the search box
+  // is for actual search terms; the pill is what tells people what category
+  // they're currently on.
+  const categoryLabel = filters.tagIds.length === 1 ? genres?.find((g) => g.id === filters.tagIds[0])?.display : undefined;
+
   const debouncedTerm = useDebounce(term);
   const { data, isLoading, isError, refetch } = useEventSearch({
     searchTerm: debouncedTerm,
@@ -100,8 +107,7 @@ export function SearchScreen() {
 
   return (
     <Screen>
-      <DetailScreenHeader title="Search" />
-      <View style={{ gap: spacing.md, marginBottom: spacing.lg }}>
+      <View style={{ gap: spacing.md, marginBottom: spacing.lg, marginTop: spacing.lg }}>
         <SearchBarPill
           mode={inputActive ? 'input' : 'link'}
           placeholder="Discover cities, events, venues…"
@@ -113,6 +119,7 @@ export function SearchScreen() {
         <FilterPillRow
           dateActive={filters.dateFilter !== ''}
           categoryActive={filters.tagIds.length > 0}
+          categoryLabel={categoryLabel}
           sortActive={sort !== 'DATE'}
           onDatePress={() => setOpenFilterSection('date')}
           onCategoryPress={() => setOpenFilterSection('category')}
@@ -140,7 +147,7 @@ export function SearchScreen() {
           data={results}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => <SearchResultRow event={item} />}
-          contentContainerStyle={{ gap: spacing.md, paddingBottom: 120 }}
+          contentContainerStyle={{ gap: spacing.xl, paddingBottom: 120 }}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={
             <EmptyState

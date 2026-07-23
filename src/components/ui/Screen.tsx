@@ -24,14 +24,22 @@ export function Screen({ children, scroll = false, padded = true, style }: Scree
   const padding = padded ? { paddingHorizontal: spacing.screenX } : undefined;
 
   if (scroll) {
+    // Outer non-scrolling View carries the background — belt-and-suspenders
+    // against any seam between the scrollable content and the tab bar when
+    // content is shorter than the viewport (the ScrollView's own background
+    // should cover this already, but screens using `scroll` were the ones
+    // showing a stray line above the tab bar; this guarantees it's covered
+    // regardless of content height).
     return (
-      <ScrollView
-        style={[base, style]}
-        contentContainerStyle={[padding, { paddingBottom: spacing['3xl'] + insets.bottom + 40 }]}
-        showsVerticalScrollIndicator={false}
-      >
-        {children}
-      </ScrollView>
+      <View style={[base, style]}>
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={[padding, { paddingBottom: spacing['3xl'] + insets.bottom + 40 }]}
+          showsVerticalScrollIndicator={false}
+        >
+          {children}
+        </ScrollView>
+      </View>
     );
   }
   return <View style={[base, padding, style]}>{children}</View>;

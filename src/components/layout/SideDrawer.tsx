@@ -7,6 +7,7 @@ import { DIRECTORY_LINKS } from '../../config/constants';
 import { spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
 import { Divider, IconButton, Text } from '../ui';
+import { XIcon } from './icons/MenuIcons';
 
 const DRAWER_WIDTH = 300;
 
@@ -74,8 +75,11 @@ export function SideDrawer({ visible, onClose }: SideDrawerProps) {
             }}
           >
             <Text variant="heading">Explore</Text>
-            <IconButton accessibilityLabel="Close menu" onPress={onClose}>
-              <Text variant="heading">×</Text>
+            {/* Matches the hamburger opener exactly (transparent, size 44) — was a
+                default-size circle-background IconButton with a font "×" glyph,
+                which looked mismatched and off-center compared to the opener. */}
+            <IconButton accessibilityLabel="Close menu" onPress={onClose} transparent size={44}>
+              <XIcon color={String(theme.colors.text)} size={22} />
             </IconButton>
           </View>
           {DIRECTORY_LINKS.map((link, index) => (

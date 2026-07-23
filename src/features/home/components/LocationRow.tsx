@@ -10,8 +10,8 @@ import { useAppTheme } from '../../../design/useAppTheme';
 import { useLocationStore } from '../../../store/locationStore';
 
 /**
- * Extracted from HomeHeader — now sits below Categories instead of being the
- * very first thing on the page (per explicit reorder request).
+ * Extracted from HomeHeader — sits below the search bar, above Categories
+ * (per explicit reorder request).
  */
 export function LocationRow() {
   const theme = useAppTheme();
@@ -20,7 +20,7 @@ export function LocationRow() {
   const displayCity = selectedCity?.city ?? DEFAULT_CITY;
 
   return (
-    <View style={{ marginBottom: spacing.md }}>
+    <View style={{ marginBottom: spacing.sm }}>
       <Pressable
         onPress={() => setLocationOpen(true)}
         accessibilityRole="button"

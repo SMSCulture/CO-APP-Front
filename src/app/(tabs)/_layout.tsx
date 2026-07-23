@@ -18,6 +18,15 @@ export default function TabsLayout() {
         tabBarStyle: {
           backgroundColor: theme.colors.tabBarBackground,
           borderTopColor: theme.colors.border,
+          borderTopWidth: 1,
+          // React Navigation's bottom tab bar applies a platform shadow by
+          // default (iOS: shadowOpacity, Android: elevation) regardless of
+          // borderTopColor — it renders as a stray light line in dark mode
+          // or dark line in light mode, on every tab. Zeroed out so the only
+          // visible line is our own explicit 1px themed border above.
+          elevation: 0,
+          shadowOpacity: 0,
+          shadowColor: 'transparent',
           // Explicit height + safe-area-aware padding — without this the bar
           // was too short for icon+label, clipping the top of the active
           // icon (the cut-off blue shapes in the reported screenshot).

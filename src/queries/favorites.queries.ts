@@ -32,13 +32,14 @@ export function useMyFavorites(entityType?: FavoriteEntityType) {
  * to configure DirectoryCard props; mobile cards call this directly instead.
  */
 export function useFavoriteToggle(entityType: FavoriteEntityType, entity: FavoritableEntity | undefined) {
-  const { isAuthenticated } = useAuth();
   const { isFavorite, toggleFavorite } = useFavoritesStore();
   const showToast = useToastStore((s) => s.show);
   const favorited = entity ? isFavorite(entityType, entity.id) : false;
 
   const toggle = useCallback(async () => {
-    if (!isAuthenticated || !entity) return; // caller should route to login; kept simple here
+    // The whole app requires being signed in already, so there's no
+    // meaningful "signed out" case to special-case here anymore.
+    if (!entity) return;
     const item = toFavoriteItem(entityType, entity);
     const wasFavorited = isFavorite(entityType, entity.id);
 
@@ -67,7 +68,7 @@ export function useFavoriteToggle(entityType: FavoriteEntityType, entity: Favori
       showToast({ message: 'Failed to update favorite. Please try again.', variant: 'error' }, 5000);
     }
     return !wasFavorited;
-  }, [isAuthenticated, entityType, entity, isFavorite, toggleFavorite, showToast]);
+  }, [entityType, entity, isFavorite, toggleFavorite, showToast]);
 
   return { isFavorite: favorited, toggle };
 }

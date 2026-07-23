@@ -20,8 +20,8 @@ export function HomeHeader({ onFilterPress }: HomeHeaderProps) {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
-    <View style={{ marginBottom: spacing.md }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs, paddingTop: spacing.lg }}>
+    <View style={{ marginBottom: spacing['2xl'] }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: spacing.lg }}>
         <View style={{ flex: 1 }}>
           <SearchBarPill
             mode="link"
@@ -30,11 +30,16 @@ export function HomeHeader({ onFilterPress }: HomeHeaderProps) {
             onFilterPress={onFilterPress}
           />
         </View>
-        {/* No circle background, bigger icon, tucked tight in the corner so
-            the search bar reads as the dominant element. */}
-        <IconButton accessibilityLabel="Open explore menu" onPress={() => setDrawerOpen(true)} transparent size={44}>
-          <Text style={{ fontSize: 26 }}>☰</Text>
-        </IconButton>
+        {/* No circle background, tucked into the corner (negative right
+            margin so it sits flush with the screen edge instead of leaving
+            a gap) so the search bar reads as the dominant element and has
+            more room to be wider. Nudged up slightly to sit centered with
+            the search bar's own visual center rather than the row's full height. */}
+        <View style={{ marginTop: -2, marginRight: -spacing.xs }}>
+          <IconButton accessibilityLabel="Open explore menu" onPress={() => setDrawerOpen(true)} transparent size={40}>
+            <Text style={{ fontSize: 24 }}>☰</Text>
+          </IconButton>
+        </View>
       </View>
 
       <SideDrawer visible={drawerOpen} onClose={() => setDrawerOpen(false)} />
