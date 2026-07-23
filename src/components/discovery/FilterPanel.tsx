@@ -24,7 +24,7 @@ import type { EventFiltersState } from '../../types/filters';
 import { Text } from '../ui';
 import { Button } from '../ui/Button';
 import { Chip } from '../ui/Chip';
-import { ChevronDownIcon, XIcon } from '../layout/icons/MenuIcons';
+import { CheckIcon, ChevronDownIcon, XIcon } from '../layout/icons/MenuIcons';
 import { MonthCalendar } from './MonthCalendar';
 
 interface FilterPanelProps {
@@ -93,12 +93,12 @@ export function FilterPanel({ visible, onClose, filters, onChange, initialSectio
   const dateExpanded = expandedSection === 'date';
   const categoryExpanded = expandedSection === 'category';
 
-  const toggleGenre = (genreId: string) => {
+  // Single-select — tapping the already-selected genre clears it, tapping a
+  // different one replaces the selection entirely (was multi-select before).
+  const selectGenre = (genreId: string) => {
     onChange({
       ...filters,
-      tagIds: filters.tagIds.includes(genreId)
-        ? filters.tagIds.filter((id) => id !== genreId)
-        : [...filters.tagIds, genreId],
+      tagIds: filters.tagIds.includes(genreId) ? [] : [genreId],
     });
   };
 
@@ -193,16 +193,16 @@ export function FilterPanel({ visible, onClose, filters, onChange, initialSectio
                     key={genre.id}
                     accessibilityRole="button"
                     accessibilityState={{ selected: active }}
-                    onPress={() => toggleGenre(genre.id)}
+                    onPress={() => selectGenre(genre.id)}
                     style={({ pressed }) => ({
                       flexDirection: 'row',
                       alignItems: 'center',
                       gap: spacing.md,
                       padding: spacing.sm,
                       borderRadius: radius.lg,
-                      borderWidth: active ? 2 : 1,
-                      borderColor: active ? palette.blue : theme.colors.border,
-                      backgroundColor: active ? theme.colors.chipActiveBackground : theme.colors.surface,
+                      borderWidth: 1,
+                      borderColor: theme.colors.border,
+                      backgroundColor: theme.colors.surface,
                       opacity: pressed ? 0.85 : 1,
                     })}
                   >
@@ -214,6 +214,7 @@ export function FilterPanel({ visible, onClose, filters, onChange, initialSectio
                     <Text variant="bodyBold" style={{ flex: 1 }}>
                       {genre.display}
                     </Text>
+                    {active ? <CheckIcon color={String(palette.blue)} size={20} /> : null}
                   </Pressable>
                 );
               })}

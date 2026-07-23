@@ -12,7 +12,17 @@ interface CategoryRectangleRowProps {
   onSelect: (genreId: string | null) => void;
   /** Show a leading "All" card — used for filter contexts (Home top row, Search). Omit for pure browse contexts (Discover). */
   showAll?: boolean;
+  /**
+   * 'tile' (default) — the original browse rectangle: full-bleed image with
+   * the label overlaid at the bottom (Discover, Search). 'row' — a shorter,
+   * image-left/text-right pill for Home's "Categories" section, half the
+   * tile's height and sized to its label instead of a fixed wide rectangle.
+   */
+  variant?: 'tile' | 'row';
 }
+
+const ROW_HEIGHT = 36;
+const ROW_IMAGE_SIZE = 28;
 
 /**
  * The single genre-picker UI, used identically everywhere genres are
@@ -20,9 +30,75 @@ interface CategoryRectangleRowProps {
  * Search screen, and the Discover tab. Real backend genres (useMainGenres),
  * rendered as rectangles — not the old rounded-pill CategoryChips shape.
  */
-export function CategoryRectangleRow({ selected, onSelect, showAll = false }: CategoryRectangleRowProps) {
+export function CategoryRectangleRow({ selected, onSelect, showAll = false, variant = 'tile' }: CategoryRectangleRowProps) {
   const theme = useAppTheme();
   const { data: genres } = useMainGenres();
+
+  if (variant === 'row') {
+    return (
+      <HorizontalCarousel>
+        {showAll ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="All categories"
+            onPress={() => onSelect(null)}
+            style={({ pressed }) => ({
+              height: ROW_HEIGHT,
+              paddingHorizontal: spacing.md,
+              borderRadius: radius.full,
+              borderWidth: selected == null ? 2 : 1,
+              borderColor: selected == null ? theme.colors.primary : theme.colors.border,
+              backgroundColor: theme.colors.surface,
+              alignItems: 'center',
+              justifyContent: 'center',
+              opacity: pressed ? 0.85 : 1,
+            })}
+          >
+            <Text variant="bodyBold">All</Text>
+          </Pressable>
+        ) : null}
+        {(genres ?? []).map((genre) => {
+          const active = selected === genre.id;
+          return (
+            <Pressable
+              key={genre.id}
+              accessibilityRole="button"
+              accessibilityLabel={`Browse ${genre.display}`}
+              onPress={() => onSelect(active ? null : genre.id)}
+              style={({ pressed }) => ({
+                flexDirection: 'row',
+                alignItems: 'center',
+                height: ROW_HEIGHT,
+                paddingLeft: 4,
+                paddingRight: spacing.md,
+                gap: spacing.xs,
+                borderRadius: radius.full,
+                borderWidth: active ? 2 : 1,
+                borderColor: active ? theme.colors.primary : theme.colors.border,
+                backgroundColor: theme.colors.surface,
+                opacity: pressed ? 0.9 : 1,
+              })}
+            >
+              <Image
+                source={{ uri: genre.iconUrl ?? `https://picsum.photos/seed/${genre.id}/120/120` }}
+                style={{
+                  width: ROW_IMAGE_SIZE,
+                  height: ROW_IMAGE_SIZE,
+                  borderRadius: radius.full,
+                  backgroundColor: theme.colors.skeleton,
+                }}
+                contentFit="cover"
+                transition={200}
+              />
+              <Text variant="caption" numberOfLines={1}>
+                {genre.display}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </HorizontalCarousel>
+    );
+  }
 
   return (
     <HorizontalCarousel>

@@ -34,6 +34,7 @@ function GenreCarouselRow({ genre, city }: { genre: MainGenre; city: string }) {
         title={genre.display}
         actionLabel="View All"
         onAction={() => router.push({ pathname: '/(tabs)/search', params: { tagIds: genre.id } })}
+        spacious
       />
       <EventCarousel events={events} />
     </>

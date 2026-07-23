@@ -3,6 +3,7 @@ import { Pressable } from 'react-native';
 
 import { radius, shadows, spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
+import { MapIcon } from '../layout/icons/MenuIcons';
 import { Text } from '../ui';
 
 /**
@@ -31,8 +32,9 @@ export function MapButton() {
         ...shadows.raised,
       })}
     >
+      <MapIcon color={String(theme.colors.background)} size={18} />
       <Text variant="bodyBold" color={theme.colors.background}>
-        ◎ Map
+        Map
       </Text>
     </Pressable>
   );

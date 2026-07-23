@@ -76,6 +76,8 @@ interface FilterPillRowProps {
   dateActive?: boolean;
   categoryActive?: boolean;
   sortActive?: boolean;
+  /** Selected category's display name — shown in place of the generic "Category" label, so people can see what category they're on. */
+  categoryLabel?: string;
 }
 
 /** Date / Category / Sort — separate pill buttons below the search bar, matching the reference (not a single gear/sliders icon). */
@@ -86,6 +88,7 @@ export function FilterPillRow({
   dateActive,
   categoryActive,
   sortActive,
+  categoryLabel,
 }: FilterPillRowProps) {
   const theme = useAppTheme();
   const iconColor = (active?: boolean) => (active ? '#ffffff' : String(theme.colors.text));
@@ -93,7 +96,12 @@ export function FilterPillRow({
   return (
     <View style={{ flexDirection: 'row', gap: spacing.sm, justifyContent: 'flex-start' }}>
       <FilterPillButton icon={<CalendarIcon color={iconColor(dateActive)} />} label="Date" active={dateActive} onPress={onDatePress} />
-      <FilterPillButton icon={<GridIcon color={iconColor(categoryActive)} />} label="Category" active={categoryActive} onPress={onCategoryPress} />
+      <FilterPillButton
+        icon={<GridIcon color={iconColor(categoryActive)} />}
+        label={categoryActive && categoryLabel ? categoryLabel : 'Category'}
+        active={categoryActive}
+        onPress={onCategoryPress}
+      />
       <FilterPillButton icon={<SortIcon color={iconColor(sortActive)} />} label="Sort" active={sortActive} onPress={onSortPress} />
     </View>
   );
