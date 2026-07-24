@@ -1,12 +1,13 @@
 import { router } from 'expo-router';
 import { Image } from 'expo-image';
-import { Dimensions, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
 import { formatDateSlot } from '../../lib/formatDate';
 import { formatEventLocation } from '../../lib/formatLocation';
 import { formatEventPrice } from '../../lib/formatPrice';
+import { getPhoneWidth } from '../../lib/screenWidth';
 import { useFavoriteToggle } from '../../queries/favorites.queries';
 import type { EventSummary } from '../../types/event';
 import { MapPinIcon } from '../layout/icons/MenuIcons';
@@ -21,7 +22,9 @@ import { HeartButton } from './HeartButton';
 // equal to HorizontalCarousel's contentContainerStyle gap (spacing.md).
 const SLIDES_PER_VIEW = 2.3;
 const CARD_GAP = spacing.md;
-const screenWidth = Dimensions.get('window').width;
+// getPhoneWidth() (not raw Dimensions.get) — the web preview reports the
+// actual desktop browser width here, which made these cards genuinely huge.
+const screenWidth = getPhoneWidth();
 const CARD_WIDTH = Math.floor((screenWidth - spacing.screenX * 2 - CARD_GAP * (SLIDES_PER_VIEW - 1)) / SLIDES_PER_VIEW);
 
 interface PortraitEventCardProps {

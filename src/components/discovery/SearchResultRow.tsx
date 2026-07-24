@@ -2,7 +2,7 @@ import { router } from 'expo-router';
 import { Image } from 'expo-image';
 import { Pressable, View } from 'react-native';
 
-import { radius, spacing } from '../../design/tokens';
+import { radius, sizes, spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
 import { formatDateSlot } from '../../lib/formatDate';
 import { formatEventLocation } from '../../lib/formatLocation';
@@ -10,8 +10,6 @@ import { formatEventPrice } from '../../lib/formatPrice';
 import type { EventSummary } from '../../types/event';
 import { MapPinIcon } from '../layout/icons/MenuIcons';
 import { Text } from '../ui';
-
-const THUMBNAIL_SIZE = 128;
 
 interface SearchResultRowProps {
   event: EventSummary;
@@ -38,8 +36,8 @@ export function SearchResultRow({ event }: SearchResultRowProps) {
       <Image
         source={{ uri: event.mainImageUrl ?? undefined }}
         style={{
-          width: THUMBNAIL_SIZE,
-          height: THUMBNAIL_SIZE,
+          width: sizes.rowThumbnail,
+          height: sizes.rowThumbnail,
           borderRadius: radius.md,
           backgroundColor: theme.colors.skeleton,
         }}

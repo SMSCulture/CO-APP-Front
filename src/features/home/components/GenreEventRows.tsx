@@ -32,7 +32,7 @@ function GenreCarouselRow({ genre, city }: { genre: MainGenre; city: string }) {
     <>
       <SectionHeader
         title={genre.display}
-        actionLabel="View All"
+        actionLabel="View all"
         onAction={() => router.push({ pathname: '/(tabs)/search', params: { tagIds: genre.id } })}
         spacious
       />
