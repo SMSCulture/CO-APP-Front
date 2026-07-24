@@ -4,6 +4,7 @@ export const palette = {
   blueDark: '#2d7bb0',
   blueLight: '#e3f1fa',
   red: '#e74e3d',
+  redHover: '#ce3d2c',
   orange: '#f47d30',
   darkGray: '#373939',
   black: '#161717',

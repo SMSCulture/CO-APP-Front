@@ -30,7 +30,9 @@ export function InviteExploreCard() {
         borderRadius: radius.lg,
         borderWidth: 1,
         borderColor: theme.colors.border,
-        backgroundColor: theme.scheme === 'dark' ? palette.blueDark : palette.blueLight,
+        // Brand red tint (palette.red = #e74e3d) — no ready-made light/dark
+        // red tokens exist yet (only blueLight/blueDark), so tinted via alpha.
+        backgroundColor: theme.scheme === 'dark' ? 'rgba(231, 78, 61, 0.25)' : 'rgba(231, 78, 61, 0.12)',
         padding: spacing.lg,
         gap: spacing.xs,
       }}
@@ -49,11 +51,13 @@ export function InviteExploreCard() {
             borderRadius: radius.full,
             paddingVertical: spacing.sm + 2,
             alignItems: 'center',
-            backgroundColor: theme.colors.primary,
-            opacity: pressed ? 0.85 : 1,
+            // Darkens on press (palette.redHover, matches web's co-red ->
+            // co-red-hover transition-colors) instead of just dimming
+            // opacity, same feedback style as web's button hover state.
+            backgroundColor: pressed ? palette.redHover : palette.red,
           })}
         >
-          <Text variant="bodyBold" color={theme.colors.onPrimary}>
+          <Text variant="bodyBold" color="#ffffff">
             Invite Friends
           </Text>
         </Pressable>

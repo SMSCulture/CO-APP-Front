@@ -4,7 +4,7 @@ import { Pressable, View } from 'react-native';
 
 import { HeartButton } from '../discovery/HeartButton';
 import { useFavoriteToggle } from '../../queries/favorites.queries';
-import { spacing } from '../../design/tokens';
+import { radius, sizes, spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
 import type { Organization } from '../../types/organization';
 import { MapPinIcon } from '../layout/icons/MenuIcons';
@@ -18,10 +18,54 @@ import { Badge, Text } from '../ui';
  * `artType` field — organizations.api.ts already maps the GraphQL `artType`
  * string into a one-element `genres` array, so no schema change needed.
  */
-export function OrganizationCard({ organization }: { organization: Organization }) {
+interface OrganizationCardProps {
+  organization: Organization;
+  /** 'tile' (default) — square image + stacked text. 'row' — square thumbnail left + text right, matches the Search page's vertical-list look (OrganizationsScreen). */
+  variant?: 'tile' | 'row';
+}
+
+export function OrganizationCard({ organization, variant = 'tile' }: OrganizationCardProps) {
   const theme = useAppTheme();
   const { isFavorite: saved, toggle } = useFavoriteToggle('arts-group', organization);
   const artType = organization.genres[0];
+
+  if (variant === 'row') {
+    return (
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={organization.name}
+          onPress={() => router.push(`/organizations/${organization.id}`)}
+          style={({ pressed }) => ({ flex: 1, flexDirection: 'row', alignItems: 'center', opacity: pressed ? 0.85 : 1 })}
+        >
+          <Image
+            source={{ uri: organization.imageUrl ?? undefined }}
+            style={{
+              width: sizes.rowThumbnail,
+              height: sizes.rowThumbnail,
+              borderRadius: radius.md,
+              backgroundColor: theme.colors.skeleton,
+            }}
+            contentFit="cover"
+            accessibilityLabel={organization.name}
+          />
+          <View style={{ flex: 1, paddingLeft: spacing.md, gap: 4 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs }}>
+              <MapPinIcon color={String(theme.colors.primary)} size={14} />
+              <Text variant="caption" muted numberOfLines={1} style={{ flex: 1 }}>
+                {organization.city}
+              </Text>
+            </View>
+            <Text variant="subheading" numberOfLines={2}>
+              {organization.name}
+            </Text>
+            {artType ? <Badge label={artType} /> : null}
+          </View>
+        </Pressable>
+        <HeartButton saved={saved} onPress={toggle} />
+      </View>
+    );
+  }
 
   return (
     <View style={{ flex: 1 }}>

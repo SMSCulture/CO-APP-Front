@@ -28,7 +28,7 @@ export function SectionHeader({ title, actionLabel, onAction, spacious = false }
       {actionLabel && onAction ? (
         <Pressable accessibilityRole="button" onPress={onAction} hitSlop={8}>
           {/* variant="label" is uppercase by default (Text.tsx) — overridden
-              here since "View All" should read in normal case, not "VIEW ALL". */}
+              here since "View all" should read in normal case, not "VIEW ALL". */}
           <Text variant="label" color={theme.colors.text} style={{ textTransform: 'none' }}>
             {actionLabel}
           </Text>

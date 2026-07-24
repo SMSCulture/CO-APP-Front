@@ -9,7 +9,7 @@
  * - "input" (Search screen): a real editable TextInput; the filter icon
  *   opens the FilterPanel via onFilterPress.
  *
- * Filter is separated by a grey vertical divider (not just a bare gear
+ * Filter is separated by a white vertical divider (not just a bare gear
  * icon) — matches the reference layout.
  */
 import { Pressable, TextInput, View } from 'react-native';
@@ -60,7 +60,7 @@ export function SearchBarPill({
   const pillStyle = {
     flexDirection: 'row' as const,
     alignItems: 'center' as const,
-    minHeight: 42,
+    minHeight: 49,
     backgroundColor: theme.colors.surface,
     borderWidth: 1,
     borderColor: theme.colors.border,
@@ -93,8 +93,8 @@ export function SearchBarPill({
 
       {showFilterIcon ? (
         <>
-          {/* Grey vertical divider before the filter icon — not just a bare gear icon. */}
-          <View style={{ width: 1, height: 18, backgroundColor: theme.colors.border, marginHorizontal: spacing.xs }} />
+          {/* White vertical divider before the filter icon — not just a bare gear icon. */}
+          <View style={{ width: 1, height: 18, backgroundColor: '#ffffff', marginHorizontal: spacing.xs }} />
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Filters"

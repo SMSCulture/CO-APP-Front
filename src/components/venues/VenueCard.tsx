@@ -5,11 +5,19 @@ import { Pressable, View } from 'react-native';
 import { HeartButton } from '../discovery/HeartButton';
 import { useFavoriteToggle } from '../../queries/favorites.queries';
 import { formatVenueType } from '../../lib/formatVenueType';
-import { spacing } from '../../design/tokens';
+import { radius, sizes, spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
 import type { Venue } from '../../types/venue';
 import { MapPinIcon } from '../layout/icons/MenuIcons';
 import { Text } from '../ui';
+
+interface VenueCardProps {
+  venue: Venue;
+  /** Fixed width for horizontal carousel use (Home's Venues row); omit for grid use (flex: 1, VenuesScreen). */
+  width?: number;
+  /** 'tile' (default) — square image + stacked text, used in Home's carousel. 'row' — square thumbnail left + text right, matches the Search page's vertical-list look (VenuesScreen). */
+  variant?: 'tile' | 'row';
+}
 
 /**
  * Faithful port of components/directory/directory-card.tsx (via
@@ -17,16 +25,52 @@ import { Text } from '../ui';
  * image, pin + city topLine, venue type below the title. Matches the same
  * shell already used by PortraitEventCard.tsx (no bordered Card, no border).
  */
-interface VenueCardProps {
-  venue: Venue;
-  /** Fixed width for horizontal carousel use (Home's Venues row); omit for grid use (flex: 1, VenuesScreen). */
-  width?: number;
-}
-
-export function VenueCard({ venue, width }: VenueCardProps) {
+export function VenueCard({ venue, width, variant = 'tile' }: VenueCardProps) {
   const theme = useAppTheme();
   const { isFavorite: saved, toggle } = useFavoriteToggle('venue', venue);
   const venueTypeLabel = formatVenueType(venue.venueType);
+
+  if (variant === 'row') {
+    return (
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={venue.name}
+          onPress={() => router.push(`/venues/${venue.id}`)}
+          style={({ pressed }) => ({ flex: 1, flexDirection: 'row', alignItems: 'center', opacity: pressed ? 0.85 : 1 })}
+        >
+          <Image
+            source={{ uri: venue.imageUrl ?? undefined }}
+            style={{
+              width: sizes.rowThumbnail,
+              height: sizes.rowThumbnail,
+              borderRadius: radius.md,
+              backgroundColor: theme.colors.skeleton,
+            }}
+            contentFit="cover"
+            accessibilityLabel={venue.name}
+          />
+          <View style={{ flex: 1, paddingLeft: spacing.md, gap: 4 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs }}>
+              <MapPinIcon color={String(theme.colors.primary)} size={14} />
+              <Text variant="caption" muted numberOfLines={1} style={{ flex: 1 }}>
+                {venue.city}
+              </Text>
+            </View>
+            <Text variant="subheading" numberOfLines={2}>
+              {venue.name}
+            </Text>
+            {venueTypeLabel ? (
+              <Text variant="caption" muted numberOfLines={1}>
+                {venueTypeLabel}
+              </Text>
+            ) : null}
+          </View>
+        </Pressable>
+        <HeartButton saved={saved} onPress={toggle} />
+      </View>
+    );
+  }
 
   return (
     // View, not Pressable, wrapping both the card Pressable and the heart —
