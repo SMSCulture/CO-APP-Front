@@ -12,6 +12,7 @@ import { SearchResultRow } from '../../components/discovery/SearchResultRow';
 import { SearchDestinations } from '../../components/discovery/SearchDestinations';
 import { SortModal, type SortOption } from '../../components/discovery/SortModal';
 import { SectionHeader } from '../../components/layout/SectionHeader';
+import { StaggeredReveal } from '../../components/layout/StaggeredReveal';
 import { EmptyState, ErrorState, LoadingState, Screen } from '../../components/ui';
 import { spacing } from '../../design/tokens';
 import { useDebounce } from '../../hooks/useDebounce';
@@ -130,18 +131,18 @@ export function SearchScreen() {
 
       {showBrowseState ? (
         <View style={{ gap: spacing.xl }}>
-          <View>
+          <StaggeredReveal>
             <SectionHeader title="Popular Searches" />
             <PopularSearchesRow onSelect={selectPopularSearch} />
-          </View>
-          <View>
+          </StaggeredReveal>
+          <StaggeredReveal delay={55}>
             <SectionHeader title="Jump into CultureOwl" />
             <SearchDestinations />
-          </View>
-          <View>
+          </StaggeredReveal>
+          <StaggeredReveal delay={110}>
             <SectionHeader title="Explore six genres" />
             <CategoryRectangleGrid onSelect={selectCategory} />
-          </View>
+          </StaggeredReveal>
         </View>
       ) : isLoading ? (
         <LoadingState rows={2} />
