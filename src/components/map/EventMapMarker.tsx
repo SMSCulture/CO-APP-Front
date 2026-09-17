@@ -25,10 +25,11 @@ export function EventMapMarker({ pin, selected, onPress, position }: EventMapMar
         position: 'absolute',
         left: `${position.leftPct}%`,
         top: `${position.topPct}%`,
+        transform: [{ translateX: -28 }, { translateY: -14 }, { scale: selected ? 1.08 : 1 }],
         backgroundColor: selected ? theme.colors.text : theme.colors.primary,
         borderRadius: radius.full,
         paddingVertical: spacing.xs,
-        paddingHorizontal: spacing.md,
+        paddingHorizontal: spacing.sm,
         opacity: pressed ? 0.85 : 1,
         ...shadows.card,
       })}
