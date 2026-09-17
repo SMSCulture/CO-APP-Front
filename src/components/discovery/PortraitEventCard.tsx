@@ -75,20 +75,20 @@ export function PortraitEventCard({ event }: PortraitEventCardProps) {
         <View style={{ marginTop: 6, gap: 6 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs }}>
             <MapPinIcon color={String(theme.colors.primary)} size={16} />
-            <Text variant="body" numberOfLines={1} style={{ flex: 1 }}>
+            <Text variant="caption" numberOfLines={1} style={{ flex: 1, fontSize: 11 }}>
               {venueName}
             </Text>
           </View>
-          <Text variant="subheading" numberOfLines={2}>
+          <Text variant="bodyBold" numberOfLines={2} style={{ fontSize: 13, lineHeight: 17 }}>
             {event.title}
           </Text>
           {dateLabel ? (
-            <Text variant="caption" numberOfLines={1}>
+            <Text variant="caption" numberOfLines={1} style={{ fontSize: 11 }}>
               {dateLabel}
             </Text>
           ) : null}
           {priceText ? (
-            <Text variant="caption" numberOfLines={1}>
+            <Text variant="caption" numberOfLines={1} style={{ fontSize: 11 }}>
               {priceText}
             </Text>
           ) : null}

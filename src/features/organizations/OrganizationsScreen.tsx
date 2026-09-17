@@ -11,7 +11,7 @@ import { useOrganizationsInfinite } from '../../queries/organizations.queries';
 /**
  * Matches the Search page's look (search bar + pill row + vertical list of
  * row cards) instead of the 2-column grid — per explicit request to bring
- * Venues/Restaurants/Arts Groups/Favorites in line with Search's style. See
+ * Venues/Restaurants/Art Organizations/Favorites in line with Search's style. See
  * VenuesScreen.tsx for the full rationale (this reverses the grid-cols-2
  * mirroring from the previous pass — the user's later, more specific
  * direction wins).
@@ -28,10 +28,10 @@ export function OrganizationsScreen() {
 
   return (
     <Screen>
-      <DetailScreenHeader title="Arts Groups" />
+      <DetailScreenHeader title="Art Organizations" />
 
       <View style={{ marginBottom: spacing.md }}>
-        <SearchBarPill mode="input" placeholder="Search arts groups" value={query} onChangeText={setQuery} showFilterIcon={false} />
+        <SearchBarPill mode="input" placeholder="Search art organizations" value={query} onChangeText={setQuery} showFilterIcon={false} />
       </View>
       <View style={{ flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.lg }}>
         <Chip label="All" active onPress={() => {}} />
@@ -40,7 +40,7 @@ export function OrganizationsScreen() {
       {isLoading ? (
         <LoadingState />
       ) : isError ? (
-        <ErrorState message="We couldn’t load arts groups." onRetry={() => refetch()} />
+        <ErrorState message="We couldn’t load art organizations." onRetry={() => refetch()} />
       ) : (
         <FlatList
           data={filtered}
@@ -50,7 +50,7 @@ export function OrganizationsScreen() {
           onEndReached={() => hasNextPage && fetchNextPage()}
           onEndReachedThreshold={0.5}
           ListFooterComponent={isFetchingNextPage ? <LoadingState rows={1} /> : null}
-          ListEmptyComponent={<EmptyState title="No arts groups found" message="Check back soon." />}
+          ListEmptyComponent={<EmptyState title="No art organizations found" message="Check back soon." />}
           showsVerticalScrollIndicator={false}
         />
       )}

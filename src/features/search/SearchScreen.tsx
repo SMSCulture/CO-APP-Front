@@ -138,7 +138,7 @@ export function SearchScreen() {
             <SearchDestinations />
           </StaggeredReveal>
           <StaggeredReveal delay={110}>
-            <SectionHeader title="Explore six genres" />
+            <SectionHeader title="Explore Six Genres" />
             <CategoryRectangleGrid onSelect={selectCategory} />
           </StaggeredReveal>
         </View>

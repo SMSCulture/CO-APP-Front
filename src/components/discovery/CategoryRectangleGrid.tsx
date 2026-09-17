@@ -21,7 +21,7 @@ export function CategoryRectangleGrid({ onSelect }: CategoryRectangleGridProps) 
   const { data: genres } = useMainGenres();
 
   return (
-    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.md }}>
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
       {(genres ?? []).map((genre) => (
         <Pressable
           key={genre.id}
@@ -29,8 +29,8 @@ export function CategoryRectangleGrid({ onSelect }: CategoryRectangleGridProps) 
           accessibilityLabel={`Browse ${genre.display}`}
           onPress={() => onSelect(genre.id)}
           style={({ pressed }) => ({
-            width: '47%',
-            height: 90,
+            width: '48%',
+            height: 72,
             borderRadius: radius.md,
             overflow: 'hidden',
             opacity: pressed ? 0.9 : 1,
@@ -44,7 +44,7 @@ export function CategoryRectangleGrid({ onSelect }: CategoryRectangleGridProps) 
           />
           <View style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(22,23,23,0.35)' }} />
           <Text
-            variant="bodyBold"
+            variant="caption"
             color="#ffffff"
             numberOfLines={2}
             style={{ position: 'absolute', left: spacing.sm, bottom: spacing.xs, right: spacing.sm }}

@@ -14,7 +14,7 @@ import type { FavoriteEntityType, FavoriteItem } from '../../types/favorite';
 const TABS: { type: FavoriteEntityType; label: string }[] = [
   { type: 'event', label: 'Events' },
   { type: 'venue', label: 'Venues' },
-  { type: 'arts-group', label: 'Arts Groups' },
+  { type: 'arts-group', label: 'Art Organizations' },
   { type: 'restaurant', label: 'Restaurants' },
 ];
 

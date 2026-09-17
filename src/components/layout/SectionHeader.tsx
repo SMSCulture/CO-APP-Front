@@ -24,7 +24,7 @@ export function SectionHeader({ title, actionLabel, onAction, spacious = false }
         marginBottom: spacing.md,
       }}
     >
-      <Text variant="heading">{title}</Text>
+      <Text variant="subheading" style={{ fontSize: 17, lineHeight: 22 }}>{title}</Text>
       {actionLabel && onAction ? (
         <Pressable accessibilityRole="button" onPress={onAction} hitSlop={8}>
           {/* variant="label" is uppercase by default (Text.tsx) — overridden

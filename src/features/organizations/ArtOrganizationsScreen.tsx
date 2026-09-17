@@ -40,9 +40,9 @@ export function ArtOrganizationsScreen() {
 
   return (
     <Screen>
-      <DetailScreenHeader title="Art organizations" subtitle={city} />
+      <DetailScreenHeader title="Art Organizations" subtitle={city} />
       <View style={{ marginBottom: spacing.md }}>
-        <SearchBarPill mode="input" placeholder="Search venues and arts groups" value={query} onChangeText={setQuery} showFilterIcon={false} />
+        <SearchBarPill mode="input" placeholder="Search art organizations" value={query} onChangeText={setQuery} showFilterIcon={false} />
       </View>
       <View style={{ flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.lg }}>
         <Chip label="All" active={kind === 'all'} onPress={() => setKind('all')} />

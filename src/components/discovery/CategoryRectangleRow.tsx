@@ -131,8 +131,8 @@ export function CategoryRectangleRow({ selected, onSelect, showAll = false, vari
             accessibilityLabel={`Browse ${genre.display}`}
             onPress={() => onSelect(active ? null : genre.id)}
             style={({ pressed }) => ({
-              width: 140,
-              height: 72,
+              width: 116,
+              height: 62,
               borderRadius: radius.md,
               overflow: 'hidden',
               borderWidth: active ? 2 : 0,

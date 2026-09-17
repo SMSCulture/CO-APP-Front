@@ -53,13 +53,8 @@ export function DiscoverTabIcon({ color, size }: IconProps) {
 export function TicketTabIcon({ color, size }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <Path
-        d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1.2a1.8 1.8 0 0 0 0 3.6V14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-1.2a1.8 1.8 0 0 0 0-3.6V8Z"
-        stroke={color}
-        strokeWidth={2}
-        strokeLinejoin="round"
-      />
-      <Path d="M13 6.5v1.5M13 11v2M13 15v1.5" stroke={color} strokeWidth={2} strokeLinecap="round" />
+      <Path d="M3.5 7.5A2.5 2.5 0 0 1 6 5h12a2.5 2.5 0 0 1 2.5 2.5V9a2 2 0 0 0 0 4v1.5A2.5 2.5 0 0 1 18 17H6a2.5 2.5 0 0 1-2.5-2.5V13a2 2 0 0 0 0-4V7.5Z" stroke={color} strokeWidth={2} strokeLinejoin="round" />
+      <Path d="M9 8v8M12 8v8M15 8v8" stroke={color} strokeWidth={1.35} strokeLinecap="round" strokeDasharray="1.5 2" />
     </Svg>
   );
 }

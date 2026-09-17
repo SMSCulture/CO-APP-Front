@@ -24,7 +24,7 @@ export function RestaurantsRow({ city }: { city: string }) {
 
   return (
     <>
-      <SectionHeader title="Restaurants" actionLabel="View all" onAction={() => router.push('/restaurants')} spacious />
+      <SectionHeader title="Restaurants" actionLabel="View All" onAction={() => router.push('/restaurants')} spacious />
       <HorizontalCarousel>
         {restaurants.map((restaurant) => (
           <RestaurantCard key={restaurant.id} restaurant={restaurant} width={CARD_WIDTH} />

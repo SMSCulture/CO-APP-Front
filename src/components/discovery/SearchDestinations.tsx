@@ -7,9 +7,9 @@ import { Text } from '../ui';
 
 const destinations = [
   { label: 'Events', note: 'What’s on now', icon: TicketIcon, go: () => router.push({ pathname: '/(tabs)/search', params: { browse: 'events' } }) },
-  { label: 'Art organizations', note: 'Venues + arts groups', icon: BuildingIcon, go: () => router.push('/organizations') },
+  { label: 'Art Organizations', note: 'Venues + art organizations', icon: BuildingIcon, go: () => router.push('/organizations') },
   { label: 'Restaurants', note: 'Make a night of it', icon: RestaurantIcon, go: () => router.push('/restaurants') },
-  { label: 'Stories', note: 'Culture + industry', icon: NewspaperIcon, go: () => router.push('/news') },
+  { label: 'Stories', note: 'Local culture stories', icon: NewspaperIcon, go: () => router.push('/news') },
   { label: 'Map', note: 'Explore by place', icon: MapIcon, go: () => router.push('/map') },
 ] as const;
 

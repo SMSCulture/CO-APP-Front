@@ -75,7 +75,7 @@ export function HomeScreen() {
           {/* 4. "Events Near You" — mirrors DiscoveryEvents on web. */}
           <SectionHeader
             title="Events Near You"
-            actionLabel="View all"
+            actionLabel="View All"
             onAction={() => router.push('/(tabs)/search')}
             spacious
           />
@@ -94,7 +94,7 @@ export function HomeScreen() {
           <RestaurantsRow city={city} />
 
           {/* 7. Culture News — mirrors CulturalNewsSection on web. */}
-          <SectionHeader title="Culture news" actionLabel="View all" onAction={goToNews} spacious />
+          <SectionHeader title="Culture News" actionLabel="View All" onAction={goToNews} spacious />
           <CultureNewsSection />
 
           {/* 8. Invite Friends / Explore — brand-voice closer at the bottom of Home. */}

@@ -66,7 +66,7 @@ export function AppHeader({ title, subtitle, showLocation = true }: AppHeaderPro
             </View>
           </Pressable>
         ) : null}
-        {title ? <Text variant="title" style={showLocation ? { marginTop: spacing.sm } : undefined}>{title}</Text> : null}
+        {title ? <Text variant="heading" style={showLocation ? { marginTop: spacing.sm, fontSize: 19 } : { fontSize: 19 }}>{title}</Text> : null}
       </View>
       <IconButton accessibilityLabel="Open explore menu" onPress={() => setDrawerOpen(true)} transparent>
         <Text variant="heading">☰</Text>

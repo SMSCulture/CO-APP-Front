@@ -9,7 +9,7 @@ export const DEFAULT_CITY = 'Miami';
 export const DIRECTORY_LINKS = [
   { label: 'Events', route: '/(tabs)/search' },
   { label: 'Venues', route: '/venues' },
-  { label: 'Arts Groups', route: '/organizations' },
+  { label: 'Art Organizations', route: '/organizations' },
   { label: 'Art & Dine', route: '/(tabs)/search' },
   { label: 'Map', route: '/map' },
 ] as const;
