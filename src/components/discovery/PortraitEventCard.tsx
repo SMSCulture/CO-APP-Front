@@ -1,13 +1,12 @@
 import { router } from 'expo-router';
 import { Image } from 'expo-image';
-import { Pressable, View } from 'react-native';
+import { Pressable, useWindowDimensions, View } from 'react-native';
 
 import { spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
 import { formatDateSlot } from '../../lib/formatDate';
 import { formatEventLocation } from '../../lib/formatLocation';
 import { formatEventPrice } from '../../lib/formatPrice';
-import { getPhoneWidth } from '../../lib/screenWidth';
 import { useFavoriteToggle } from '../../queries/favorites.queries';
 import type { EventSummary } from '../../types/event';
 import { MapPinIcon } from '../layout/icons/MenuIcons';
@@ -22,10 +21,6 @@ import { HeartButton } from './HeartButton';
 // equal to HorizontalCarousel's contentContainerStyle gap (spacing.md).
 const SLIDES_PER_VIEW = 2.3;
 const CARD_GAP = spacing.md;
-// getPhoneWidth() (not raw Dimensions.get) — the web preview reports the
-// actual desktop browser width here, which made these cards genuinely huge.
-const screenWidth = getPhoneWidth();
-const CARD_WIDTH = Math.floor((screenWidth - spacing.screenX * 2 - CARD_GAP * (SLIDES_PER_VIEW - 1)) / SLIDES_PER_VIEW);
 
 interface PortraitEventCardProps {
   event: EventSummary;
@@ -42,6 +37,8 @@ interface PortraitEventCardProps {
  */
 export function PortraitEventCard({ event }: PortraitEventCardProps) {
   const theme = useAppTheme();
+  const { width: screenWidth } = useWindowDimensions();
+  const cardWidth = Math.floor((Math.min(screenWidth, 480) - spacing.screenX * 2 - CARD_GAP * (SLIDES_PER_VIEW - 1)) / SLIDES_PER_VIEW);
   const { isFavorite: saved, toggle } = useFavoriteToggle('event', event);
   const venueName = formatEventLocation(event);
   const dateLabel = formatDateSlot(event.nextEventDate, event.startDate);
@@ -54,7 +51,7 @@ export function PortraitEventCard({ event }: PortraitEventCardProps) {
     // <button><button/></button> — invalid HTML, breaks hydration. Fixed by
     // making them siblings here (same visual position via absolute
     // positioning) instead of parent/child.
-    <View style={{ width: CARD_WIDTH }}>
+    <View style={{ width: cardWidth }}>
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={event.title}
@@ -64,7 +61,7 @@ export function PortraitEventCard({ event }: PortraitEventCardProps) {
         <Image
           source={{ uri: event.mainImageUrl ?? undefined }}
           style={{
-            width: CARD_WIDTH,
+            width: cardWidth,
             aspectRatio: 1,
             borderRadius: 10,
             backgroundColor: theme.colors.skeleton,
