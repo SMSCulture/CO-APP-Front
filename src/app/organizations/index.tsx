@@ -1,1 +1,2 @@
-export { OrganizationsScreen as default } from '../../features/organizations/OrganizationsScreen';
+import { ArtOrganizationsScreen } from '../../features/organizations/ArtOrganizationsScreen';
+export default ArtOrganizationsScreen;

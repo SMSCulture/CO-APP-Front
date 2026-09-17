@@ -15,6 +15,7 @@ import { GenreEventRows } from './components/GenreEventRows';
 import { HomeHeader } from './components/HomeHeader';
 import { InviteExploreCard } from './components/InviteExploreCard';
 import { LocationRow } from './components/LocationRow';
+import { LowInventoryDiscovery } from './components/LowInventoryDiscovery';
 import { RestaurantsRow } from './components/RestaurantsRow';
 import { VenuesRow } from './components/VenuesRow';
 
@@ -85,6 +86,8 @@ export function HomeScreen() {
             spacious
           />
           <EventCarousel events={events} />
+
+          <LowInventoryDiscovery city={city} eventCount={events.length} />
 
           {/* 5. One carousel per genre with >= 4 events — mirrors
               GenreEventsSection on web exactly. Self-fetches per real genre

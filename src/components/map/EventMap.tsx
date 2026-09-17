@@ -1,6 +1,5 @@
 import { View } from 'react-native';
 
-import { radius } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
 import type { EventMapPin } from '../../types/map';
 import { Text } from '../ui';
@@ -38,7 +37,7 @@ export function EventMap({ pins, selectedEventId, onSelectPin }: EventMapProps) 
       style={{
         flex: 1,
         backgroundColor: theme.colors.surface,
-        borderRadius: radius.lg,
+        borderRadius: 0,
         overflow: 'hidden',
       }}
     >

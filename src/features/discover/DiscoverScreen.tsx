@@ -8,7 +8,7 @@ import { Screen } from '../../components/ui';
 import { useAppTheme } from '../../design/useAppTheme';
 import { IconMenuRow } from '../profile/components/IconMenuRow';
 
-/** Hub for the browse-by-directory-type screens (Venues, Arts Groups, News) — these previously had no tab-bar entry point, only the side drawer. */
+/** CultureOwl browse hub. Fever's discovery hierarchy, with CultureOwl's own directories. */
 export function DiscoverScreen() {
   const theme = useAppTheme();
   const iconColor = String(theme.colors.text);
@@ -23,7 +23,7 @@ export function DiscoverScreen() {
       <CategoryRectangleRow
         onSelect={(genreId) => {
           if (!genreId) return;
-          router.push({ pathname: '/(tabs)/search', params: { tagIds: genreId } });
+          router.push(`/genres/${genreId}`);
         }}
       />
 
@@ -31,11 +31,10 @@ export function DiscoverScreen() {
       {/* Building icon — same one web uses for Venues/Arts Groups
           (components/layout/user-menu.tsx, discover-menu.tsx), not a
           generic/different icon. */}
-      <IconMenuRow icon={<BuildingIcon color={iconColor} />} label="Venues" onPress={() => router.push('/venues')} />
-      <IconMenuRow icon={<BuildingIcon color={iconColor} />} label="Arts Groups" onPress={() => router.push('/organizations')} />
+      <IconMenuRow icon={<BuildingIcon color={iconColor} />} label="Art organizations" onPress={() => router.push('/organizations')} />
       <IconMenuRow icon={<RestaurantIcon color={iconColor} />} label="Restaurants" onPress={() => router.push('/restaurants')} />
       <IconMenuRow icon={<RestaurantIcon color={iconColor} />} label="Art & Dine" onPress={() => router.push('/art-and-dine')} />
-      <IconMenuRow icon={<NewspaperIcon color={iconColor} />} label="Culture News" onPress={() => router.push('/news')} />
+      <IconMenuRow icon={<NewspaperIcon color={iconColor} />} label="Stories: culture + industry" onPress={() => router.push('/news')} />
       <IconMenuRow icon={<MapIcon color={iconColor} />} label="Map" onPress={() => router.push('/map')} />
     </Screen>
   );
