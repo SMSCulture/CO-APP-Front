@@ -7,10 +7,8 @@ import { useAppTheme } from '../../../design/useAppTheme';
 import { Text } from '../../../components/ui';
 
 /**
- * Brand-voice closer at the bottom of Home, below Culture News — one card,
- * two actions: share the app (native share sheet) or jump into Discover.
- * Not tied to any single genre/city, so it lives outside the events-loaded
- * branch's data — pure static content + navigation/share, no query.
+ * CultureOwl's Home closer: a restrained editorial invitation with two clear
+ * paths. Explore enters Search; Invite opens the native share sheet.
  */
 export function InviteExploreCard() {
   const theme = useAppTheme();
@@ -27,57 +25,51 @@ export function InviteExploreCard() {
     <View
       style={{
         marginTop: spacing.xl * 2,
-        borderRadius: radius.lg,
-        borderWidth: 1,
-        borderColor: theme.colors.border,
-        // Brand red tint (palette.red = #e74e3d) — no ready-made light/dark
-        // red tokens exist yet (only blueLight/blueDark), so tinted via alpha.
-        backgroundColor: theme.scheme === 'dark' ? 'rgba(231, 78, 61, 0.25)' : 'rgba(231, 78, 61, 0.12)',
-        padding: spacing.lg,
-        gap: spacing.xs,
+        borderRadius: radius.xl,
+        overflow: 'hidden',
+        backgroundColor: theme.scheme === 'dark' ? palette.gray900 : palette.blueLight,
       }}
     >
-      <Text variant="heading">More culture, more people</Text>
-      <Text muted style={{ marginBottom: spacing.md }}>
-        Bring your crew, or find what’s happening near you next.
-      </Text>
+      <View style={{ height: 5, backgroundColor: palette.blue }} />
+      <View style={{ padding: spacing.xl, gap: spacing.sm }}>
+        <Text variant="caption" color={palette.blueDark}>YOUR CULTURE STARTS HERE</Text>
+        <Text variant="heading">Find your next culture story</Text>
+        <Text muted style={{ marginBottom: spacing.md }}>
+          Explore what’s happening, then invite someone to come along.
+        </Text>
 
-      <View style={{ flexDirection: 'row', gap: spacing.sm }}>
-        <Pressable
-          accessibilityRole="button"
-          onPress={inviteFriends}
-          style={({ pressed }) => ({
-            flex: 1,
-            borderRadius: radius.full,
-            paddingVertical: spacing.sm + 2,
-            alignItems: 'center',
-            // Darkens on press (palette.redHover, matches web's co-red ->
-            // co-red-hover transition-colors) instead of just dimming
-            // opacity, same feedback style as web's button hover state.
-            backgroundColor: pressed ? palette.redHover : palette.red,
-          })}
-        >
-          <Text variant="bodyBold" color="#ffffff">
-            Invite Friends
-          </Text>
-        </Pressable>
-        <Pressable
-          accessibilityRole="button"
-          onPress={() => router.push('/(tabs)/discover')}
-          style={({ pressed }) => ({
-            flex: 1,
-            borderRadius: radius.full,
-            paddingVertical: spacing.sm + 2,
-            alignItems: 'center',
-            borderWidth: 1,
-            borderColor: theme.colors.border,
-            opacity: pressed ? 0.7 : 1,
-          })}
-        >
-          <Text variant="bodyBold" muted>
-            Explore
-          </Text>
-        </Pressable>
+        <View style={{ flexDirection: 'row', gap: spacing.sm }}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Explore CultureOwl search"
+            onPress={() => router.push('/(tabs)/search')}
+            style={({ pressed }) => ({
+              flex: 1,
+              borderRadius: radius.full,
+              paddingVertical: spacing.md,
+              alignItems: 'center',
+              backgroundColor: pressed ? palette.blueDark : palette.blue,
+            })}
+          >
+            <Text variant="bodyBold" color="#ffffff">Explore</Text>
+          </Pressable>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Invite friends to CultureOwl"
+            onPress={inviteFriends}
+            style={({ pressed }) => ({
+              flex: 1,
+              borderRadius: radius.full,
+              paddingVertical: spacing.md,
+              alignItems: 'center',
+              borderWidth: 1,
+              borderColor: palette.blue,
+              backgroundColor: pressed ? 'rgba(61, 152, 211, 0.10)' : theme.colors.background,
+            })}
+          >
+            <Text variant="bodyBold" color={palette.blueDark}>Invite</Text>
+          </Pressable>
+        </View>
       </View>
     </View>
   );

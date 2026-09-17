@@ -5,11 +5,9 @@ import { FlatList, View } from 'react-native';
 import { CategoryRectangleGrid } from '../../components/discovery/CategoryRectangleGrid';
 import { FilterPanel } from '../../components/discovery/FilterPanel';
 import { FilterPillRow } from '../../components/discovery/FilterPillRow';
-import { MapButton } from '../../components/discovery/MapButton';
 import { PopularSearchesRow } from '../../components/discovery/PopularSearchesRow';
 import { SearchBarPill } from '../../components/discovery/SearchBarPill';
 import { SearchResultRow } from '../../components/discovery/SearchResultRow';
-import { SearchDestinations } from '../../components/discovery/SearchDestinations';
 import { SortModal, type SortOption } from '../../components/discovery/SortModal';
 import { SectionHeader } from '../../components/layout/SectionHeader';
 import { StaggeredReveal } from '../../components/layout/StaggeredReveal';
@@ -147,11 +145,7 @@ export function SearchScreen() {
             <PopularSearchesRow onSelect={selectPopularSearch} />
           </StaggeredReveal>
           <StaggeredReveal delay={55}>
-            <SectionHeader title="Jump into CultureOwl" />
-            <SearchDestinations />
-          </StaggeredReveal>
-          <StaggeredReveal delay={110}>
-            <SectionHeader title="Explore Six Genres" />
+            <SectionHeader title="Categories" />
             <CategoryRectangleGrid onSelect={selectCategory} />
           </StaggeredReveal>
         </View>
@@ -195,7 +189,6 @@ export function SearchScreen() {
         }}
       />
       <SortModal visible={sortModalOpen} onClose={() => setSortModalOpen(false)} value={sort} onChange={setSort} />
-      <MapButton />
     </Screen>
   );
 }
