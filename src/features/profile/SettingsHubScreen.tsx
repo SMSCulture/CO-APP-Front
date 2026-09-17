@@ -7,6 +7,8 @@ import {
   BellIcon,
   CreditCardIcon,
   EditIcon,
+  StarIcon,
+  TicketIcon,
   FileTextIcon,
   LogoutIcon,
   MailIcon,
@@ -38,6 +40,7 @@ export function SettingsHubScreen() {
   const iconColor = String(theme.colors.text);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [emailEnabled, setEmailEnabled] = useState(true);
+  const [weeklyGuideEnabled, setWeeklyGuideEnabled] = useState(true);
 
   return (
     <Screen scroll>
@@ -46,11 +49,21 @@ export function SettingsHubScreen() {
       <SectionHeader title="Profile" />
       <IconMenuRow icon={<EditIcon color={iconColor} />} label="Edit Profile" onPress={() => router.push('/profile/edit')} />
 
+      <SectionHeader title="Discovery" />
+      <IconMenuRow icon={<StarIcon color={iconColor} />} label="Interests" description="Shape your recommendations" onPress={() => router.push('/profile/interests')} />
+      <IconMenuRow icon={<TicketIcon color={iconColor} />} label="Vouchers & credits" description="Available offers and CultureOwl credit" onPress={() => trackEvent('vouchers_placeholder_tap')} />
+
       <SectionHeader title="Communication Preferences" />
       <IconMenuRow
         icon={<BellIcon color={iconColor} />}
         label="Notifications"
         right={<Toggle value={notificationsEnabled} onValueChange={setNotificationsEnabled} />}
+      />
+      <IconMenuRow
+        icon={<MailIcon color={iconColor} />}
+        label="Weekly local guide"
+        description="A short city edit, not another newsletter"
+        right={<Toggle value={weeklyGuideEnabled} onValueChange={setWeeklyGuideEnabled} />}
       />
       <IconMenuRow
         icon={<MailIcon color={iconColor} />}

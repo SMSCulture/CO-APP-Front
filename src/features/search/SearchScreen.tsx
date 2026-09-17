@@ -9,6 +9,7 @@ import { MapButton } from '../../components/discovery/MapButton';
 import { PopularSearchesRow } from '../../components/discovery/PopularSearchesRow';
 import { SearchBarPill } from '../../components/discovery/SearchBarPill';
 import { SearchResultRow } from '../../components/discovery/SearchResultRow';
+import { SearchDestinations } from '../../components/discovery/SearchDestinations';
 import { SortModal, type SortOption } from '../../components/discovery/SortModal';
 import { SectionHeader } from '../../components/layout/SectionHeader';
 import { EmptyState, ErrorState, LoadingState, Screen } from '../../components/ui';
@@ -134,7 +135,11 @@ export function SearchScreen() {
             <PopularSearchesRow onSelect={selectPopularSearch} />
           </View>
           <View>
-            <SectionHeader title="Categories" />
+            <SectionHeader title="Jump into CultureOwl" />
+            <SearchDestinations />
+          </View>
+          <View>
+            <SectionHeader title="Explore six genres" />
             <CategoryRectangleGrid onSelect={selectCategory} />
           </View>
         </View>

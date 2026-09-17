@@ -33,3 +33,44 @@ Full-bleed map canvas; search and active filters float above it; price pins show
 Working now with mock data: navigation, directories, genre portals, sparse-city composition, full-screen map interaction, event detail, checkout structure, ticket wallet shape.
 
 Not connected: native map tiles, current-device location, viewport search, real CultureOwl API environments, payments, ticket issuance/QR verification, wallet passes, push notifications.
+
+## Competitive product notes
+
+### DICE
+DICE wins on trust and repeat behavior: full prices early, fast checkout, personalized music recommendations, artist follows, waitlists and resale controls. CultureOwl should borrow the clarity, not the music-only identity: show the complete ticket price on every card, let people follow artists and art organizations, and use a fair official ticket exchange when inventory exists.
+
+### Bucket Listers
+Bucket Listers sells an occasion, not a database row. Curated city lists, highly visual pop-ups, instant booking, exclusives and social proof answer "what should we do?" CultureOwl should use the same decision shortcut but own the local-arts angle: editor-made nights that pair an event, restaurant and neighborhood story, with proceeds and local impact made visible.
+
+### News products
+Apple News and Flipboard make topic following and editorial packages feel intentional; Ground News makes organization itself the product. CultureOwl's Stories area uses Culture news and Industry lanes now. Next: followable genres, organizations and cities, daily/weekly editions, and story-to-event links.
+
+## Original creative direction and IP line
+
+Use competitor UX patterns that are standard and functional: bottom navigation, search/filter controls, feed rails, map/list handoff and ticket wallet. Do not copy trademarks, brand colors, wording, visual assets, proprietary category names or screen compositions. CultureOwl's owned angle is "local culture as a connected night": editorial context, the organization behind the work, a restaurant pairing, transparent ticket value and visible local impact. The visual system stays light, editorial and CultureOwl blue/orange rather than Fever's dark teal marketplace or DICE's black music identity.
+
+## Backend gap matrix
+
+- Search: GlobalEventsSearch exists, but mobile still client-filters the event feed; needs paginated multi-entity results across events, art organizations, restaurants and stories.
+- Feeds: event feed exists; needs reliable current/future date semantics, city/region fallback, inventory rank, availability, complete pricing and cursor/offset consistency.
+- Genres/curation: genre feed exists; needs curated-page CMS contracts, hero modules, rail ordering, editorial copy and per-city fallbacks.
+- Art organizations: separate venue/arts-group queries exist; needs a union search/feed contract, shared follow state and coordinates for every result.
+- Restaurants: no confirmed live backend query; currently mock-only and needs directory, location, hours, reservation/deep-link and editorial pairing fields.
+- News: public content exists in the front-end shape; needs culture/industry classification, topic follows, city targeting, saved stories and event links.
+- Maps/location: event coordinates are incomplete; needs native map provider, permission state, viewport-bounded search, clustering, map pagination and nearby-city radius.
+- Ticketing: no consumer commerce API. Needs inventory, ticket types, date/time sessions, price/fee quote, holds, order/payment state, issuance, QR rotation/validation, transfers/refunds, waitlist/exchange, receipts and wallet passes.
+- Identity/profile: OTP/me exists; needs persisted interests, follows, notification preferences, city history, account deletion, email change and data export.
+- Favorites: backend operations exist but must cover events, art organizations, restaurants, stories and collections consistently.
+- Promotions: vouchers/credits, eligibility and redemption are not documented.
+- Notifications: SSE exists for in-app; native push registration, preference topics and delivery receipts are not.
+- Trust/operations: needs moderation, content provenance, accessibility metadata, analytics/consent, deep links, abuse/rate controls, observability and admin publishing workflows.
+
+## Bigger plays
+
+1. CultureOwl Night Out: one bookable package combining a local event, restaurant perk and short neighborhood guide.
+2. Culture Pass: simple monthly credit with one clear tier, member previews and rollover, avoiding confusing membership ladders.
+3. Follow the scene: follow creators, organizations, genres and cities; new-date alerts create retention before a city has dense inventory.
+4. Local impact receipt: after purchase, show how much supported the presenter/artist and prompt a follow, donation or membership.
+5. Fair last-minute marketplace: verified returns and waitlists, no speculative resale.
+6. Cultural concierge collections: date night, under $30, family Saturday, accessible venues, first-time opera, neighborhood walks.
+7. City launch mode: editorial guides, organization profiles, sign-up demand and nearby inventory let CultureOwl open before the calendar is full.
