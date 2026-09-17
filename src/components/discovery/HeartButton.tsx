@@ -1,3 +1,4 @@
+import type { GestureResponderEvent } from 'react-native';
 import { Pressable } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
@@ -15,7 +16,7 @@ import { palette } from '../../design/tokens';
  * components/layout/icons/MenuIcons.tsx) — the earlier hand-approximated
  * path didn't match.
  */
-export function HeartButton({ saved, onPress, size = 24 }: { saved: boolean; onPress: () => void; size?: number }) {
+export function HeartButton({ saved, onPress, size = 24 }: { saved: boolean; onPress: (event: GestureResponderEvent) => void; size?: number }) {
   return (
     <Pressable
       accessibilityRole="button"

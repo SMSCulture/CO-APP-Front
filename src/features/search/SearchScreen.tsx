@@ -1,6 +1,6 @@
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, Pressable, View } from 'react-native';
 
 import { CategoryRectangleGrid } from '../../components/discovery/CategoryRectangleGrid';
 import { FilterPanel } from '../../components/discovery/FilterPanel';
@@ -10,6 +10,8 @@ import { SearchBarPill } from '../../components/discovery/SearchBarPill';
 import { SearchResultRow } from '../../components/discovery/SearchResultRow';
 import { SortModal, type SortOption } from '../../components/discovery/SortModal';
 import { SectionHeader } from '../../components/layout/SectionHeader';
+import { ChevronLeftIcon } from '../../components/layout/icons/MenuIcons';
+import { useAppTheme } from '../../design/useAppTheme';
 import { StaggeredReveal } from '../../components/layout/StaggeredReveal';
 import { EmptyState, ErrorState, LoadingState, Screen, Text } from '../../components/ui';
 import { spacing } from '../../design/tokens';
@@ -31,10 +33,7 @@ function sortEvents(events: EventSummary[], sort: SortOption): EventSummary[] {
   switch (sort) {
     case 'PRICE_ASC':
       return sorted.sort((a, b) => parsePrice(a) - parsePrice(b));
-    case 'DISTANCE':
-      return sorted.sort((a, b) => (a.distanceMiles ?? Number.MAX_SAFE_INTEGER) - (b.distanceMiles ?? Number.MAX_SAFE_INTEGER));
     case 'POPULARITY':
-    case 'RATING':
       return sorted;
     case 'DATE':
     default:
@@ -49,6 +48,7 @@ function sortEvents(events: EventSummary[], sort: SortOption): EventSummary[] {
  */
 
 export function SearchScreen() {
+  const theme = useAppTheme();
   const params = useLocalSearchParams<SearchRouteParams>();
   const initialFilters: EventFiltersState = {
     dateFilter: (params.dateFilter as DateFilterType) ?? DEFAULT_EVENT_FILTERS.dateFilter,
@@ -117,16 +117,23 @@ export function SearchScreen() {
   return (
     <Screen>
       <View style={{ gap: spacing.md, marginBottom: spacing.lg, marginTop: spacing.lg }}>
-        <SearchBarPill
-          mode={inputActive ? 'input' : 'link'}
-          placeholder="Discover cities, events, venues…"
-          value={term}
-          onChangeText={changeTerm}
-          onPress={activateSearch}
-          autoFocus={inputActive}
-          onClear={clearSearch}
-          showFilterIcon={false}
-        />
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
+          <Pressable accessibilityRole="button" accessibilityLabel="Go back" hitSlop={10} onPress={() => router.back()}>
+            <ChevronLeftIcon color={String(theme.colors.text)} size={24} />
+          </Pressable>
+          <View style={{ flex: 1 }}>
+            <SearchBarPill
+              mode={inputActive ? 'input' : 'link'}
+              placeholder="Discover events, venues, restaurants…"
+              value={term}
+              onChangeText={changeTerm}
+              onPress={activateSearch}
+              autoFocus={inputActive}
+              onClear={clearSearch}
+              showFilterIcon={false}
+            />
+          </View>
+        </View>
         <FilterPillRow
           dateActive={filters.dateFilter !== ''}
           categoryActive={filters.tagIds.length > 0}
@@ -158,7 +165,7 @@ export function SearchScreen() {
           data={results}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => <SearchResultRow event={item} />}
-          contentContainerStyle={{ gap: spacing.xl, paddingBottom: 120 }}
+          contentContainerStyle={{ gap: spacing.lg, paddingBottom: 120 }}
           showsVerticalScrollIndicator={false}
           ListHeaderComponent={
             debouncedTerm ? (

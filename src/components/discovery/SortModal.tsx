@@ -5,14 +5,12 @@ import { radius, spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
 import { Button, Text } from '../ui';
 
-export type SortOption = 'POPULARITY' | 'PRICE_ASC' | 'RATING' | 'DATE' | 'DISTANCE';
+export type SortOption = 'POPULARITY' | 'PRICE_ASC' | 'DATE';
 
 const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: 'POPULARITY', label: 'Popularity' },
   { value: 'PRICE_ASC', label: 'Price (Low to High)' },
-  { value: 'RATING', label: 'Rating (From 5 to 0)' },
   { value: 'DATE', label: 'Next Date' },
-  { value: 'DISTANCE', label: 'Distance' },
 ];
 
 interface SortModalProps {
