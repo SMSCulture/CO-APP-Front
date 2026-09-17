@@ -20,19 +20,12 @@ import { RestaurantsRow } from './components/RestaurantsRow';
 import { VenuesRow } from './components/VenuesRow';
 
 /**
- * Row order — intentionally NOT a mirror of web's bottom-of-page category
- * placement (that was the original layout here). Per explicit mobile-only
- * reorder request:
- *   1. HomeHeader — search bar + hamburger only
- *   2. Location row — moved down out of the header
- *   3. Categories — moved up from the bottom
- *   4. "Events Near You" — horizontal carousel
- *   5. One horizontal carousel per genre (>= 4 events)
- *   6. Venues row, Restaurants row — new, above Culture News
- *   7. Culture News — horizontal carousel
- * (Banner ads and Suggested Cities from web are skipped — no ad system on
- * mobile, and city switching already has its own dedicated UI here.)
+ * CultureOwl Home is city-scoped and editorial: location, six genres, local
+ * events, low-inventory discovery, genre rails, directories and Stories.
+ * It preserves the existing front-end content contracts while adding an
+ * honest useful state for markets whose event calendars are still growing.
  */
+
 export function HomeScreen() {
   const { selectedCity } = useLocationStore();
   const city = selectedCity?.city ?? DEFAULT_CITY;
@@ -76,8 +69,9 @@ export function HomeScreen() {
         <LoadingState />
       ) : isError ? (
         <ErrorState message="We couldn’t load events." onRetry={() => refetch()} />
-      ) : events.length === 0 ? null : (
+      ) : (
         <>
+          {events.length > 0 ? <>
           {/* 4. "Events Near You" — mirrors DiscoveryEvents on web. */}
           <SectionHeader
             title="Events Near You"
@@ -86,6 +80,7 @@ export function HomeScreen() {
             spacious
           />
           <EventCarousel events={events} />
+          </> : null}
 
           <LowInventoryDiscovery city={city} eventCount={events.length} />
 

@@ -44,13 +44,11 @@ function sortEvents(events: EventSummary[], sort: SortOption): EventSummary[] {
 }
 
 /**
- * Matches the reference exactly: bare full-width search bar (no docked
- * filter icon — Date/Category/Sort are separate pills below), Popular
- * Searches + Categories shown by default, replaced by results only once
- * the user actually searches or taps a filter/category/popular term. The
- * search bar itself starts as a tap-to-activate bar (mode="link") on this
- * screen too — becomes a real editable input only after it's tapped.
+ * CultureOwl search follows a familiar discovery rhythm: browse first, then
+ * search/filter/sort results. Its jump destinations and six genres are our
+ * own information architecture, and results stay virtualized with FlatList.
  */
+
 export function SearchScreen() {
   const params = useLocalSearchParams<SearchRouteParams>();
   const initialFilters: EventFiltersState = {
