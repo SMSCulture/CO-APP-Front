@@ -4,23 +4,23 @@ import { spacing } from '../../design/tokens';
 import { Chip } from '../ui';
 
 /**
- * One inventory-backed niche per CultureOwl genre. Keep the submitted query
- * literal in sync with event inventory so browse never opens a dead end.
+ * Recognizable searches spanning CultureOwl's genres. The visible wording is
+ * broad and familiar; each submitted query is present in current inventory.
  */
 const POPULAR_SEARCHES = [
-  { label: 'Gallery Walks', query: 'Gallery' },
+  { label: 'Museums', query: 'Museum' },
   { label: 'Ballet', query: 'Ballet' },
-  { label: 'Jazz Nights', query: 'Jazz' },
-  { label: 'Pottery Classes', query: 'Pottery' },
-  { label: 'Arts Festivals', query: 'Festival' },
-  { label: 'Family Discovery', query: 'Family' },
+  { label: 'Live Music', query: 'Jazz' },
+  { label: 'Classes', query: 'Class' },
+  { label: 'Festivals', query: 'Festival' },
+  { label: 'Family Events', query: 'Family' },
 ] as const;
 
 interface PopularSearchesRowProps {
   onSelect: (term: string) => void;
 }
 
-/** Curated CultureOwl niche chips, each grounded in current event inventory. */
+/** Curated CultureOwl chips with an inventory-backed query behind each one. */
 export function PopularSearchesRow({ onSelect }: PopularSearchesRowProps) {
   return (
     <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
