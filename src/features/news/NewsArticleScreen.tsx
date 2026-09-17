@@ -1,73 +1,92 @@
 import { router } from 'expo-router';
 import { Image } from 'expo-image';
-import { ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ChevronLeftIcon } from '../../components/layout/icons/MenuIcons';
 import { ErrorState, IconButton, LoadingState, Screen, Text } from '../../components/ui';
-import { spacing } from '../../design/tokens';
+import { radius, spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
-import { useNewsArticle } from '../../queries/news.queries';
+import { useNews, useNewsArticle } from '../../queries/news.queries';
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 }
 
-/**
- * Mirrors app/news/[slug]/page.tsx + news-article-content.tsx on web.
- * Body is rendered as plain text (HTML tags stripped) — no HTML-render
- * library (react-native-render-html or similar) is installed yet; adding
- * one is a real dependency decision, not made here. Swap this for real
- * rich-text rendering once that's decided.
- */
+function bodyParagraphs(html: string) {
+  const withBreaks = html.replace(/<\/(p|h[1-6]|li)>/gi, '\n\n').replace(/<br\s*\/?>/gi, '\n');
+  const decoded = withBreaks
+    .replace(/<[^>]*>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&apos;/g, "'");
+  return decoded.split(/\n\s*\n/).map((part) => part.replace(/\s+/g, ' ').trim()).filter(Boolean);
+}
+
+/** A focused editorial reading room with a single article and quiet onward reading. */
 export function NewsArticleScreen({ slug }: { slug: string }) {
   const theme = useAppTheme();
   const insets = useSafeAreaInsets();
   const { data: article, isLoading, isError, refetch } = useNewsArticle(slug);
+  const { data: articles } = useNews();
 
-  if (isLoading) {
-    return (
-      <Screen>
-        <LoadingState rows={1} />
-      </Screen>
-    );
-  }
-  if (isError || !article) {
-    return (
-      <Screen>
-        <ErrorState message="We couldn’t load this article." onRetry={() => refetch()} />
-      </Screen>
-    );
-  }
+  if (isLoading) return <Screen><LoadingState rows={1} /></Screen>;
+  if (isError || !article) return <Screen><ErrorState message="We couldn’t load this article." onRetry={() => refetch()} /></Screen>;
 
-  const plainBody = article.body.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  const related = (articles ?? []).filter((item) => item.slug !== slug).slice(0, 2);
+  const paragraphs = bodyParagraphs(article.body);
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
-        <Image
-          source={{ uri: article.heroImageUrl ?? undefined }}
-          style={{ width: '100%', aspectRatio: 1200 / 628, backgroundColor: theme.colors.skeleton }}
-          contentFit="cover"
-          accessibilityLabel={article.heroImageAlt ?? article.title}
-        />
-        <View style={{ paddingHorizontal: spacing.screenX, gap: spacing.md, marginTop: spacing.lg }}>
-          {article.category ? (
-            <Text variant="label" color={theme.colors.primary}>
-              {article.category.toUpperCase()}
-            </Text>
+        <View style={{ paddingHorizontal: spacing.screenX, paddingTop: insets.top + 64, gap: spacing.md }}>
+          <View style={{ borderTopWidth: 1, borderBottomWidth: 1, borderColor: theme.colors.text, paddingVertical: spacing.sm }}>
+            <Text variant="label" style={{ textAlign: 'center', letterSpacing: 1.8 }}>THE CULTUREOWL JOURNAL</Text>
+          </View>
+          {article.category ? <Text variant="label" color={theme.colors.primary}>{article.category}</Text> : null}
+          <Text style={{ fontFamily: 'Georgia', fontSize: 34, lineHeight: 39, fontWeight: '700' }}>{article.title}</Text>
+          {article.excerpt ? <Text muted style={{ fontFamily: 'Georgia', fontSize: 18, lineHeight: 26 }}>{article.excerpt}</Text> : null}
+          <View style={{ borderBottomWidth: 1, borderBottomColor: theme.colors.border, paddingBottom: spacing.md }}>
+            <Text variant="caption">By {article.authorName}</Text>
+            <Text variant="caption" muted>{formatDate(article.publishedAt)}</Text>
+          </View>
+          <Image
+            source={{ uri: article.heroImageUrl ?? undefined }}
+            style={{ width: '100%', aspectRatio: 1200 / 628, borderRadius: radius.xl, backgroundColor: theme.colors.skeleton }}
+            contentFit="cover"
+            accessibilityLabel={article.heroImageAlt ?? article.title}
+          />
+          {article.heroImageAlt ? <Text variant="caption" muted>{article.heroImageAlt}</Text> : null}
+
+          <View style={{ gap: spacing.lg, paddingTop: spacing.sm }}>
+            {paragraphs.map((paragraph, index) => (
+              <Text key={`${index}-${paragraph.slice(0, 20)}`} style={{ fontFamily: 'Georgia', fontSize: 18, lineHeight: 30 }}>
+                {paragraph}
+              </Text>
+            ))}
+          </View>
+
+          {related.length ? (
+            <View style={{ borderTopWidth: 1, borderTopColor: theme.colors.text, marginTop: spacing.xl, paddingTop: spacing.lg, gap: spacing.lg }}>
+              <Text variant="heading" style={{ fontFamily: 'Georgia' }}>Keep Exploring</Text>
+              {related.map((item) => (
+                <Pressable key={item.id} onPress={() => router.push(`/news/${item.slug}`)} style={({ pressed }) => ({ flexDirection: 'row', gap: spacing.md, opacity: pressed ? 0.82 : 1 })}>
+                  <View style={{ flex: 1, gap: 4 }}>
+                    <Text variant="label" color={theme.colors.primary}>{item.category ?? 'CULTURE'}</Text>
+                    <Text numberOfLines={3} style={{ fontFamily: 'Georgia', fontSize: 18, lineHeight: 22, fontWeight: '700' }}>{item.title}</Text>
+                  </View>
+                  <Image source={{ uri: item.heroImageUrl ?? undefined }} contentFit="cover" style={{ width: 108, aspectRatio: 1200 / 628, borderRadius: radius.lg, backgroundColor: theme.colors.skeleton }} />
+                </Pressable>
+              ))}
+            </View>
           ) : null}
-          <Text variant="title">{article.title}</Text>
-          <Text variant="caption" muted>
-            {article.authorName} · {formatDate(article.publishedAt)}
-          </Text>
-          <Text style={{ lineHeight: 24 }}>{plainBody}</Text>
         </View>
       </ScrollView>
 
       <View style={{ position: 'absolute', top: insets.top + spacing.sm, left: spacing.lg }}>
         <IconButton accessibilityLabel="Go back" onPress={() => router.back()}>
-          <ChevronLeftIcon color="#ffffff" size={20} />
+          <ChevronLeftIcon color={String(theme.colors.text)} size={20} />
         </IconButton>
       </View>
     </View>
