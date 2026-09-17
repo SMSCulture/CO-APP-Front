@@ -9,11 +9,11 @@ interface EventMapMarkerProps {
   pin: EventMapPin;
   selected: boolean;
   onPress: () => void;
-  /** Percentage position within the placeholder map canvas. */
+  /** Percentage position within the city surface. */
   position: { leftPct: number; topPct: number };
 }
 
-/** Price-pill marker (FeverUp-style pattern, CultureOwl visual language). */
+/** Compact CultureOwl price marker. */
 export function EventMapMarker({ pin, selected, onPress, position }: EventMapMarkerProps) {
   const theme = useAppTheme();
   return (
