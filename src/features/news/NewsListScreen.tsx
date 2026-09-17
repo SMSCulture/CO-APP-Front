@@ -4,7 +4,7 @@ import { FlatList, Pressable, View } from 'react-native';
 
 import { DetailScreenHeader } from '../../components/layout/DetailScreenHeader';
 import { EmptyState, ErrorState, LoadingState, Screen, Text } from '../../components/ui';
-import { radius, spacing } from '../../design/tokens';
+import { fontFamily, radius, spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
 import { useNews } from '../../queries/news.queries';
 import type { NewsArticle } from '../../types/news';
@@ -19,7 +19,7 @@ function StoryRow({ article, staffPick = false }: { article: NewsArticle; staffP
     <Pressable accessibilityRole="button" onPress={() => router.push(`/news/${article.slug}`)} style={({ pressed }) => ({ flexDirection: 'row', gap: spacing.md, opacity: pressed ? 0.82 : 1 })}>
       <View style={{ flex: 1, gap: 5 }}>
         <Text variant="label" color={theme.colors.primary}>{staffPick ? `STAFF PICK · ${article.category ?? 'CULTURE'}` : article.category ?? 'CULTURE'}</Text>
-        <Text numberOfLines={3} style={{ fontFamily: 'Georgia', fontSize: 19, lineHeight: 23, fontWeight: '700' }}>{article.title}</Text>
+        <Text numberOfLines={3} style={{ fontFamily: fontFamily.bold, fontSize: 19, lineHeight: 23, fontWeight: '700' }}>{article.title}</Text>
         {article.excerpt ? <Text variant="caption" muted numberOfLines={2}>{article.excerpt}</Text> : null}
         <Text variant="caption" muted>{article.authorName} · {formatDate(article.publishedAt)}</Text>
       </View>
@@ -55,11 +55,11 @@ export function NewsListScreen() {
               <Pressable accessibilityRole="button" onPress={() => router.push(`/news/${lead.slug}`)} style={({ pressed }) => ({ gap: spacing.md, opacity: pressed ? 0.86 : 1 })}>
                 <Image source={{ uri: lead.heroImageUrl ?? undefined }} contentFit="cover" style={{ width: '100%', aspectRatio: 1200 / 628, borderRadius: radius.xl, backgroundColor: theme.colors.skeleton }} />
                 <Text variant="label" color={theme.colors.primary}>FEATURED · {lead.category ?? 'CULTURE'}</Text>
-                <Text style={{ fontFamily: 'Georgia', fontSize: 28, lineHeight: 33, fontWeight: '700' }}>{lead.title}</Text>
+                <Text style={{ fontFamily: fontFamily.bold, fontSize: 28, lineHeight: 33, fontWeight: '700' }}>{lead.title}</Text>
                 {lead.excerpt ? <Text muted style={{ fontSize: 16, lineHeight: 23 }}>{lead.excerpt}</Text> : null}
                 <Text variant="caption" muted>By {lead.authorName} · {formatDate(lead.publishedAt)}</Text>
               </Pressable>
-              {rest.length ? <Text variant="heading" style={{ fontFamily: 'Georgia' }}>Staff Picks</Text> : null}
+              {rest.length ? <Text variant="heading" style={{ fontFamily: fontFamily.bold }}>Staff Picks</Text> : null}
             </View>
           }
         />

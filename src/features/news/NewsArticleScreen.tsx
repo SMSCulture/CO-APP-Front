@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ChevronLeftIcon } from '../../components/layout/icons/MenuIcons';
 import { ErrorState, IconButton, LoadingState, Screen, Text } from '../../components/ui';
-import { radius, spacing } from '../../design/tokens';
+import { fontFamily, radius, spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
 import { useNews, useNewsArticle } from '../../queries/news.queries';
 
@@ -45,8 +45,8 @@ export function NewsArticleScreen({ slug }: { slug: string }) {
             <Text variant="label" style={{ textAlign: 'center', letterSpacing: 1.8 }}>THE CULTUREOWL JOURNAL</Text>
           </View>
           {article.category ? <Text variant="label" color={theme.colors.primary}>{article.category}</Text> : null}
-          <Text style={{ fontFamily: 'Georgia', fontSize: 34, lineHeight: 39, fontWeight: '700' }}>{article.title}</Text>
-          {article.excerpt ? <Text muted style={{ fontFamily: 'Georgia', fontSize: 18, lineHeight: 26 }}>{article.excerpt}</Text> : null}
+          <Text style={{ fontFamily: fontFamily.bold, fontSize: 34, lineHeight: 39, fontWeight: '700' }}>{article.title}</Text>
+          {article.excerpt ? <Text muted style={{ fontFamily: fontFamily.regular, fontSize: 18, lineHeight: 27 }}>{article.excerpt}</Text> : null}
           <View style={{ borderBottomWidth: 1, borderBottomColor: theme.colors.border, paddingBottom: spacing.md }}>
             <Text variant="caption">By {article.authorName}</Text>
             <Text variant="caption" muted>{formatDate(article.publishedAt)}</Text>
@@ -61,7 +61,7 @@ export function NewsArticleScreen({ slug }: { slug: string }) {
 
           <View style={{ gap: spacing.lg, paddingTop: spacing.sm }}>
             {paragraphs.map((paragraph, index) => (
-              <Text key={`${index}-${paragraph.slice(0, 20)}`} style={{ fontFamily: 'Georgia', fontSize: 18, lineHeight: 30 }}>
+              <Text key={`${index}-${paragraph.slice(0, 20)}`} style={{ fontFamily: fontFamily.regular, fontSize: 17, lineHeight: 28 }}>
                 {paragraph}
               </Text>
             ))}
@@ -69,12 +69,12 @@ export function NewsArticleScreen({ slug }: { slug: string }) {
 
           {related.length ? (
             <View style={{ borderTopWidth: 1, borderTopColor: theme.colors.text, marginTop: spacing.xl, paddingTop: spacing.lg, gap: spacing.lg }}>
-              <Text variant="heading" style={{ fontFamily: 'Georgia' }}>Keep Exploring</Text>
+              <Text variant="heading" style={{ fontFamily: fontFamily.bold }}>Keep Exploring</Text>
               {related.map((item) => (
                 <Pressable key={item.id} onPress={() => router.push(`/news/${item.slug}`)} style={({ pressed }) => ({ flexDirection: 'row', gap: spacing.md, opacity: pressed ? 0.82 : 1 })}>
                   <View style={{ flex: 1, gap: 4 }}>
                     <Text variant="label" color={theme.colors.primary}>{item.category ?? 'CULTURE'}</Text>
-                    <Text numberOfLines={3} style={{ fontFamily: 'Georgia', fontSize: 18, lineHeight: 22, fontWeight: '700' }}>{item.title}</Text>
+                    <Text numberOfLines={3} style={{ fontFamily: fontFamily.bold, fontSize: 18, lineHeight: 22, fontWeight: '700' }}>{item.title}</Text>
                   </View>
                   <Image source={{ uri: item.heroImageUrl ?? undefined }} contentFit="cover" style={{ width: 108, aspectRatio: 1200 / 628, borderRadius: radius.lg, backgroundColor: theme.colors.skeleton }} />
                 </Pressable>
