@@ -33,10 +33,11 @@ function sortEvents(events: EventSummary[], sort: SortOption): EventSummary[] {
   switch (sort) {
     case 'PRICE_ASC':
       return sorted.sort((a, b) => parsePrice(a) - parsePrice(b));
-    case 'PRICE_DESC':
-      return sorted.sort((a, b) => parsePrice(b) - parsePrice(a));
-    case 'FREE_FIRST':
-      return sorted.sort((a, b) => Number(b.free) - Number(a.free));
+    case 'DISTANCE':
+      return sorted.sort((a, b) => (a.distanceMiles ?? Number.MAX_SAFE_INTEGER) - (b.distanceMiles ?? Number.MAX_SAFE_INTEGER));
+    case 'POPULARITY':
+    case 'RATING':
+      return sorted;
     case 'DATE':
     default:
       return sorted.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
@@ -61,7 +62,7 @@ export function SearchScreen() {
 
   const [term, setTerm] = useState('');
   const [filters, setFilters] = useState<EventFiltersState>(initialFilters);
-  const [sort, setSort] = useState<SortOption>('DATE');
+  const [sort, setSort] = useState<SortOption>('POPULARITY');
   // Already-active filters from Home's popup (or a Discover category tap)
   // mean the user has effectively already searched — go straight to results.
   const [hasInteracted, setHasInteracted] = useState(hasActiveFilters(initialFilters));
@@ -132,7 +133,7 @@ export function SearchScreen() {
           dateActive={filters.dateFilter !== ''}
           categoryActive={filters.tagIds.length > 0}
           categoryLabel={categoryLabel}
-          sortActive={sort !== 'DATE'}
+          sortActive={sort !== 'POPULARITY'}
           onDatePress={() => setOpenFilterSection('date')}
           onCategoryPress={() => setOpenFilterSection('category')}
           onSortPress={() => setSortModalOpen(true)}
