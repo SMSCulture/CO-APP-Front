@@ -13,7 +13,7 @@ import { SearchDestinations } from '../../components/discovery/SearchDestination
 import { SortModal, type SortOption } from '../../components/discovery/SortModal';
 import { SectionHeader } from '../../components/layout/SectionHeader';
 import { StaggeredReveal } from '../../components/layout/StaggeredReveal';
-import { EmptyState, ErrorState, LoadingState, Screen } from '../../components/ui';
+import { EmptyState, ErrorState, LoadingState, Screen, Text } from '../../components/ui';
 import { spacing } from '../../design/tokens';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useMainGenres } from '../../queries/genres.queries';
@@ -89,8 +89,18 @@ export function SearchScreen() {
   const results = useMemo(() => sortEvents(data ?? [], sort), [data, sort]);
 
   const activateSearch = () => {
+    // Enter typing mode but keep the browse page in place until there is a term.
     setInputActive(true);
-    setHasInteracted(true);
+  };
+
+  const changeTerm = (next: string) => {
+    setTerm(next);
+    setHasInteracted(next.trim().length > 0 || hasActiveFilters(filters));
+  };
+
+  const clearSearch = () => {
+    setTerm('');
+    setHasInteracted(hasActiveFilters(filters));
   };
 
   const selectPopularSearch = (popularTerm: string) => {
@@ -112,8 +122,10 @@ export function SearchScreen() {
           mode={inputActive ? 'input' : 'link'}
           placeholder="Discover cities, events, venues…"
           value={term}
-          onChangeText={setTerm}
+          onChangeText={changeTerm}
           onPress={activateSearch}
+          autoFocus={inputActive}
+          onClear={clearSearch}
           showFilterIcon={false}
         />
         <FilterPillRow
@@ -153,6 +165,15 @@ export function SearchScreen() {
           renderItem={({ item }) => <SearchResultRow event={item} />}
           contentContainerStyle={{ gap: spacing.xl, paddingBottom: 120 }}
           showsVerticalScrollIndicator={false}
+          ListHeaderComponent={
+            debouncedTerm ? (
+              <View style={{ gap: spacing.md, paddingBottom: spacing.lg }}>
+                <Text variant="subheading">Suggestions</Text>
+                <Text variant="bodyBold">{debouncedTerm}</Text>
+                <Text variant="subheading" style={{ paddingTop: spacing.sm }}>Experiences</Text>
+              </View>
+            ) : null
+          }
           ListEmptyComponent={
             <EmptyState
               title="No results"

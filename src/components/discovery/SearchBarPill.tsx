@@ -43,6 +43,8 @@ interface SearchBarPillProps {
   hasActiveFilters?: boolean;
   /** Search screen now has separate Date/Category/Sort pills below instead — omit the docked icon there. */
   showFilterIcon?: boolean;
+  autoFocus?: boolean;
+  onClear?: () => void;
 }
 
 export function SearchBarPill({
@@ -54,6 +56,8 @@ export function SearchBarPill({
   onFilterPress,
   hasActiveFilters = false,
   showFilterIcon = true,
+  autoFocus = false,
+  onClear,
 }: SearchBarPillProps) {
   const theme = useAppTheme();
 
@@ -83,6 +87,7 @@ export function SearchBarPill({
           autoCorrect={false}
           returnKeyType="search"
           accessibilityLabel="Search events"
+          autoFocus={autoFocus}
           style={{ flex: 1, color: theme.colors.text, fontSize: 16, fontFamily: fontFamily.regular }}
         />
       ) : (
@@ -90,6 +95,12 @@ export function SearchBarPill({
           {placeholder}
         </Text>
       )}
+
+      {mode === 'input' && value ? (
+        <Pressable accessibilityRole="button" accessibilityLabel="Clear search" onPress={onClear} hitSlop={8} style={{ paddingHorizontal: spacing.sm }}>
+          <Text muted style={{ fontSize: 20 }}>×</Text>
+        </Pressable>
+      ) : null}
 
       {showFilterIcon ? (
         <>
