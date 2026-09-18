@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { HorizontalCarousel } from '../../components/layout/HorizontalCarousel';
 import { NewsCard } from '../../components/news/NewsCard';
 import { EmptyState, ErrorState, LoadingState, Screen, Text } from '../../components/ui';
-import { fontFamily, spacing } from '../../design/tokens';
+import { fontFamily, radius, spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
 import { useNews } from '../../queries/news.queries';
 import type { NewsArticle } from '../../types/news';
@@ -146,6 +146,98 @@ function HeroSwitcher({ articles }: { articles: NewsArticle[] }) {
   );
 }
 
+function RefreshedArticlesGrid({ articles }: { articles: NewsArticle[] }) {
+  const theme = useAppTheme();
+  const { width } = useWindowDimensions();
+  const gap = spacing.sm;
+  const tileSize = (width - spacing.screenX * 2 - gap) / 2;
+  const refreshed = articles.slice(0, 4);
+
+  if (!refreshed.length) return null;
+
+  return (
+    <View style={{ paddingHorizontal: spacing.screenX, gap: spacing.md }}>
+      <View style={{ gap: 3 }}>
+        <Text variant="label" color={theme.colors.primary}>
+          FRESH THIS WEEK
+        </Text>
+        <Text variant="heading">Top articles to read</Text>
+      </View>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap }}>
+        {refreshed.map((article) => (
+          <Pressable
+            key={`refreshed-${article.id}`}
+            accessibilityRole="button"
+            accessibilityLabel={article.title}
+            onPress={() => router.push(`/news/${article.slug}`)}
+            style={({ pressed }) => ({
+              width: tileSize,
+              height: tileSize,
+              borderRadius: radius.lg,
+              overflow: 'hidden',
+              opacity: pressed ? 0.9 : 1,
+              backgroundColor: theme.colors.skeleton,
+            })}
+          >
+            <Image
+              source={{ uri: article.heroImageUrl ?? undefined }}
+              contentFit="cover"
+              transition={200}
+              accessibilityLabel={article.heroImageAlt ?? article.title}
+              style={{ position: 'absolute', inset: 0 }}
+            />
+            <View
+              style={{
+                position: 'absolute',
+                inset: 0,
+                backgroundColor: 'rgba(3,8,13,.22)',
+              }}
+            />
+            <View
+              style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: 0,
+                height: '78%',
+                backgroundColor: 'rgba(5,11,18,.68)',
+              }}
+            />
+            <View
+              style={{
+                position: 'absolute',
+                left: spacing.md,
+                right: spacing.md,
+                bottom: spacing.md,
+                gap: 5,
+              }}
+            >
+              <Text variant="caption" color="rgba(255,255,255,.78)" numberOfLines={1}>
+                {(article.category ?? 'Culture').toUpperCase()}
+              </Text>
+              <Text
+                color="#fff"
+                numberOfLines={3}
+                style={{
+                  fontFamily: fontFamily.bold,
+                  fontSize: 17,
+                  lineHeight: 20,
+                  fontWeight: '700',
+                }}
+              >
+                {article.title}
+              </Text>
+              <Text variant="caption" color="rgba(255,255,255,.72)" numberOfLines={1}>
+                {article.authorName} · {formatDate(article.publishedAt)}
+              </Text>
+            </View>
+          </Pressable>
+        ))}
+      </View>
+    </View>
+  );
+}
+
 function ArticleRail({ title, articles }: { title: string; articles: NewsArticle[] }) {
   if (!articles.length) return null;
   return (
@@ -202,8 +294,13 @@ export function NewsListScreen() {
         >
           <HeroSwitcher articles={featured} />
 
-          {rest.length ? <ArticleRail title="Latest Culture News" articles={rest} /> : null}
-          {groups.map(({ category, articles: groupArticles }) => (
+          {groups[0] ? (
+            <ArticleRail title={groups[0].category} articles={groups[0].articles} />
+          ) : null}
+
+          <RefreshedArticlesGrid articles={rest.length ? rest : featured} />
+
+          {groups.slice(1).map(({ category, articles: groupArticles }) => (
             <ArticleRail key={category} title={category} articles={groupArticles} />
           ))}
         </ScrollView>
