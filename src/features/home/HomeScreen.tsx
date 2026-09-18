@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { View } from 'react-native';
 
 import { SectionHeader } from '../../components/layout/SectionHeader';
-import { CategoryRectangleRow } from '../../components/discovery/CategoryRectangleRow';
 import { EventCarousel } from '../../components/discovery/EventCarousel';
 import { FilterPanel } from '../../components/discovery/FilterPanel';
 import { ErrorState, LoadingState, Screen } from '../../components/ui';
@@ -26,7 +25,7 @@ import { FirstVisitMuse } from './components/FirstVisitMuse';
 import { CollectionsRow } from './components/CollectionsRow';
 import { Reveal } from '../../components/motion/Reveal';
 import { MapButton } from '../../components/discovery/MapButton';
-import { StoryCircles } from './components/StoryCircles';
+import { ReelHighlights } from './components/ReelHighlights';
 
 /**
  * CultureOwl Home is city-scoped and editorial: location, six genres, local
@@ -64,20 +63,12 @@ export function HomeScreen() {
     <View style={{ flex: 1 }}>
     <Screen scroll>
       <HomeHeader onFilterPress={() => setHomeFilterOpen(true)} />
-      <StoryCircles events={events} />
       <FirstVisitMuse />
 
       {/* 2. Location — moved down out of the header, now above Categories. */}
       <LocationRow />
 
-      {/* 3. Categories — moved up from the bottom (was "Discover more"). */}
-      <SectionHeader title="Explore by mood" />
-      <CategoryRectangleRow
-        variant="row"
-        onSelect={(genreId) =>
-          genreId && router.push({ pathname: '/(tabs)/search', params: { tagIds: genreId } })
-        }
-      />
+
 
       {isLoading ? (
         <LoadingState />
@@ -106,6 +97,7 @@ export function HomeScreen() {
               <Reveal delay={110}>
                 <EventCarousel events={events} />
               </Reveal>
+              <ReelHighlights events={events.slice(2)} />
             </>
           ) : null}
 
@@ -123,7 +115,7 @@ export function HomeScreen() {
 
           {/* 7. Culture News — mirrors CulturalNewsSection on web. */}
           <SectionHeader
-            title="From the CultureOwl Journal"
+            title="Culture News"
             actionLabel="View All"
             onAction={goToNews}
             spacious

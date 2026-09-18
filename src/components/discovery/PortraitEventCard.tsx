@@ -20,7 +20,7 @@ import { EventSocialContext } from '../social/EventSocialContext';
 // app/components/nearby-events/nearby-events-carousel.tsx) — 2 full cards
 // plus a partial 3rd peeking in as a scroll affordance. CARD_GAP must stay
 // equal to HorizontalCarousel's contentContainerStyle gap (spacing.md).
-const SLIDES_PER_VIEW = 2.3;
+const SLIDES_PER_VIEW = 1.75;
 const CARD_GAP = spacing.md;
 
 interface PortraitEventCardProps {
