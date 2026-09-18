@@ -119,7 +119,7 @@ export function NewsCategoryScreen({
 
           <View style={{ gap: spacing.md }}>
             <View style={{ paddingHorizontal: spacing.screenX }}>
-              <Text variant="heading">Switch desks</Text>
+              <Text variant="heading">Browse articles</Text>
             </View>
             <ScrollView
               horizontal
