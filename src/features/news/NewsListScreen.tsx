@@ -269,10 +269,12 @@ export function NewsListScreen() {
   const { data: articles, isLoading, isError, refetch } = useNews();
   const featured = (articles ?? []).slice(0, 3);
   const rest = (articles ?? []).slice(3);
-  const groups = [...new Set(rest.map((article) => article.category ?? 'Culture'))].map(
+  const groups = [...new Set((articles ?? []).map((article) => article.category ?? 'Culture'))].map(
     (category) => ({
       category,
-      articles: rest.filter((article) => (article.category ?? 'Culture') === category),
+      articles: (articles ?? []).filter(
+        (article) => (article.category ?? 'Culture') === category,
+      ),
     }),
   );
 
@@ -294,13 +296,9 @@ export function NewsListScreen() {
         >
           <HeroSwitcher articles={featured} />
 
-          {groups[0] ? (
-            <ArticleRail title={groups[0].category} articles={groups[0].articles} />
-          ) : null}
-
           <RefreshedArticlesGrid articles={rest.length ? rest : featured} />
 
-          {groups.slice(1).map(({ category, articles: groupArticles }) => (
+          {groups.map(({ category, articles: groupArticles }) => (
             <ArticleRail key={category} title={category} articles={groupArticles} />
           ))}
         </ScrollView>
