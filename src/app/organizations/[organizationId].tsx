@@ -35,6 +35,7 @@ export default function OrganizationRoute() {
         address={org.address}
         websiteUrl={org.websiteUrl}
         videoUrl={org.videoUrl}
+        socialLinks={org.socialLinks}
         events={events}
       />
     </Screen>

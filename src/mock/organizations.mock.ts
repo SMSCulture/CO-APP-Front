@@ -11,7 +11,12 @@ export const mockOrganizations: Organization[] = [
       'South Florida’s resident symphony orchestra, connecting audiences with adventurous performances, education programs, and open-air community concerts across Miami.',
     address: '130 NE 40th Street, Miami, FL 33137',
     websiteUrl: 'https://www.miamisymphony.org',
-    videoUrl: 'https://www.youtube.com/results?search_query=Miami+Symphony+Orchestra',
+    videoUrl: 'https://www.youtube.com/watch?v=y7EmwpyHEGE',
+    socialLinks: [
+      { label: 'Instagram', url: 'https://www.instagram.com/miamisymphony/' },
+      { label: 'Facebook', url: 'https://www.facebook.com/miamisymphony' },
+      { label: 'YouTube', url: 'https://www.youtube.com/miamisymphony' },
+    ],
     genres: ['Music'],
   },
   {
