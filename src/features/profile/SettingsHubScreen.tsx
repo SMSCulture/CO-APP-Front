@@ -84,6 +84,14 @@ export function SettingsHubScreen() {
         onPress={() => trackEvent('privacy_policy_placeholder_tap')}
       />
 
+      <SectionHeader title="For organizers" />
+      <IconMenuRow
+        icon={<FileTextIcon color={iconColor} />}
+        label="Promote an event"
+        description="Opens CultureOwl for organizers on the web"
+        onPress={() => Linking.openURL('https://www.cultureowl.com/event-promotion')}
+      />
+
       <SectionHeader title="Account" />
       <IconMenuRow
         icon={<CreditCardIcon color={iconColor} />}

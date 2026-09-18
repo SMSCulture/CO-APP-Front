@@ -83,6 +83,7 @@ export interface EventsFeedInput {
   tagId?: string;
   page?: number;
   limit?: number;
+  bounds?: { north:number; south:number; east:number; west:number };
 }
 
 export interface EventsFeedResult {
@@ -92,17 +93,19 @@ export interface EventsFeedResult {
 
 export async function fetchEventsFeed(input: EventsFeedInput = {}): Promise<EventsFeedResult> {
   if (USE_MOCK_DATA) {
-    const filtered = input.tagId
+    const inBounds=(e:EventSummary)=>!input.bounds||!e.coordinates||(e.coordinates.latitude<=input.bounds.north&&e.coordinates.latitude>=input.bounds.south&&e.coordinates.longitude<=input.bounds.east&&e.coordinates.longitude>=input.bounds.west);
+    const filtered = (input.tagId
       ? mockEventSummaries.filter((e) => e.tags.some((t) => t.id === input.tagId))
-      : mockEventSummaries;
+      : mockEventSummaries).filter(inBounds);
     return {
       events: filtered,
       pagination: { page: 1, limit: 20, total: filtered.length, hasMore: false },
     };
   }
+  const { bounds: _futureBounds, ...serverInput } = input;
   const data = await graphqlRequest<{
     publicEventsFeed: { events: RawFeedEdge[]; pagination: OffsetPagination };
-  }>(PUBLIC_EVENTS_FEED, { input });
+  }>(PUBLIC_EVENTS_FEED, { input: serverInput });
   return {
     events: data.publicEventsFeed.events.map(mapFeedEdgeToSummary),
     pagination: data.publicEventsFeed.pagination,

@@ -22,6 +22,7 @@ import { FriendsGoingRow } from './components/FriendsGoingRow';
 import { ThisWeekSwitcher } from '../discover/ThisWeekSwitcher';
 import { EditorialDiscovery } from './components/EditorialDiscovery';
 import { FirstVisitMuse } from './components/FirstVisitMuse';
+import { CollectionsRow } from './components/CollectionsRow';
 import { Reveal } from '../../components/motion/Reveal';
 
 /**
@@ -93,6 +94,7 @@ export function HomeScreen() {
           <Reveal delay={110}><EventCarousel events={events} /></Reveal>
           </> : null}
 
+          <CollectionsRow />
           <LowInventoryDiscovery city={city} eventCount={events.length} />
 
           {/* 5. One carousel per genre with >= 4 events — mirrors

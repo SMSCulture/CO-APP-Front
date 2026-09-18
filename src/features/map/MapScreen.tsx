@@ -14,7 +14,7 @@ import { useAppTheme } from '../../design/useAppTheme';
 import { formatEventPrice } from '../../lib/formatPrice';
 import { useEventsFeed } from '../../queries/events.queries';
 import { DEFAULT_EVENT_FILTERS, type EventFiltersState } from '../../types/filters';
-import type { EventMapPin } from '../../types/map';
+import type { EventMapPin, MapViewport } from '../../types/map';
 
 /** Full-bleed map browsing: persistent search/filter overlay, price pins, selected-event card and list handoff. */
 export function MapScreen() {
@@ -24,12 +24,13 @@ export function MapScreen() {
   const [query, setQuery] = useState('');
   const [filters, setFilters] = useState(DEFAULT_EVENT_FILTERS);
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
-  const { data, isLoading, isError, refetch } = useEventsFeed({ tagId: filters.tagIds[0] });
+  const [viewport, setViewport] = useState<MapViewport | null>(null);
+  const { data, isLoading, isError, refetch, isFetching } = useEventsFeed({ tagId: filters.tagIds[0], latitude: viewport?.latitude, longitude: viewport?.longitude, bounds: viewport?.bounds });
   const events = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return (data?.events ?? []).filter((e) => e.coordinates && (!q || `${e.title} ${e.venueName ?? ''}`.toLowerCase().includes(q)));
-  }, [data?.events, query]);
-  const pins: EventMapPin[] = events.map((e) => ({ eventId: e.id, title: e.title, coordinate: e.coordinates!, priceLabel: formatEventPrice(e) }));
+    return (data?.events ?? []).filter((e) => e.coordinates && (!viewport || (e.coordinates.latitude <= viewport.bounds.north && e.coordinates.latitude >= viewport.bounds.south && e.coordinates.longitude <= viewport.bounds.east && e.coordinates.longitude >= viewport.bounds.west)) && (!q || `${e.title} ${e.venueName ?? ''}`.toLowerCase().includes(q)));
+  }, [data?.events, query, viewport]);
+  const pins: EventMapPin[] = events.map((e) => ({ entityKind: 'event' as const, eventId: e.id, title: e.title, coordinate: e.coordinates!, priceLabel: formatEventPrice(e) }));
   const selected = events.find((e) => e.id === selectedEventId) ?? null;
   const goToList = () => router.replace('/(tabs)/search');
 
@@ -37,15 +38,16 @@ export function MapScreen() {
     <View style={{ flex: 1, backgroundColor: theme.colors.surface }}>
       {isLoading ? <View style={{ paddingTop: insets.top + 100 }}><LoadingState rows={1} /></View> : isError ? (
         <View style={{ paddingTop: insets.top + 100, paddingHorizontal: spacing.screenX }}><ErrorState message="We couldn’t load the map." onRetry={() => refetch()} /></View>
-      ) : <EventMap pins={pins} selectedEventId={selectedEventId} onSelectPin={(id) => setSelectedEventId((cur) => cur === id ? null : id)} />}
+      ) : <EventMap pins={pins} selectedEventId={selectedEventId} onSelectPin={(id) => setSelectedEventId((cur) => cur === id ? null : id)} onViewportChange={setViewport} />}
 
       <View style={{ position: 'absolute', left: spacing.md, right: spacing.md, top: insets.top + spacing.sm, gap: spacing.sm }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
           <IconButton accessibilityLabel="Back to list" onPress={goToList}><ChevronLeftIcon color={String(theme.colors.text)} size={22} /></IconButton>
           <View style={{ flex: 1 }}><SearchBarPill mode="input" placeholder="Search this area" value={query} onChangeText={setQuery} onFilterPress={() => setFilterPanelOpen(true)} hasActiveFilters={filters.tagIds.length > 0 || filters.dateFilter !== ''} /></View>
         </View>
-        <View style={{ flexDirection: 'row', gap: spacing.sm }}>
+        <View style={{ flexDirection: 'row', gap: spacing.sm, alignItems: 'center' }}>
           <Chip label="Any date" active={!filters.dateFilter} onPress={() => setFilterPanelOpen(true)} />
+          {isFetching ? <Text variant="caption" muted>Refreshing this area…</Text> : null}
           <Chip label="Categories" active={filters.tagIds.length > 0} onPress={() => setFilterPanelOpen(true)} />
         </View>
       </View>
