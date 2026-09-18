@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { Image } from 'expo-image';
-import { Pressable, ScrollView, useWindowDimensions, View } from 'react-native';
+import { Pressable, ScrollView, TextInput, useWindowDimensions, View } from 'react-native';
 import { useState } from 'react';
 
 import { HorizontalCarousel } from '../../components/layout/HorizontalCarousel';
@@ -285,12 +285,22 @@ function ArticleRail({ title, articles }: { title: string; articles: NewsArticle
 /** Culture News keeps the approved feature treatment over the site's familiar article rails. */
 export function NewsListScreen() {
   const { data: articles, isLoading, isError, refetch } = useNews();
-  const featured = (articles ?? []).slice(0, 3);
-  const rest = (articles ?? []).slice(3);
-  const groups = [...new Set((articles ?? []).map((article) => article.category ?? 'Culture'))].map(
+  const theme = useAppTheme();
+  const [query, setQuery] = useState('');
+  const normalizedQuery = query.trim().toLowerCase();
+  const visibleArticles = normalizedQuery
+    ? (articles ?? []).filter((article) =>
+        [article.title, article.excerpt, article.category, article.authorName]
+          .filter(Boolean)
+          .some((value) => value?.toLowerCase().includes(normalizedQuery)),
+      )
+    : (articles ?? []);
+  const featured = visibleArticles.slice(0, 3);
+  const rest = visibleArticles.slice(3);
+  const groups = [...new Set(visibleArticles.map((article) => article.category ?? 'Culture'))].map(
     (category) => ({
       category,
-      articles: (articles ?? []).filter(
+      articles: visibleArticles.filter(
         (article) => (article.category ?? 'Culture') === category,
       ),
     }),
@@ -304,14 +314,60 @@ export function NewsListScreen() {
         <ErrorState message="We couldn’t load Culture News." onRetry={() => refetch()} />
       ) : !featured.length ? (
         <EmptyState
-          title="The next story is taking shape"
-          message="Fresh eyes on the local scene are coming soon."
+          title={query ? 'No stories found' : 'The next story is taking shape'}
+          message={
+            query
+              ? 'Try another title, category or author.'
+              : 'Fresh eyes on the local scene are coming soon.'
+          }
         />
       ) : (
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 110, gap: spacing.xl }}
         >
+          <View
+            style={{
+              marginHorizontal: spacing.screenX,
+              height: 42,
+              borderRadius: 999,
+              borderWidth: 1,
+              borderColor: theme.colors.border,
+              backgroundColor: theme.colors.surface,
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingHorizontal: spacing.md,
+              gap: spacing.sm,
+            }}
+          >
+            <Text muted style={{ fontSize: 17 }}>
+              ⌕
+            </Text>
+            <TextInput
+              accessibilityLabel="Search Culture News"
+              placeholder="Search Culture News"
+              placeholderTextColor={theme.colors.textMuted}
+              value={query}
+              onChangeText={setQuery}
+              returnKeyType="search"
+              style={{
+                flex: 1,
+                color: theme.colors.text,
+                fontFamily: fontFamily.regular,
+                fontSize: 15,
+              }}
+            />
+            {query ? (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Clear search"
+                onPress={() => setQuery('')}
+              >
+                <Text muted>×</Text>
+              </Pressable>
+            ) : null}
+          </View>
+
           <HeroSwitcher articles={featured} />
 
           <RefreshedArticlesRow articles={rest.length ? rest : featured} />
