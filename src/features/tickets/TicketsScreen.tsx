@@ -2,7 +2,6 @@ import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DetailScreenHeader } from '../../components/layout/DetailScreenHeader';
 import { Button, Chip, EmptyState, LoadingState, Screen, Text } from '../../components/ui';
@@ -58,7 +57,6 @@ function MissingTicketsHelp({ onRefresh, isRefreshing }: { onRefresh: () => void
 
 export function TicketsScreen() {
   const theme = useAppTheme();
-  const insets = useSafeAreaInsets();
   const { isAuthenticated } = useAuth();
   const { data: tickets, isLoading, refetch, isRefetching } = useMyTickets(isAuthenticated);
   const [openTicketId, setOpenTicketId] = useState<string | null>(null);
@@ -90,11 +88,14 @@ export function TicketsScreen() {
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: spacing['3xl'] }}>
         {!isAuthenticated ? (
-          <EmptyState
-            image={<TicketsLogo />}
-            title="Sign in to see your tickets"
-            message="Your upcoming and past tickets will live here."
-          />
+          <View style={{ alignItems: 'center', paddingTop: spacing.xl, gap: spacing.lg }}>
+            <View style={{ width: 150, height: 150, borderRadius: 75, backgroundColor: theme.colors.chipBackground, alignItems: 'center', justifyContent: 'center' }}><Text style={{ fontSize: 64 }}>🎟️</Text></View>
+            <Text variant="title">No active tickets</Text>
+            <Text muted style={{ textAlign: 'center' }}>Bought tickets but can’t find them?</Text>
+            <Button label="Refresh" fullWidth onPress={() => refetch()} />
+            <Text variant="bodyBold" color={theme.colors.primary} onPress={() => router.push('/help')}>Need help? Get support here</Text>
+            <Text variant="caption" muted onPress={() => router.push('/(public)/login')}>Sign in to sync tickets from your account.</Text>
+          </View>
         ) : isLoading ? (
           <LoadingState rows={2} />
         ) : visible.length === 0 ? (
