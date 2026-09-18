@@ -26,6 +26,7 @@ const CARD_GAP = spacing.md;
 interface PortraitEventCardProps {
   event: EventSummary;
   grid?: boolean;
+  inverse?: boolean;
 }
 
 /**
@@ -37,7 +38,7 @@ interface PortraitEventCardProps {
  * order, same "square image + stacked text below" shape used site-wide for
  * every directory card type.
  */
-export function PortraitEventCard({ event, grid = false }: PortraitEventCardProps) {
+export function PortraitEventCard({ event, grid = false, inverse = false }: PortraitEventCardProps) {
   const theme = useAppTheme();
   const { width: screenWidth } = useWindowDimensions();
   const availableWidth = Math.min(screenWidth, 480) - spacing.screenX * 2;
@@ -76,22 +77,22 @@ export function PortraitEventCard({ event, grid = false }: PortraitEventCardProp
         />
         <View style={{ marginTop: 6, gap: 6 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs }}>
-            <MapPinIcon color={String(theme.colors.primary)} size={16} />
-            <Text variant="caption" numberOfLines={1} style={{ flex: 1, fontSize: 11 }}>
+            <MapPinIcon color={inverse ? '#27a9ff' : String(theme.colors.primary)} size={16} />
+            <Text variant="caption" color={inverse ? 'rgba(255,255,255,.68)' : undefined} numberOfLines={1} style={{ flex: 1, fontSize: 11 }}>
               {venueName}
             </Text>
           </View>
-          <Text variant="bodyBold" numberOfLines={2} style={{ fontSize: 13, lineHeight: 17 }}>
+          <Text variant="bodyBold" color={inverse ? '#fff' : undefined} numberOfLines={2} style={{ fontSize: 13, lineHeight: 17 }}>
             {event.title}
           </Text>
           {dateLabel ? (
-            <Text variant="caption" numberOfLines={1} style={{ fontSize: 11 }}>
+            <Text variant="caption" color={inverse ? 'rgba(255,255,255,.68)' : undefined} numberOfLines={1} style={{ fontSize: 11 }}>
               {dateLabel}
             </Text>
           ) : null}
           <EventSocialContext eventId={event.id} compact />
           {priceText ? (
-            <Text variant="caption" numberOfLines={1} style={{ fontSize: 11 }}>
+            <Text variant="caption" color={inverse ? '#fff' : undefined} numberOfLines={1} style={{ fontSize: 11 }}>
               {priceText}
             </Text>
           ) : null}

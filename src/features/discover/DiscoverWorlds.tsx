@@ -65,7 +65,7 @@ export function DiscoverWorlds({ events, articles }: { events: EventSummary[]; a
         <Text variant="caption" color="rgba(255,255,255,.54)">Swipe to explore</Text>
       </View>
       <View style={{ paddingHorizontal: spacing.screenX }}>
-        <EventCarousel events={matching.slice(0, 8)} />
+        <EventCarousel events={matching.slice(0, 8)} inverse />
       </View>
     </View>
   );

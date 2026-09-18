@@ -7,10 +7,11 @@ import { PortraitEventCard } from './PortraitEventCard';
 interface EventCarouselProps {
   events: EventSummary[];
   variant?: 'portrait' | 'landscape';
+  inverse?: boolean;
 }
 
 /** Event rails show one full card plus a strong partial peek on mobile. */
-export function EventCarousel({ events, variant = 'portrait' }: EventCarouselProps) {
+export function EventCarousel({ events, variant = 'portrait', inverse = false }: EventCarouselProps) {
   if (variant === 'landscape') {
     return <View style={{ gap: spacing.md }}>{events.map((event) => <EventCard key={event.id} event={event} />)}</View>;
   }
@@ -22,7 +23,7 @@ export function EventCarousel({ events, variant = 'portrait' }: EventCarouselPro
       style={{ marginHorizontal: -spacing.screenX }}
       contentContainerStyle={{ paddingHorizontal: spacing.screenX, gap: spacing.md }}
     >
-      {events.map((event) => <PortraitEventCard key={event.id} event={event} />)}
+      {events.map((event) => <PortraitEventCard key={event.id} event={event} inverse={inverse} />)}
     </ScrollView>
   );
 }
