@@ -14,13 +14,39 @@ function categoryFor(article: NewsArticle) {
   return article.category ?? 'Culture';
 }
 
-export function NewsCategoryScreen({ category }: { category: string }) {
+const collections = [
+  { label: 'Things to do', key: 'things-to-do' },
+  { label: 'Free', key: 'free' },
+  { label: 'Kids events', key: 'kids-events' },
+] as const;
+
+function inCollection(article: NewsArticle, collection?: string) {
+  if (!collection || collection === 'things-to-do') return true;
+  const haystack = [article.title, article.excerpt, article.category, ...article.discoveryTags.vibe]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
+  if (collection === 'free') return haystack.includes('free');
+  if (collection === 'kids-events') return /kids|children|family/.test(haystack);
+  return true;
+}
+
+export function NewsCategoryScreen({
+  category,
+  collection,
+}: {
+  category: string;
+  collection?: string;
+}) {
   const theme = useAppTheme();
   const { width } = useWindowDimensions();
   const { data: articles, isLoading, isError, refetch } = useNews();
   const categories = [...new Set((articles ?? []).map(categoryFor))];
   const activeCategory = categories.includes(category) ? category : categories[0];
-  const filtered = (articles ?? []).filter((article) => categoryFor(article) === activeCategory);
+  const collectionLabel = collections.find((item) => item.key === collection)?.label;
+  const filtered = collectionLabel
+    ? (articles ?? []).filter((article) => inCollection(article, collection))
+    : (articles ?? []).filter((article) => categoryFor(article) === activeCategory);
   const tileSize = Math.min(158, width * 0.38);
 
   return (
@@ -56,7 +82,7 @@ export function NewsCategoryScreen({ category }: { category: string }) {
               <Text variant="label" color={theme.colors.primary}>
                 CULTURE NEWS DESK
               </Text>
-              <Text variant="title">{activeCategory}</Text>
+              <Text variant="title">{collectionLabel ?? activeCategory}</Text>
             </View>
           </View>
 
@@ -100,15 +126,21 @@ export function NewsCategoryScreen({ category }: { category: string }) {
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{ paddingHorizontal: spacing.screenX, gap: spacing.sm }}
             >
-              {categories.map((item) => {
-                const lead = (articles ?? []).find((article) => categoryFor(article) === item);
+              {collections.map((item, index) => {
+                const matching = (articles ?? []).filter((article) => inCollection(article, item.key));
+                const lead = matching[0] ?? (articles ?? [])[index % Math.max((articles ?? []).length, 1)];
                 if (!lead) return null;
                 return (
                   <Pressable
-                    key={`desk-${item}`}
+                    key={`collection-${item.key}`}
                     accessibilityRole="button"
-                    accessibilityLabel={`Open ${item}`}
-                    onPress={() => router.replace(`/news/category/${encodeURIComponent(item)}`)}
+                    accessibilityLabel={`Open ${item.label} articles`}
+                    onPress={() =>
+                      router.replace({
+                        pathname: '/news/category/[category]',
+                        params: { category: activeCategory, collection: item.key },
+                      })
+                    }
                     style={({ pressed }) => ({
                       width: tileSize,
                       height: tileSize,
@@ -137,7 +169,7 @@ export function NewsCategoryScreen({ category }: { category: string }) {
                         color="#fff"
                         style={{ fontFamily: fontFamily.bold, fontSize: 19, lineHeight: 22 }}
                       >
-                        {item}
+                        {item.label}
                       </Text>
                     </View>
                   </Pressable>
@@ -147,10 +179,14 @@ export function NewsCategoryScreen({ category }: { category: string }) {
           </View>
 
           <View style={{ paddingHorizontal: spacing.screenX, gap: spacing.lg }}>
-            <Text variant="heading">Latest in {activeCategory}</Text>
-            {filtered.map((article) => (
-              <NewsCard key={article.id} article={article} />
-            ))}
+            <Text variant="heading">
+              {collectionLabel ? `${collectionLabel} articles` : `Latest in ${activeCategory}`}
+            </Text>
+            {filtered.length ? (
+              filtered.map((article) => <NewsCard key={article.id} article={article} />)
+            ) : (
+              <Text muted>No articles in this collection yet.</Text>
+            )}
           </View>
         </ScrollView>
       )}
