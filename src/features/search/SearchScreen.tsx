@@ -1,4 +1,4 @@
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { FlatList, View } from 'react-native';
 
@@ -23,6 +23,7 @@ import {
   type EventFiltersState,
 } from '../../types/filters';
 import type { SearchRouteParams } from '../../types/navigation';
+import { ExploreDirectoryBento, ExploreIntentEntry, ExploreUtilityRails } from './ExploreLanding';
 
 function parsePrice(event: EventSummary): number {
   if (event.free) return 0;
@@ -109,8 +110,7 @@ export function SearchScreen() {
   };
 
   const selectCategory = (genreId: string | null) => {
-    setFilters((prev) => ({ ...prev, tagIds: genreId ? [genreId] : [] }));
-    setHasInteracted(true);
+    if (genreId) router.push({ pathname: '/map', params: { tagIds: genreId } });
   };
 
   const showBrowseState = !hasInteracted;
@@ -143,10 +143,13 @@ export function SearchScreen() {
 
       {showBrowseState ? (
         <View style={{ gap: spacing.xl }}>
+          <ExploreIntentEntry />
           <StaggeredReveal delay={55}>
-            <SectionHeader title="Categories" />
+            <SectionHeader title="Choose one category" />
             <CategoryRectangleGrid onSelect={selectCategory} />
           </StaggeredReveal>
+          <ExploreUtilityRails events={results} />
+          <ExploreDirectoryBento />
         </View>
       ) : isLoading ? (
         <LoadingState rows={2} />
@@ -162,7 +165,9 @@ export function SearchScreen() {
           ListHeaderComponent={
             debouncedTerm ? (
               <View style={{ gap: spacing.md, paddingBottom: spacing.lg }}>
-                <Text variant="subheading">{results.length ? 'Matching experiences' : 'Suggestions'}</Text>
+                <Text variant="subheading">
+                  {results.length ? 'Matching experiences' : 'Suggestions'}
+                </Text>
               </View>
             ) : null
           }

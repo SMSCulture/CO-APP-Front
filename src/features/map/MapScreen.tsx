@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -17,6 +17,7 @@ import { useEventsFeed } from '../../queries/events.queries';
 import { DEFAULT_EVENT_FILTERS, type EventFiltersState } from '../../types/filters';
 import type { EventMapPin, MapViewport } from '../../types/map';
 import type { EventSummary } from '../../types/event';
+import type { MapRouteParams } from '../../types/navigation';
 
 const starts = (event: EventSummary) =>
   new Date(`${event.startDate}T${event.nextEventDate?.startTime ?? '00:00'}`).getTime();
@@ -41,9 +42,13 @@ function dateMatches(event: EventSummary, filters: EventFiltersState) {
 export function MapScreen() {
   const theme = useAppTheme(),
     insets = useSafeAreaInsets();
+  const params = useLocalSearchParams<MapRouteParams>();
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [query, setQuery] = useState('');
-  const [filters, setFilters] = useState(DEFAULT_EVENT_FILTERS);
+  const [filters, setFilters] = useState({
+    ...DEFAULT_EVENT_FILTERS,
+    tagIds: params.tagIds ? [params.tagIds] : [],
+  });
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
   const [filterSection, setFilterSection] = useState<'date' | 'category'>('date');
   const [sort, setSort] = useState<SortOption>('POPULARITY');
@@ -238,6 +243,7 @@ export function MapScreen() {
         onClose={() => setFilterPanelOpen(false)}
         filters={filters}
         onChange={setFilters}
+        onInstantApply={() => setFilterPanelOpen(false)}
         initialSection={filterSection}
       />
       <SortModal

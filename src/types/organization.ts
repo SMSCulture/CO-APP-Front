@@ -7,4 +7,7 @@ export interface Organization {
   imageUrl: string | null;
   description: string | null;
   genres: string[];
+  address?: string | null;
+  websiteUrl?: string | null;
+  videoUrl?: string | null;
 }

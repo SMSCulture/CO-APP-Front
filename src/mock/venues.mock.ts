@@ -36,5 +36,7 @@ export const mockVenues: Venue[] = [
     description: 'Miami’s home for ballet, opera, Broadway, and jazz.',
     coordinates: { latitude: 25.7862, longitude: -80.1885 },
     venueType: 'PERFORMING_ARTS_CENTER',
+    websiteUrl: 'https://www.arshtcenter.org',
+    videoUrl: 'https://www.youtube.com/results?search_query=Adrienne+Arsht+Center',
   },
 ];

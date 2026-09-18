@@ -9,4 +9,6 @@ export interface Venue {
   description: string | null;
   coordinates: { latitude: number; longitude: number } | null;
   venueType: string | null;
+  websiteUrl?: string | null;
+  videoUrl?: string | null;
 }

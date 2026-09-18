@@ -20,6 +20,11 @@ export interface RestaurantRouteParams {
 }
 
 /** Optional initial filters passed from HomeHeader's filter popup — see HomeScreen.tsx. */
+export interface MapRouteParams {
+  tagIds: string;
+  [key: string]: string;
+}
+
 export interface SearchRouteParams {
   dateFilter: string;
   tagIds: string;

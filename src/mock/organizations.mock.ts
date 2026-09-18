@@ -7,7 +7,11 @@ export const mockOrganizations: Organization[] = [
     slug: 'miami-symphony-orchestra',
     city: 'Miami',
     imageUrl: 'https://picsum.photos/seed/orchestra/800/800',
-    description: 'South Florida’s resident symphony orchestra.',
+    description:
+      'South Florida’s resident symphony orchestra, connecting audiences with adventurous performances, education programs, and open-air community concerts across Miami.',
+    address: '130 NE 40th Street, Miami, FL 33137',
+    websiteUrl: 'https://www.miamisymphony.org',
+    videoUrl: 'https://www.youtube.com/results?search_query=Miami+Symphony+Orchestra',
     genres: ['Music'],
   },
   {

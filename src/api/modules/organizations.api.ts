@@ -8,17 +8,38 @@ const PUBLIC_ARTS_GROUPS_PAGINATED = /* GraphQL */ `
   query PublicArtsGroupsPaginated($first: Int!, $after: String) {
     publicArtsGroupsPaginated(first: $first, after: $after, includeTotalCount: true) {
       edges {
-        node { id name slug artType imageUrl market description address }
+        node {
+          id
+          name
+          slug
+          artType
+          imageUrl
+          market
+          description
+          address
+        }
         cursor
       }
-      pageInfo { hasNextPage endCursor }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
   }
 `;
 
 const PUBLIC_ARTS_GROUP = /* GraphQL */ `
   query PublicArtsGroup($identifier: String!) {
-    publicArtsGroup(identifier: $identifier) { id name slug artType imageUrl market description address }
+    publicArtsGroup(identifier: $identifier) {
+      id
+      name
+      slug
+      artType
+      imageUrl
+      market
+      description
+      address
+    }
   }
 `;
 
@@ -45,6 +66,7 @@ function mapArtsGroupNode(node: ArtsGroupNode): Organization {
     imageUrl: node.imageUrl,
     description: node.description,
     genres: node.artType ? [node.artType] : [],
+    address: node.address,
   };
 }
 
@@ -59,7 +81,10 @@ export async function fetchOrganizationsPage(after?: string): Promise<Organizati
     return { organizations: mockOrganizations, endCursor: null, hasNextPage: false };
   }
   const data = await graphqlRequest<{
-    publicArtsGroupsPaginated: { edges: { node: ArtsGroupNode; cursor: string }[]; pageInfo: { hasNextPage: boolean; endCursor: string | null } };
+    publicArtsGroupsPaginated: {
+      edges: { node: ArtsGroupNode; cursor: string }[];
+      pageInfo: { hasNextPage: boolean; endCursor: string | null };
+    };
   }>(PUBLIC_ARTS_GROUPS_PAGINATED, { first: 20, after });
   return {
     organizations: data.publicArtsGroupsPaginated.edges.map((e) => mapArtsGroupNode(e.node)),
@@ -80,6 +105,8 @@ export async function fetchOrganization(identifier: string): Promise<Organizatio
     if (!org) throw new Error(`Organization not found: ${identifier}`);
     return org;
   }
-  const data = await graphqlRequest<{ publicArtsGroup: ArtsGroupNode }>(PUBLIC_ARTS_GROUP, { identifier });
+  const data = await graphqlRequest<{ publicArtsGroup: ArtsGroupNode }>(PUBLIC_ARTS_GROUP, {
+    identifier,
+  });
   return mapArtsGroupNode(data.publicArtsGroup);
 }

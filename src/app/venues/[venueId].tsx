@@ -1,2 +1,39 @@
-import { Image } from 'expo-image';import { router,useLocalSearchParams } from 'expo-router';import { Linking,View } from 'react-native';import { EventCarousel } from '../../components/discovery/EventCarousel';import { DetailScreenHeader } from '../../components/layout/DetailScreenHeader';import { MapPinIcon } from '../../components/layout/icons/MenuIcons';import { Button,Card,ErrorState,LoadingState,Screen,Text } from '../../components/ui';import { palette,radius,spacing } from '../../design/tokens';import { useAppTheme } from '../../design/useAppTheme';import { mockEventSummaries } from '../../mock/events.mock';import { useVenue } from '../../queries/venues.queries';import type { VenueRouteParams } from '../../types/navigation';
-export default function VenueRoute(){const t=useAppTheme();const{venueId}=useLocalSearchParams<VenueRouteParams>();const{data:v,isLoading,isError,refetch}=useVenue(venueId);if(isLoading)return <Screen><LoadingState rows={1}/></Screen>;if(isError||!v)return <Screen><ErrorState message="We couldn’t load this venue." onRetry={()=>refetch()}/></Screen>;const events=mockEventSummaries.filter(e=>e.venue?.id===v.id);return <Screen scroll><DetailScreenHeader title="Venue"/><View style={{gap:spacing.xl}}><Image source={{uri:v.imageUrl??undefined}} style={{width:'100%',aspectRatio:4/3,borderRadius:radius.xl,backgroundColor:t.colors.skeleton}} contentFit="cover"/><View style={{gap:spacing.sm}}><Text variant="label" color={palette.blue}>{v.venueType?.replaceAll('_',' ')||'CULTURAL VENUE'}</Text><Text variant="display">{v.name}</Text><Text muted>{v.city}, {v.state}</Text></View><View style={{flexDirection:'row',gap:spacing.sm}}><Button label="Directions" variant="secondary" style={{flex:1}} onPress={()=>Linking.openURL(`https://maps.google.com/?q=${encodeURIComponent(v.address||v.name)}`)}/><Button label="Save" variant="secondary" style={{flex:1}} onPress={()=>{}}/></View><Card><Text variant="heading">About this place</Text><Text style={{lineHeight:25,marginTop:spacing.sm}}>{v.description||'A cultural destination in the CultureOwl directory.'}</Text></Card>{v.address?<Card variant="tinted"><View style={{flexDirection:'row',gap:spacing.md}}><MapPinIcon color={palette.blueDark}/><View style={{flex:1}}><Text variant="bodyBold">Location</Text><Text muted>{v.address}</Text></View></View></Card>:null}{events.length?<View style={{gap:spacing.md}}><Text variant="heading">Upcoming here</Text><EventCarousel events={events}/></View>:<Card><Text variant="bodyBold">The calendar is open</Text><Text variant="caption" muted>New dates from this venue will appear here.</Text></Card>}<Button label="Explore all venues" fullWidth onPress={()=>router.push('/venues')}/></View></Screen>}
+import { useLocalSearchParams } from 'expo-router';
+import { PresenterProfile } from '../../components/presenters/PresenterProfile';
+import { ErrorState, LoadingState, Screen } from '../../components/ui';
+import { mockEventSummaries } from '../../mock/events.mock';
+import { useVenue } from '../../queries/venues.queries';
+import type { VenueRouteParams } from '../../types/navigation';
+export default function VenueRoute() {
+  const { venueId } = useLocalSearchParams<VenueRouteParams>();
+  const { data: v, isLoading, isError, refetch } = useVenue(venueId);
+  if (isLoading)
+    return (
+      <Screen>
+        <LoadingState rows={1} />
+      </Screen>
+    );
+  if (isError || !v)
+    return (
+      <Screen>
+        <ErrorState message="We couldn’t load this venue." onRetry={() => refetch()} />
+      </Screen>
+    );
+  const events = mockEventSummaries.filter((e) => e.venue?.id === v.id);
+  return (
+    <Screen scroll>
+      <PresenterProfile
+        kind="Venue"
+        name={v.name}
+        location={`${v.city}, ${v.state}`}
+        imageUrl={v.imageUrl}
+        description={v.description}
+        category={v.venueType}
+        address={v.address}
+        websiteUrl={v.websiteUrl}
+        videoUrl={v.videoUrl}
+        events={events}
+      />
+    </Screen>
+  );
+}
