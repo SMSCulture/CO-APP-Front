@@ -5,7 +5,6 @@ import { FlatList, View } from 'react-native';
 import { CategoryRectangleGrid } from '../../components/discovery/CategoryRectangleGrid';
 import { FilterPanel } from '../../components/discovery/FilterPanel';
 import { FilterPillRow } from '../../components/discovery/FilterPillRow';
-import { PopularSearchesRow } from '../../components/discovery/PopularSearchesRow';
 import { SearchBarPill } from '../../components/discovery/SearchBarPill';
 import { SearchResultRow } from '../../components/discovery/SearchResultRow';
 import { SortModal, type SortOption } from '../../components/discovery/SortModal';
@@ -95,8 +94,8 @@ export function SearchScreen() {
   const results = useMemo(() => sortEvents(data ?? [], sort), [data, sort]);
 
   const activateSearch = () => {
-    // Enter typing mode but keep the browse page in place until there is a term.
     setInputActive(true);
+    setHasInteracted(true);
   };
 
   const changeTerm = (next: string) => {
@@ -107,11 +106,6 @@ export function SearchScreen() {
   const clearSearch = () => {
     setTerm('');
     setHasInteracted(hasActiveFilters(filters));
-  };
-
-  const selectPopularSearch = (popularTerm: string) => {
-    setTerm(popularTerm);
-    activateSearch();
   };
 
   const selectCategory = (genreId: string | null) => {
@@ -127,7 +121,7 @@ export function SearchScreen() {
         <View>
           <SearchBarPill
             mode={inputActive ? 'input' : 'link'}
-            placeholder="Discover events, venues, restaurants…"
+            placeholder="Search"
             value={term}
             onChangeText={changeTerm}
             onPress={activateSearch}
@@ -149,10 +143,6 @@ export function SearchScreen() {
 
       {showBrowseState ? (
         <View style={{ gap: spacing.xl }}>
-          <StaggeredReveal>
-            <SectionHeader title="Popular Searches" />
-            <PopularSearchesRow onSelect={selectPopularSearch} />
-          </StaggeredReveal>
           <StaggeredReveal delay={55}>
             <SectionHeader title="Categories" />
             <CategoryRectangleGrid onSelect={selectCategory} />
@@ -172,11 +162,7 @@ export function SearchScreen() {
           ListHeaderComponent={
             debouncedTerm ? (
               <View style={{ gap: spacing.md, paddingBottom: spacing.lg }}>
-                <Text variant="subheading">Suggestions</Text>
-                <Text variant="bodyBold">{debouncedTerm}</Text>
-                <Text variant="subheading" style={{ paddingTop: spacing.sm }}>
-                  Experiences
-                </Text>
+                <Text variant="subheading">{results.length ? 'Matching experiences' : 'Suggestions'}</Text>
               </View>
             ) : null
           }

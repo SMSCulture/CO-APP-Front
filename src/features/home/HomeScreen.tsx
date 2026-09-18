@@ -26,6 +26,7 @@ import { FirstVisitMuse } from './components/FirstVisitMuse';
 import { CollectionsRow } from './components/CollectionsRow';
 import { Reveal } from '../../components/motion/Reveal';
 import { MapButton } from '../../components/discovery/MapButton';
+import { StoryCircles } from './components/StoryCircles';
 
 /**
  * CultureOwl Home is city-scoped and editorial: location, six genres, local
@@ -63,6 +64,7 @@ export function HomeScreen() {
     <View style={{ flex: 1 }}>
     <Screen scroll>
       <HomeHeader onFilterPress={() => setHomeFilterOpen(true)} />
+      <StoryCircles events={events} />
       <FirstVisitMuse />
 
       {/* 2. Location — moved down out of the header, now above Categories. */}

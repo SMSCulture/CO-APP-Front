@@ -131,7 +131,7 @@ export function MapScreen() {
       >
         <SearchBarPill
           mode="input"
-          placeholder="Discover events, venues, restaurants…"
+          placeholder="Search"
           value={query}
           onChangeText={setQuery}
           showFilterIcon={false}

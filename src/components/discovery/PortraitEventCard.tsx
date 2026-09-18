@@ -25,6 +25,7 @@ const CARD_GAP = spacing.md;
 
 interface PortraitEventCardProps {
   event: EventSummary;
+  grid?: boolean;
 }
 
 /**
@@ -36,10 +37,13 @@ interface PortraitEventCardProps {
  * order, same "square image + stacked text below" shape used site-wide for
  * every directory card type.
  */
-export function PortraitEventCard({ event }: PortraitEventCardProps) {
+export function PortraitEventCard({ event, grid = false }: PortraitEventCardProps) {
   const theme = useAppTheme();
   const { width: screenWidth } = useWindowDimensions();
-  const cardWidth = Math.floor((Math.min(screenWidth, 480) - spacing.screenX * 2 - CARD_GAP * (SLIDES_PER_VIEW - 1)) / SLIDES_PER_VIEW);
+  const availableWidth = Math.min(screenWidth, 480) - spacing.screenX * 2;
+  const cardWidth = grid
+    ? Math.floor((availableWidth - CARD_GAP) / 2)
+    : Math.floor((availableWidth - CARD_GAP * (SLIDES_PER_VIEW - 1)) / SLIDES_PER_VIEW);
   const { isFavorite: saved, toggle } = useFavoriteToggle('event', event);
   const venueName = formatEventLocation(event);
   const dateLabel = formatDateSlot(event.nextEventDate, event.startDate);
