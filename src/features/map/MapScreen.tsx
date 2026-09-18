@@ -1,4 +1,4 @@
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -63,6 +63,7 @@ export function MapScreen() {
   const [filterSection, setFilterSection] = useState<'date' | 'category'>('date');
   const [sort, setSort] = useState<SortOption>('POPULARITY');
   const [sortOpen, setSortOpen] = useState(false);
+  const [resultsOpen, setResultsOpen] = useState(false);
   const [viewport, setViewport] = useState<MapViewport | null>(null);
   const [recenterTo, setRecenterTo] = useState<{ latitude: number; longitude: number } | null>(
     null,
@@ -272,7 +273,7 @@ export function MapScreen() {
         </View>
       ) : null}
       <Pressable
-        onPress={() => router.replace('/(tabs)/search')}
+        onPress={() => setResultsOpen(true)}
         style={({ pressed }) => ({
           position: 'absolute',
           bottom: insets.bottom + spacing.md,
@@ -289,6 +290,81 @@ export function MapScreen() {
           See {events.length} {events.length === 1 ? 'Experience' : 'Experiences'}
         </Text>
       </Pressable>
+      {resultsOpen ? (
+        <View
+          style={{
+            position: 'absolute',
+            inset: 0,
+            justifyContent: 'flex-end',
+            backgroundColor: 'rgba(4,9,14,.44)',
+          }}
+        >
+          <Pressable
+            accessibilityLabel="Close event results"
+            onPress={() => setResultsOpen(false)}
+            style={{ flex: 1 }}
+          />
+          <View
+            style={{
+              maxHeight: '76%',
+              minHeight: '52%',
+              borderTopLeftRadius: 28,
+              borderTopRightRadius: 28,
+              backgroundColor: theme.colors.background,
+              paddingTop: spacing.sm,
+              paddingBottom: insets.bottom + spacing.md,
+              ...shadows.raised,
+            }}
+          >
+            <View
+              style={{
+                alignSelf: 'center',
+                width: 44,
+                height: 5,
+                borderRadius: 3,
+                backgroundColor: theme.colors.border,
+                marginBottom: spacing.md,
+              }}
+            />
+            <View
+              style={{
+                paddingHorizontal: spacing.lg,
+                paddingBottom: spacing.md,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <View>
+                <Text variant="heading">{events.length} experiences</Text>
+                <Text variant="caption" muted>
+                  In this map area
+                </Text>
+              </View>
+              <Pressable onPress={() => setResultsOpen(false)} hitSlop={10}>
+                <Text style={{ fontSize: 24 }}>×</Text>
+              </Pressable>
+            </View>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: spacing.lg, gap: spacing.md }}
+            >
+              {events.map((event) => (
+                <View
+                  key={event.id}
+                  style={{
+                    paddingBottom: spacing.md,
+                    borderBottomWidth: 1,
+                    borderBottomColor: theme.colors.border,
+                  }}
+                >
+                  <MapPreviewCard event={event} />
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+        </View>
+      ) : null}
       <FilterPanel
         visible={filterPanelOpen}
         onClose={() => setFilterPanelOpen(false)}
