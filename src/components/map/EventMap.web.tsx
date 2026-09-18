@@ -54,7 +54,7 @@ export function EventMap({
   useEffect(() => {
     if (!host.current || map.current) return;
     if (!workerConfigured) {
-      maplibregl.setWorkerUrl('/assets/maplibre/maplibre-gl-worker.mjs');
+      maplibregl.setWorkerUrl('/maplibre/maplibre-gl-worker.mjs');
       workerConfigured = true;
     }
     const m = new maplibregl.Map({
