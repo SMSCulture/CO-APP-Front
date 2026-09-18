@@ -9,7 +9,6 @@ import {
   RestaurantIcon,
 } from '../../components/layout/icons/MenuIcons';
 import { Screen } from '../../components/ui';
-import { CitySignalStories } from '../home/components/CitySignalStories';
 import { useAppTheme } from '../../design/useAppTheme';
 import { DEFAULT_CITY } from '../../config/constants';
 import { useEventsFeed } from '../../queries/events.queries';
@@ -33,7 +32,6 @@ export function DiscoverScreen() {
     <Screen scroll>
       <AppHeader title="Discover" />
 
-      <CitySignalStories events={data?.events ?? []} />
 
       <DiscoverWorlds events={data?.events ?? []} articles={articles ?? []} />
 
