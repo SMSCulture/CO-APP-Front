@@ -26,6 +26,7 @@ import { CollectionsRow } from './components/CollectionsRow';
 import { Reveal } from '../../components/motion/Reveal';
 import { CitySignalStories } from './components/CitySignalStories';
 import { CityEditsRow } from './components/CityEditsRow';
+import { SelfPublishExplainer } from './components/SelfPublishExplainer';
 
 /**
  * CultureOwl Home is city-scoped and editorial: location, six genres, local
@@ -84,6 +85,7 @@ export function HomeScreen() {
         <>
           <CitySignalStories events={events} />
           <CityEditsRow events={events} />
+          <SelfPublishExplainer />
           <Reveal>
             <EditorialDiscovery events={events} city={city} />
           </Reveal>
