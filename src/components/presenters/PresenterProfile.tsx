@@ -3,10 +3,11 @@ import { Linking, Pressable, View } from 'react-native';
 import { AppHeader } from '../layout/AppHeader';
 import { MapPinIcon } from '../layout/icons/MenuIcons';
 import { Button, Card, Text } from '../ui';
-import { fontFamily, radius, spacing } from '../../design/tokens';
+import { fontFamily, spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
 import type { EventSummary } from '../../types/event';
 import { EventCarousel } from '../discovery/EventCarousel';
+import { InlineVideo } from './InlineVideo';
 
 interface PresenterProfileProps {
   kind: 'Arts group' | 'Venue';
@@ -19,6 +20,7 @@ interface PresenterProfileProps {
   websiteUrl?: string | null;
   videoUrl?: string | null;
   coordinates?: { latitude: number; longitude: number } | null;
+  socialLinks?: { label: string; url: string }[];
   events: EventSummary[];
 }
 
@@ -94,50 +96,42 @@ export function PresenterProfile(props: PresenterProfileProps) {
           {props.description ?? 'A presenter creating cultural experiences for the community.'}
         </Text>
       </View>
-      {props.videoUrl ? (
-        <Pressable
-          onPress={() => Linking.openURL(props.videoUrl!)}
-          style={{ aspectRatio: 16 / 9, borderRadius: radius.xl, overflow: 'hidden' }}
-        >
-          <Image
-            source={{ uri: hero }}
-            contentFit="cover"
-            style={{ position: 'absolute', inset: 0 }}
-          />
-          <View
-            style={{
-              position: 'absolute',
-              inset: 0,
-              backgroundColor: 'rgba(4,9,14,.4)',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <View
-              style={{
-                width: 62,
-                height: 62,
-                borderRadius: 31,
-                backgroundColor: '#fff',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Text color="#101b24" style={{ fontSize: 25 }}>
-                ▶
-              </Text>
-            </View>
+      {props.socialLinks?.length ? (
+        <View style={{ alignItems: 'flex-start', gap: spacing.sm }}>
+          <Text variant="label" muted>FOLLOW</Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
+            {props.socialLinks.map((social) => (
+              <Pressable
+                key={social.label}
+                accessibilityRole="link"
+                accessibilityLabel={`${props.name} on ${social.label}`}
+                onPress={() => Linking.openURL(social.url)}
+                style={({ pressed }) => ({
+                  minWidth: 44,
+                  height: 44,
+                  borderRadius: 22,
+                  paddingHorizontal: spacing.md,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: theme.colors.surface,
+                  borderWidth: 1,
+                  borderColor: theme.colors.border,
+                  opacity: pressed ? 0.65 : 1,
+                })}
+              >
+                <Text variant="bodyBold">{social.label}</Text>
+              </Pressable>
+            ))}
           </View>
-          <Text
-            variant="label"
-            color="#fff"
-            style={{ position: 'absolute', left: spacing.md, bottom: spacing.md }}
-          >
-            MEET THE PRESENTER
-          </Text>
-        </Pressable>
+        </View>
       ) : null}
-      {props.address || props.websiteUrl || props.videoUrl || props.coordinates ? (
+      {props.videoUrl ? (
+        <View style={{ gap: spacing.sm }}>
+          <Text variant="heading">Watch</Text>
+          <InlineVideo url={props.videoUrl} title={`Video from ${props.name}`} />
+        </View>
+      ) : null}
+      {props.address || props.websiteUrl ? (
         <Card variant="tinted" style={{ gap: spacing.md }}>
           <Text variant="heading">Venue details</Text>
           {props.address ? (
@@ -149,26 +143,10 @@ export function PresenterProfile(props: PresenterProfileProps) {
               </View>
             </View>
           ) : null}
-          {props.coordinates ? (
-            <View style={{ gap: 2 }}>
-              <Text variant="bodyBold">Map location</Text>
-              <Text muted>
-                {props.coordinates.latitude.toFixed(4)}, {props.coordinates.longitude.toFixed(4)}
-              </Text>
-            </View>
-          ) : null}
           {props.websiteUrl ? (
             <View style={{ gap: 2 }}>
               <Text variant="bodyBold">Website</Text>
               <Text color={theme.colors.primary}>{props.websiteUrl}</Text>
-            </View>
-          ) : null}
-          {props.videoUrl ? (
-            <View style={{ gap: 2 }}>
-              <Text variant="bodyBold">Video</Text>
-              <Text color={theme.colors.primary} numberOfLines={1}>
-                {props.videoUrl}
-              </Text>
             </View>
           ) : null}
         </Card>

@@ -33,6 +33,7 @@ export default function VenueRoute() {
         websiteUrl={v.websiteUrl}
         videoUrl={v.videoUrl}
         coordinates={v.coordinates}
+        socialLinks={v.socialLinks}
         events={events}
       />
     </Screen>

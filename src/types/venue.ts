@@ -11,4 +11,5 @@ export interface Venue {
   venueType: string | null;
   websiteUrl?: string | null;
   videoUrl?: string | null;
+  socialLinks?: { label: string; url: string }[];
 }

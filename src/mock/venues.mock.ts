@@ -37,6 +37,11 @@ export const mockVenues: Venue[] = [
     coordinates: { latitude: 25.7862, longitude: -80.1885 },
     venueType: 'PERFORMING_ARTS_CENTER',
     websiteUrl: 'https://www.arshtcenter.org',
-    videoUrl: 'https://www.youtube.com/results?search_query=Adrienne+Arsht+Center',
+    videoUrl: 'https://www.youtube.com/watch?v=Cp0eOV5iNl8',
+    socialLinks: [
+      { label: 'Instagram', url: 'https://www.instagram.com/arshtcenter/' },
+      { label: 'Facebook', url: 'https://www.facebook.com/AdrienneArshtCenter/' },
+      { label: 'YouTube', url: 'https://www.youtube.com/user/arshtcenter/videos' },
+    ],
   },
 ];
