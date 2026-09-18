@@ -21,6 +21,8 @@ import { VenuesRow } from './components/VenuesRow';
 import { FriendsGoingRow } from './components/FriendsGoingRow';
 import { ThisWeekSwitcher } from '../discover/ThisWeekSwitcher';
 import { EditorialDiscovery } from './components/EditorialDiscovery';
+import { FirstVisitMuse } from './components/FirstVisitMuse';
+import { Reveal } from '../../components/motion/Reveal';
 
 /**
  * CultureOwl Home is city-scoped and editorial: location, six genres, local
@@ -57,12 +59,13 @@ export function HomeScreen() {
   return (
     <Screen scroll>
       <HomeHeader onFilterPress={() => setHomeFilterOpen(true)} />
+      <FirstVisitMuse />
 
       {/* 2. Location — moved down out of the header, now above Categories. */}
       <LocationRow />
 
       {/* 3. Categories — moved up from the bottom (was "Discover more"). */}
-      <SectionHeader title="Categories" />
+      <SectionHeader title="Explore by mood" />
       <CategoryRectangleRow
         variant="row"
         onSelect={(genreId) => genreId && router.push({ pathname: '/(tabs)/search', params: { tagIds: genreId } })}
@@ -74,20 +77,20 @@ export function HomeScreen() {
         <ErrorState message="We couldn’t load events." onRetry={() => refetch()} />
       ) : (
         <>
-          <EditorialDiscovery events={events} city={city} />
+          <Reveal><EditorialDiscovery events={events} city={city} /></Reveal>
           {events.length > 0 ? <>
-          <SectionHeader title="This Week" spacious />
-          <ThisWeekSwitcher events={events.slice(0, 9)} />
+          <SectionHeader title={`This week in ${city}`} spacious />
+          <Reveal delay={70}><ThisWeekSwitcher events={events.slice(0, 9)} /></Reveal>
           <FriendsGoingRow events={events} />
 
           {/* 4. "Events Near You" — mirrors DiscoveryEvents on web. */}
           <SectionHeader
-            title="Events Near You"
+            title="Worth leaving home for"
             actionLabel="View All"
             onAction={() => router.push('/(tabs)/search')}
             spacious
           />
-          <EventCarousel events={events} />
+          <Reveal delay={110}><EventCarousel events={events} /></Reveal>
           </> : null}
 
           <LowInventoryDiscovery city={city} eventCount={events.length} />
@@ -102,7 +105,7 @@ export function HomeScreen() {
           <RestaurantsRow city={city} />
 
           {/* 7. Culture News — mirrors CulturalNewsSection on web. */}
-          <SectionHeader title="Culture News" actionLabel="View All" onAction={goToNews} spacious />
+          <SectionHeader title="From the CultureOwl Journal" actionLabel="View All" onAction={goToNews} spacious />
           <CultureNewsSection />
 
           {/* 8. Invite Friends / Explore — brand-voice closer at the bottom of Home. */}

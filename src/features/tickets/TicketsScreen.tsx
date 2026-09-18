@@ -65,7 +65,7 @@ export function TicketsScreen() {
           to see the shape of the feature before signing in, not just a wall
           of "please sign in" with no context. Pushed down a bit further
           from the header per explicit request. */}
-      <View style={{ flexDirection: 'row', gap: spacing.sm, marginTop: spacing.xl, marginBottom: spacing.lg }}>
+      <View style={{ flexDirection: 'row', gap: spacing.md, marginTop: spacing.xl, marginBottom: spacing.lg }}>
         <Chip label="Upcoming" active={tab === 'UPCOMING'} onPress={() => setTab('UPCOMING')} />
         <Chip label="Expired" active={tab === 'EXPIRED'} onPress={() => setTab('EXPIRED')} />
       </View>

@@ -20,8 +20,10 @@ export function Chip({ label, active = false, onPress }: ChipProps) {
       style={({ pressed }) => ({
         backgroundColor: active ? theme.colors.chipActiveBackground : theme.colors.chipBackground,
         borderRadius: radius.full,
-        paddingVertical: spacing.sm,
-        paddingHorizontal: spacing.lg,
+        minHeight: 44,
+        justifyContent: 'center',
+        paddingVertical: spacing.md,
+        paddingHorizontal: spacing.xl,
         opacity: pressed ? 0.85 : 1,
       })}
     >

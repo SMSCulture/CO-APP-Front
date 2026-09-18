@@ -111,7 +111,7 @@ export function FavoritesScreen() {
       <DetailScreenHeader title="Saved" />
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0, marginBottom: spacing.lg }} contentContainerStyle={{ alignItems: 'flex-start' }}>
-        <View style={{ flexDirection: 'row', gap: spacing.sm }}>
+        <View style={{ flexDirection: 'row', gap: spacing.md }}>
           {TABS.map((tab) => (
             <Chip
               key={tab.value}
@@ -126,13 +126,13 @@ export function FavoritesScreen() {
       {activeTab === 'INVITES' ? (
         <View style={{ flex: 1, justifyContent: 'center', gap: spacing.md, paddingBottom: 80 }}>
           {invitations.map((invite) => { const inviter=users.find(u=>u.id===invite.senderUserId); return <Pressable key={invite.id} onPress={() => router.push(`/events/${invite.eventId}`)} style={{padding:spacing.lg,borderRadius:radius.lg,backgroundColor:theme.colors.surface}}><Text variant="caption" muted>{inviter?.name} invited you</Text><Text variant="subheading">View the event ›</Text></Pressable>; })}
-          {!invitations.length ? <><FavoritesIllustration/><Text variant="heading" style={{textAlign:'center'}}>No invitations yet</Text></> : null}
+          {!invitations.length ? <><FavoritesIllustration/><Text variant="heading" style={{textAlign:'center'}}>Your next invitation starts here</Text></> : null}
         </View>
       ) : filtered.length === 0 ? (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: spacing.md, paddingBottom: 88 }}>
           <FavoritesIllustration />
-          <Text variant="heading" style={{ textAlign: 'center' }}>No favorites yet</Text>
-          <Text muted style={{ textAlign: 'center', maxWidth: 310 }}>Tap the heart on anything you want to save for later.</Text>
+          <Text variant="heading" style={{ textAlign: 'center' }}>Nothing tucked away yet</Text>
+          <Text muted style={{ textAlign: 'center', maxWidth: 310 }}>Save what catches your eye. We’ll keep it here.</Text>
         </View>
       ) : (
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: spacing['3xl'] }}>

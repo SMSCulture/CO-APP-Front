@@ -8,6 +8,7 @@ export function HorizontalCarousel({ children }: { children: ReactNode }) {
   return (
     <ScrollView
       horizontal
+      decelerationRate="fast"
       showsHorizontalScrollIndicator={false}
       style={{ marginHorizontal: -spacing.screenX }}
       contentContainerStyle={{ paddingHorizontal: spacing.screenX, gap: spacing.md }}

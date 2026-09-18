@@ -38,7 +38,7 @@ export function NewsListScreen() {
     <Screen>
       <DetailScreenHeader title="Culture News" />
       {isLoading ? <LoadingState /> : isError ? <ErrorState message="We couldn’t load Culture News." onRetry={() => refetch()} /> : !lead ? (
-        <EmptyState title="No Stories Yet" message="Check back soon for local culture stories." />
+        <EmptyState title="The next story is taking shape" message="Fresh eyes on the local scene are coming soon." />
       ) : (
         <FlatList
           data={rest}
