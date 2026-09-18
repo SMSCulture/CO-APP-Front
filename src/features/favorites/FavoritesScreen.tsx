@@ -9,11 +9,15 @@ import { Chip, IconButton, Screen, Text } from '../../components/ui';
 import { radius, sizes, spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
 import { useFavoritesStore } from '../../store/favoritesStore';
-import { useSocialStore } from '../../store/socialStore';
 import type { FavoriteEntityType, FavoriteItem } from '../../types/favorite';
 
-type FavoriteTab = 'SAVED' | 'INVITES';
-const TABS: { value: FavoriteTab; label: string }[] = [{ value:'SAVED',label:'Saved'},{value:'INVITES',label:'Invites'}];
+type FavoriteFilter = 'ALL' | 'ART_DINE' | 'ARTS_ORGS' | 'EVENTS';
+const FILTERS: { value: FavoriteFilter; label: string }[] = [
+  { value: 'ALL', label: 'All' },
+  { value: 'ART_DINE', label: 'Art & Dine' },
+  { value: 'ARTS_ORGS', label: 'Arts Organizations' },
+  { value: 'EVENTS', label: 'Events' },
+];
 
 /** Routes match the existing detail screens: src/app/events/[eventId].tsx, venues/[venueId].tsx, organizations/[organizationId].tsx. */
 const ENTITY_ROUTES: Record<FavoriteEntityType, (id: string) => string> = {
@@ -98,37 +102,35 @@ function FavoriteRow({ item }: { item: FavoriteItem }) {
  * for visual consistency across all four).
  */
 export function FavoritesScreen() {
-  const theme = useAppTheme();
-  const [activeTab, setActiveTab] = useState<FavoriteTab>('SAVED');
-  const { invitations, users } = useSocialStore();
+  const [filter, setFilter] = useState<FavoriteFilter>('ALL');
   const { getAllFavorites } = useFavoritesStore();
   const items = getAllFavorites();
-  const filtered = useMemo(() => items, [items]);
+  const filtered = useMemo(() => items.filter((item) => {
+    if (filter === 'ALL') return true;
+    if (filter === 'ART_DINE') return item.entityType === 'restaurant';
+    if (filter === 'ARTS_ORGS') return item.entityType === 'arts-group' || item.entityType === 'venue';
+    return item.entityType === 'event';
+  }), [filter, items]);
 
 
   return (
     <Screen>
-      <DetailScreenHeader title="Saved" />
+      <DetailScreenHeader title="My Favorites" fallbackHref="/(tabs)/profile" />
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0, marginBottom: spacing.lg }} contentContainerStyle={{ alignItems: 'flex-start' }}>
         <View style={{ flexDirection: 'row', gap: spacing.md }}>
-          {TABS.map((tab) => (
+          {FILTERS.map((tab) => (
             <Chip
               key={tab.value}
               label={tab.label}
-              active={activeTab === tab.value}
-              onPress={() => setActiveTab(tab.value)}
+              active={filter === tab.value}
+              onPress={() => setFilter(tab.value)}
             />
           ))}
         </View>
       </ScrollView>
 
-      {activeTab === 'INVITES' ? (
-        <View style={{ flex: 1, justifyContent: 'center', gap: spacing.md, paddingBottom: 80 }}>
-          {invitations.map((invite) => { const inviter=users.find(u=>u.id===invite.senderUserId); return <Pressable key={invite.id} onPress={() => router.push(`/events/${invite.eventId}`)} style={{padding:spacing.lg,borderRadius:radius.lg,backgroundColor:theme.colors.surface}}><Text variant="caption" muted>{inviter?.name} invited you</Text><Text variant="subheading">View the event ›</Text></Pressable>; })}
-          {!invitations.length ? <><FavoritesIllustration/><Text variant="heading" style={{textAlign:'center'}}>Your next invitation starts here</Text></> : null}
-        </View>
-      ) : filtered.length === 0 ? (
+      {filtered.length === 0 ? (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: spacing.md, paddingBottom: 88 }}>
           <FavoritesIllustration />
           <Text variant="heading" style={{ textAlign: 'center' }}>Nothing tucked away yet</Text>

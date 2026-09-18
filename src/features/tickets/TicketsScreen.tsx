@@ -57,7 +57,7 @@ export function TicketsScreen() {
     // of scrolling away with the ticket list.
     <Screen>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <View style={{ flex: 1 }}><DetailScreenHeader title="Tickets" /></View>
+        <View style={{ flex: 1 }}><DetailScreenHeader title="Tickets" showBack={false} /></View>
         <Pressable accessibilityRole="button" accessibilityLabel="Open ticket help" onPress={() => router.push('/help')} style={{ position: 'absolute', right: 0, width: 40, height: 40, borderRadius: 20, borderWidth: 1, borderColor: theme.colors.border, alignItems: 'center', justifyContent: 'center' }}><Text variant="bodyBold">?</Text></Pressable>
       </View>
 
