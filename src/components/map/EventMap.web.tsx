@@ -1,6 +1,6 @@
 import 'maplibre-gl/dist/maplibre-gl.css';
 import * as maplibregl from 'maplibre-gl';
-import type { GeoJSONSource, Map as MLMap, MapMouseEvent } from 'maplibre-gl';
+import type { GeoJSONSource, Map as MLMap, MapMouseEvent, StyleSpecification } from 'maplibre-gl';
 import { useEffect, useRef } from 'react';
 import { View } from 'react-native';
 import type { EventMapPin, MapViewport } from '../../types/map';
@@ -12,7 +12,21 @@ interface Props {
   onViewportChange: (v: MapViewport) => void;
   recenterTo?: { latitude: number; longitude: number } | null;
 }
-const STYLE = 'https://tiles.openfreemap.org/styles/positron';
+const STYLE: StyleSpecification = {
+  version: 8,
+  sources: {
+    openmaptiles: { type: 'vector', url: 'https://tiles.openfreemap.org/planet' },
+  },
+  layers: [
+    { id: 'background', type: 'background', paint: { 'background-color': '#f2f3f0' } },
+    { id: 'parks', type: 'fill', source: 'openmaptiles', 'source-layer': 'park', paint: { 'fill-color': '#e4ebe2', 'fill-opacity': 0.9 } },
+    { id: 'water', type: 'fill', source: 'openmaptiles', 'source-layer': 'water', paint: { 'fill-color': '#c5dce8' } },
+    { id: 'buildings', type: 'fill', source: 'openmaptiles', 'source-layer': 'building', minzoom: 12, paint: { 'fill-color': '#dedbd5', 'fill-outline-color': '#d1cec8' } },
+    { id: 'roads', type: 'line', source: 'openmaptiles', 'source-layer': 'transportation', paint: { 'line-color': '#ffffff', 'line-width': ['interpolate', ['linear'], ['zoom'], 8, 0.6, 14, 3] } },
+    { id: 'road-casing', type: 'line', source: 'openmaptiles', 'source-layer': 'transportation', filter: ['match', ['get', 'class'], ['motorway', 'trunk', 'primary'], true, false], paint: { 'line-color': '#d8d4cc', 'line-width': ['interpolate', ['linear'], ['zoom'], 8, 0.8, 14, 1.5] } },
+    { id: 'boundaries', type: 'line', source: 'openmaptiles', 'source-layer': 'boundary', paint: { 'line-color': '#b7bcc0', 'line-width': 0.8, 'line-dasharray': [3, 2] } },
+  ],
+};
 const SOURCE = 'cultureowl-events';
 export function EventMap({
   pins,
@@ -49,7 +63,10 @@ export function EventMap({
       canvasContainer.style.width = '100%';
       canvasContainer.style.height = '100%';
     }
-    m.resize();
+    requestAnimationFrame(() => {
+      m.resize();
+      m.triggerRepaint();
+    });
     m.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
     let timer: ReturnType<typeof setTimeout> | undefined;
     const publish = () => {
