@@ -86,7 +86,7 @@ function HeroSwitcher({ articles }: { articles: NewsArticle[] }) {
                   position: 'absolute',
                   left: spacing.lg,
                   right: spacing.lg,
-                  bottom: spacing.xl,
+                  bottom: spacing.xl + 18,
                   gap: spacing.sm,
                 }}
               >
@@ -125,45 +125,62 @@ function HeroSwitcher({ articles }: { articles: NewsArticle[] }) {
                   </Text>
                 ) : null}
               </View>
+              <View
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  bottom: spacing.sm,
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  gap: 7,
+                }}
+              >
+                {articles.map((dotArticle, index) => (
+                  <View
+                    key={`dot-${dotArticle.id}`}
+                    style={{
+                      width: activeIndex === index ? 20 : 7,
+                      height: 7,
+                      borderRadius: 4,
+                      backgroundColor:
+                        activeIndex === index ? '#fff' : 'rgba(255,255,255,.42)',
+                    }}
+                  />
+                ))}
+              </View>
             </Pressable>
           </View>
         ))}
       </ScrollView>
-      <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 7 }}>
-        {articles.map((article, index) => (
-          <View
-            key={`dot-${article.id}`}
-            style={{
-              width: activeIndex === index ? 20 : 7,
-              height: 7,
-              borderRadius: 4,
-              backgroundColor: activeIndex === index ? theme.colors.primary : theme.colors.border,
-            }}
-          />
-        ))}
-      </View>
     </View>
   );
 }
 
-function RefreshedArticlesGrid({ articles }: { articles: NewsArticle[] }) {
+function RefreshedArticlesRow({ articles }: { articles: NewsArticle[] }) {
   const theme = useAppTheme();
   const { width } = useWindowDimensions();
-  const gap = spacing.sm;
-  const tileSize = (width - spacing.screenX * 2 - gap) / 2;
-  const refreshed = articles.slice(0, 4);
+  const tileSize = Math.min(176, width * 0.42);
+  const refreshed = articles.slice(0, 5);
 
   if (!refreshed.length) return null;
 
   return (
-    <View style={{ paddingHorizontal: spacing.screenX, gap: spacing.md }}>
-      <View style={{ gap: 3 }}>
+    <View style={{ gap: spacing.md }}>
+      <View style={{ paddingHorizontal: spacing.screenX, gap: 3 }}>
         <Text variant="label" color={theme.colors.primary}>
           FRESH THIS WEEK
         </Text>
         <Text variant="heading">Top articles to read</Text>
       </View>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap }}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingHorizontal: spacing.screenX,
+          gap: spacing.sm,
+        }}
+      >
         {refreshed.map((article) => (
           <Pressable
             key={`refreshed-${article.id}`}
@@ -190,7 +207,7 @@ function RefreshedArticlesGrid({ articles }: { articles: NewsArticle[] }) {
               style={{
                 position: 'absolute',
                 inset: 0,
-                backgroundColor: 'rgba(3,8,13,.22)',
+                backgroundColor: 'rgba(3,8,13,.18)',
               }}
             />
             <View
@@ -199,7 +216,7 @@ function RefreshedArticlesGrid({ articles }: { articles: NewsArticle[] }) {
                 left: 0,
                 right: 0,
                 bottom: 0,
-                height: '78%',
+                height: '66%',
                 backgroundColor: 'rgba(5,11,18,.68)',
               }}
             />
@@ -209,31 +226,24 @@ function RefreshedArticlesGrid({ articles }: { articles: NewsArticle[] }) {
                 left: spacing.md,
                 right: spacing.md,
                 bottom: spacing.md,
-                gap: 5,
               }}
             >
-              <Text variant="caption" color="rgba(255,255,255,.78)" numberOfLines={1}>
-                {(article.category ?? 'Culture').toUpperCase()}
-              </Text>
               <Text
                 color="#fff"
-                numberOfLines={3}
+                numberOfLines={4}
                 style={{
                   fontFamily: fontFamily.bold,
-                  fontSize: 17,
-                  lineHeight: 20,
+                  fontSize: 18,
+                  lineHeight: 21,
                   fontWeight: '700',
                 }}
               >
                 {article.title}
               </Text>
-              <Text variant="caption" color="rgba(255,255,255,.72)" numberOfLines={1}>
-                {article.authorName} · {formatDate(article.publishedAt)}
-              </Text>
             </View>
           </Pressable>
         ))}
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -296,7 +306,7 @@ export function NewsListScreen() {
         >
           <HeroSwitcher articles={featured} />
 
-          <RefreshedArticlesGrid articles={rest.length ? rest : featured} />
+          <RefreshedArticlesRow articles={rest.length ? rest : featured} />
 
           {groups.map(({ category, articles: groupArticles }) => (
             <ArticleRail key={category} title={category} articles={groupArticles} />
