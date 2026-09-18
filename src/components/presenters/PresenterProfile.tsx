@@ -133,7 +133,7 @@ export function PresenterProfile(props: PresenterProfileProps) {
       ) : null}
       {props.address || props.websiteUrl ? (
         <Card variant="tinted" style={{ gap: spacing.md }}>
-          <Text variant="heading">Venue details</Text>
+          <Text variant="heading">{props.kind === 'Venue' ? 'Venue details' : 'Organization details'}</Text>
           {props.address ? (
             <View style={{ flexDirection: 'row', gap: spacing.md }}>
               <MapPinIcon color={String(theme.colors.primary)} />
