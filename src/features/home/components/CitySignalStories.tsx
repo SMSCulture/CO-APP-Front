@@ -7,13 +7,13 @@ import { palette } from '../../../design/colors';
 import { spacing } from '../../../design/tokens';
 import type { EventSummary } from '../../../types/event';
 
-const storyLooks = [
+const signalLooks = [
   { background: '#d62f82', accent: '#ffd22e', label: "TONIGHT'S LEAD" },
   { background: '#1650bd', accent: '#36d8bc', label: 'FREE TONIGHT' },
   { background: '#702dd1', accent: '#ff7447', label: 'YOUR LATE PICK' },
 ];
 
-function SignalStory({
+function QuickSignal({
   event,
   index,
   active,
@@ -22,40 +22,28 @@ function SignalStory({
   index: number;
   active: boolean;
 }) {
-  const [open, setOpen] = useState(false);
-  const [reveal] = useState(() => new Animated.Value(0));
-  const look = storyLooks[index % storyLooks.length];
+  const [motion] = useState(() => new Animated.Value(0));
+  const look = signalLooks[index % signalLooks.length];
   useEffect(() => {
-    if (!active) {
-      const reset = setTimeout(() => {
-        setOpen(false);
-        reveal.setValue(0);
-      }, 0);
-      return () => clearTimeout(reset);
-    }
-    const timer = setTimeout(() => setOpen(true), 520);
-    return () => clearTimeout(timer);
-  }, [active, reveal]);
-  useEffect(() => {
-    Animated.timing(reveal, {
-      toValue: open ? 1 : 0,
-      duration: open ? 420 : 180,
+    Animated.timing(motion, {
+      toValue: active ? 1 : 0,
+      duration: active ? 420 : 180,
       easing: Easing.out(Easing.cubic),
       useNativeDriver: true,
     }).start();
-  }, [open, reveal]);
-  const leftTransform = {
-    transform: [{ translateX: reveal.interpolate({ inputRange: [0, 1], outputRange: [0, -170] }) }],
-  };
-  const rightTransform = {
-    transform: [{ translateX: reveal.interpolate({ inputRange: [0, 1], outputRange: [0, 170] }) }],
+  }, [active, motion]);
+  const accentMove = {
+    transform: [
+      { translateX: motion.interpolate({ inputRange: [0, 1], outputRange: [0, 22] }) },
+      { rotate: '-9deg' },
+    ],
   };
   return (
     <View
       style={{
         width: 318,
-        height: 568,
-        borderRadius: 30,
+        height: 420,
+        borderRadius: 28,
         overflow: 'hidden',
         backgroundColor: '#08090d',
       }}
@@ -63,110 +51,79 @@ function SignalStory({
       <Image
         source={{ uri: event.mainImageUrl ?? undefined }}
         contentFit="cover"
-        style={{ position: 'absolute', inset: 0 }}
+        style={{ position: 'absolute', left: 116, right: 0, top: 0, bottom: 0 }}
       />
-      <View style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(5,6,10,.34)' }} />
+      <View
+        style={{
+          position: 'absolute',
+          left: 116,
+          right: 0,
+          top: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(4,5,9,.18)',
+        }}
+      />
+      <View
+        style={{
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          bottom: 0,
+          width: 142,
+          backgroundColor: look.background,
+        }}
+      />
       <Animated.View
         pointerEvents="none"
         style={[
           {
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            bottom: 0,
-            width: '54%',
-            backgroundColor: look.background,
-          },
-          leftTransform,
-        ]}
-      >
-        <View
-          style={{
-            position: 'absolute',
-            width: 190,
-            height: 190,
-            borderRadius: 95,
-            backgroundColor: look.accent,
-            top: 92,
-            right: -60,
-          }}
-        />
-      </Animated.View>
-      <Animated.View
-        pointerEvents="none"
-        style={[
-          {
-            position: 'absolute',
-            right: 0,
-            top: 0,
-            bottom: 0,
-            width: '54%',
-            backgroundColor: look.background,
-          },
-          rightTransform,
-        ]}
-      >
-        <View
-          style={{
             position: 'absolute',
             width: 126,
             height: 126,
             borderRadius: 63,
-            backgroundColor: 'rgba(255,255,255,.2)',
-            top: 124,
-            left: -10,
-          }}
-        />
-      </Animated.View>
+            backgroundColor: look.accent,
+            top: 76,
+            left: 60,
+          },
+          accentMove,
+        ]}
+      />
       <View style={{ flex: 1, padding: spacing.lg, justifyContent: 'space-between' }}>
-        <View style={{ gap: 8 }}>
-          <View style={{ height: 4, borderRadius: 2, backgroundColor: 'rgba(255,255,255,.42)' }}>
-            <View
-              style={{
-                width: `${34 + index * 22}%`,
-                height: 4,
-                borderRadius: 2,
-                backgroundColor: '#fff',
-              }}
-            />
-          </View>
+        <View style={{ gap: 7 }}>
           <Text variant="label" color="#fff">
             CITY SIGNAL · 0{index + 1}
           </Text>
+          <Text variant="caption" color="rgba(255,255,255,.82)">
+            ONE PHOTO · AUTO-DESIGNED
+          </Text>
         </View>
-        <View style={{ gap: spacing.sm }}>
-          <Text variant="label" color={open ? '#fff' : look.accent}>
-            {open ? 'THE REAL EVENT' : look.label}
+        <View
+          style={{
+            padding: spacing.md,
+            marginHorizontal: -4,
+            borderRadius: 18,
+            backgroundColor: 'rgba(7,8,13,.84)',
+            gap: 5,
+          }}
+        >
+          <Text variant="label" color={look.accent}>
+            {look.label}
           </Text>
-          <Text variant="title" color="#fff" style={{ fontSize: 30, lineHeight: 32 }}>
-            {event.title.toUpperCase()}
+          <Text variant="heading" color="#fff" numberOfLines={2}>
+            {event.title}
           </Text>
-          <Text color="#fff">
-            {event.venueName} · {event.pricing ?? 'Free'}
+          <Text variant="caption" color="rgba(255,255,255,.78)" numberOfLines={1}>
+            {event.venueName}
           </Text>
-          <Text variant="caption" color="rgba(255,255,255,.86)">
-            {open
-              ? 'Photo revealed · Event details ready'
-              : 'Photo revealing now · Event details stay ready'}
+          <Text variant="bodyBold" color="#fff">
+            {event.pricing ?? 'Free'}
           </Text>
-          <View style={{ flexDirection: 'row', gap: spacing.sm, marginTop: spacing.sm }}>
-            <Button
-              label="Open event"
-              onPress={() => router.push(`/events/${event.id}`)}
-              style={{ flex: 1, backgroundColor: '#fff' }}
-            />
-            {open ? (
-              <Button
-                label="Replay"
-                variant="secondary"
-                onPress={() => {
-                  setOpen(false);
-                  setTimeout(() => setOpen(true), 220);
-                }}
-                style={{ minWidth: 82 }}
-              />
-            ) : null}
-          </View>
+          <Button
+            label="Open event"
+            onPress={() => router.push(`/events/${event.id}`)}
+            fullWidth
+            style={{ marginTop: spacing.xs, minHeight: 48, backgroundColor: '#fff' }}
+          />
         </View>
       </View>
     </View>
@@ -187,16 +144,17 @@ export function CitySignalStories({ events }: { events: EventSummary[] }) {
     >
       <View style={{ paddingHorizontal: spacing.screenX, marginBottom: spacing.lg, gap: 5 }}>
         <Text variant="label" color={palette.orange}>
-          NEW · INTERACTIVE
+          QUICK · ACTIONABLE
         </Text>
         <Text variant="title" color="#fff">
-          City Signal Stories
+          City Signals
         </Text>
-        <Text color="rgba(255,255,255,.72)">Design opens into the real event.</Text>
+        <Text color="rgba(255,255,255,.72)">
+          One publisher photo, automatically made ready for discovery.
+        </Text>
       </View>
       <ScrollView
         horizontal
-        pagingEnabled
         decelerationRate="fast"
         showsHorizontalScrollIndicator={false}
         snapToInterval={318 + spacing.md}
@@ -207,7 +165,7 @@ export function CitySignalStories({ events }: { events: EventSummary[] }) {
         contentContainerStyle={{ paddingHorizontal: spacing.screenX, gap: spacing.md }}
       >
         {events.slice(0, 5).map((event, index) => (
-          <SignalStory key={event.id} event={event} index={index} active={index === activeIndex} />
+          <QuickSignal key={event.id} event={event} index={index} active={index === activeIndex} />
         ))}
       </ScrollView>
     </View>
