@@ -33,6 +33,15 @@ export function EventMap({
       attributionControl: false,
     });
     map.current = m;
+    // react-native-web's global div reset can collapse MapLibre's canvas container.
+    // Give the renderer an explicit box so tiles and layers remain visible.
+    const canvasContainer = host.current.querySelector<HTMLElement>('.maplibregl-canvas-container');
+    if (canvasContainer) {
+      canvasContainer.style.position = 'relative';
+      canvasContainer.style.width = '100%';
+      canvasContainer.style.height = '100%';
+    }
+    m.resize();
     m.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
     let timer: ReturnType<typeof setTimeout> | undefined;
     const publish = () => {
@@ -205,7 +214,10 @@ export function EventMap({
   }, [recenterTo]);
   return (
     <View style={{ flex: 1 }}>
-      <div ref={host} style={{ position: 'absolute', inset: 0 }} />
+      <div
+        ref={host}
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+      />
     </View>
   );
 }
