@@ -9,7 +9,7 @@ import { palette, radius, shadows, spacing } from '../../../design/tokens';
 import { formatDateSlot } from '../../../lib/formatDate';
 import { formatEventPrice } from '../../../lib/formatPrice';
 import { mockCollections } from '../../../mock/collections.mock';
-import { mockEventSummaries } from '../../../mock/events.mock';
+import { mockEvents, mockEventSummaries } from '../../../mock/events.mock';
 import { useToastStore } from '../../../store/toastStore';
 
 const ink = '#f7f7f4';
@@ -127,7 +127,9 @@ export default function CollectionDetail() {
           <Text variant="caption" color={muted}>{events.length} experiences</Text>
         </View>
         <View style={{ paddingHorizontal: spacing.screenX, paddingTop: spacing.lg, gap: spacing.xl }}>
-          {events.map((event) => (
+          {events.map((event) => {
+            const detail = mockEvents.find((item) => item.id === event.id);
+            return (
             <Pressable key={event.id} onPress={() => router.push(`/events/${event.id}`)} style={{ flexDirection: 'row', gap: spacing.md }}>
               <Image
                 source={{ uri: event.mainImageUrl ?? undefined }}
@@ -139,11 +141,13 @@ export default function CollectionDetail() {
                 <Text variant="caption" color={palette.blue}>{formatEventPrice(event)}</Text>
                 <Text variant="caption" color={muted}>{formatDateSlot(event.nextEventDate, event.startDate)}</Text>
                 <Text variant="caption" color={muted} numberOfLines={1}>{event.venueName}</Text>
-                <Text variant="caption" color="#d2d3d4" numberOfLines={2}>A CultureOwl pick in {event.city}, selected for this edit.</Text>
-                <Text variant="caption" color={ink} style={{ textDecorationLine: 'underline' }}>View details</Text>
+                <Text variant="caption" color="#d2d3d4" numberOfLines={2} ellipsizeMode="tail">
+                  {detail?.description ?? `A CultureOwl pick in ${event.city}, selected for this edit.`}
+                </Text>
               </View>
             </Pressable>
-          ))}
+            );
+          })}
         </View>
         <View style={{ marginTop: spacing['2xl'], padding: spacing.screenX, backgroundColor: panel, gap: spacing.md }}>
           <Text variant="heading" color={ink}>Discover more collections</Text>
