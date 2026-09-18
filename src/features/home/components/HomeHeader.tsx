@@ -1,8 +1,10 @@
 import { router } from 'expo-router';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { SearchBarPill } from '../../../components/discovery/SearchBarPill';
 import { spacing } from '../../../design/tokens';
+import { HeartIcon } from '../../../components/layout/icons/MenuIcons';
+import { useAppTheme } from '../../../design/useAppTheme';
 
 interface HomeHeaderProps {
   onFilterPress: () => void;
@@ -14,6 +16,7 @@ interface HomeHeaderProps {
  * `LocationRow` component, rendered lower on the page (below Categories).
  */
 export function HomeHeader({ onFilterPress }: HomeHeaderProps) {
+  const theme = useAppTheme();
   return (
     <View style={{ marginBottom: spacing['2xl'] }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm, paddingTop: spacing.lg }}>
@@ -25,6 +28,9 @@ export function HomeHeader({ onFilterPress }: HomeHeaderProps) {
             onFilterPress={onFilterPress}
           />
         </View>
+        <Pressable accessibilityRole="button" accessibilityLabel="Open My Favorites" onPress={() => router.push('/favorites')} style={({ pressed }) => ({ width: 46, height: 46, borderRadius: 23, alignItems: 'center', justifyContent: 'center', backgroundColor: theme.colors.chipBackground, opacity: pressed ? .7 : 1 })}>
+          <HeartIcon color={String(theme.colors.text)} size={22} />
+        </Pressable>
       </View>
 
     </View>
