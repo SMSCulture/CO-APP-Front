@@ -1,6 +1,6 @@
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { FlatList, Pressable, View } from 'react-native';
+import { FlatList, View } from 'react-native';
 
 import { CategoryRectangleGrid } from '../../components/discovery/CategoryRectangleGrid';
 import { FilterPanel } from '../../components/discovery/FilterPanel';
@@ -10,8 +10,6 @@ import { SearchBarPill } from '../../components/discovery/SearchBarPill';
 import { SearchResultRow } from '../../components/discovery/SearchResultRow';
 import { SortModal, type SortOption } from '../../components/discovery/SortModal';
 import { SectionHeader } from '../../components/layout/SectionHeader';
-import { ChevronLeftIcon } from '../../components/layout/icons/MenuIcons';
-import { useAppTheme } from '../../design/useAppTheme';
 import { StaggeredReveal } from '../../components/layout/StaggeredReveal';
 import { EmptyState, ErrorState, LoadingState, Screen, Text } from '../../components/ui';
 import { spacing } from '../../design/tokens';
@@ -19,7 +17,12 @@ import { useDebounce } from '../../hooks/useDebounce';
 import { useMainGenres } from '../../queries/genres.queries';
 import { useEventSearch } from '../../queries/search.queries';
 import type { EventSummary } from '../../types/event';
-import { DEFAULT_EVENT_FILTERS, hasActiveFilters, type DateFilterType, type EventFiltersState } from '../../types/filters';
+import {
+  DEFAULT_EVENT_FILTERS,
+  hasActiveFilters,
+  type DateFilterType,
+  type EventFiltersState,
+} from '../../types/filters';
 import type { SearchRouteParams } from '../../types/navigation';
 
 function parsePrice(event: EventSummary): number {
@@ -37,7 +40,9 @@ function sortEvents(events: EventSummary[], sort: SortOption): EventSummary[] {
       return sorted;
     case 'DATE':
     default:
-      return sorted.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+      return sorted.sort(
+        (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
+      );
   }
 }
 
@@ -48,7 +53,6 @@ function sortEvents(events: EventSummary[], sort: SortOption): EventSummary[] {
  */
 
 export function SearchScreen() {
-  const theme = useAppTheme();
   const params = useLocalSearchParams<SearchRouteParams>();
   const initialFilters: EventFiltersState = {
     dateFilter: (params.dateFilter as DateFilterType) ?? DEFAULT_EVENT_FILTERS.dateFilter,
@@ -73,7 +77,10 @@ export function SearchScreen() {
   // FilterPillRow's categoryLabel), NOT in the search box — the search box
   // is for actual search terms; the pill is what tells people what category
   // they're currently on.
-  const categoryLabel = filters.tagIds.length === 1 ? genres?.find((g) => g.id === filters.tagIds[0])?.display : undefined;
+  const categoryLabel =
+    filters.tagIds.length === 1
+      ? genres?.find((g) => g.id === filters.tagIds[0])?.display
+      : undefined;
 
   const debouncedTerm = useDebounce(term);
   const { data, isLoading, isError, refetch } = useEventSearch({
@@ -117,22 +124,17 @@ export function SearchScreen() {
   return (
     <Screen>
       <View style={{ gap: spacing.md, marginBottom: spacing.lg, marginTop: spacing.lg }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
-          <Pressable accessibilityRole="button" accessibilityLabel="Go back" hitSlop={10} onPress={() => router.back()}>
-            <ChevronLeftIcon color={String(theme.colors.text)} size={24} />
-          </Pressable>
-          <View style={{ flex: 1 }}>
-            <SearchBarPill
-              mode={inputActive ? 'input' : 'link'}
-              placeholder="Discover events, venues, restaurants…"
-              value={term}
-              onChangeText={changeTerm}
-              onPress={activateSearch}
-              autoFocus={inputActive}
-              onClear={clearSearch}
-              showFilterIcon={false}
-            />
-          </View>
+        <View>
+          <SearchBarPill
+            mode={inputActive ? 'input' : 'link'}
+            placeholder="Discover events, venues, restaurants…"
+            value={term}
+            onChangeText={changeTerm}
+            onPress={activateSearch}
+            autoFocus={inputActive}
+            onClear={clearSearch}
+            showFilterIcon={false}
+          />
         </View>
         <FilterPillRow
           dateActive={filters.dateFilter !== ''}
@@ -172,14 +174,18 @@ export function SearchScreen() {
               <View style={{ gap: spacing.md, paddingBottom: spacing.lg }}>
                 <Text variant="subheading">Suggestions</Text>
                 <Text variant="bodyBold">{debouncedTerm}</Text>
-                <Text variant="subheading" style={{ paddingTop: spacing.sm }}>Experiences</Text>
+                <Text variant="subheading" style={{ paddingTop: spacing.sm }}>
+                  Experiences
+                </Text>
               </View>
             ) : null
           }
           ListEmptyComponent={
             <EmptyState
               title="No results"
-              message={debouncedTerm ? `Nothing matches “${debouncedTerm}”.` : 'Try a different filter.'}
+              message={
+                debouncedTerm ? `Nothing matches “${debouncedTerm}”.` : 'Try a different filter.'
+              }
             />
           }
         />
@@ -196,7 +202,12 @@ export function SearchScreen() {
           setHasInteracted(true);
         }}
       />
-      <SortModal visible={sortModalOpen} onClose={() => setSortModalOpen(false)} value={sort} onChange={setSort} />
+      <SortModal
+        visible={sortModalOpen}
+        onClose={() => setSortModalOpen(false)}
+        value={sort}
+        onChange={setSort}
+      />
     </Screen>
   );
 }

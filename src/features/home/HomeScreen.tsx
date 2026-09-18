@@ -25,6 +25,7 @@ import { FirstVisitMuse } from './components/FirstVisitMuse';
 import { CollectionsRow } from './components/CollectionsRow';
 import { Reveal } from '../../components/motion/Reveal';
 import { CitySignalStories } from './components/CitySignalStories';
+import { MapButton } from '../../components/discovery/MapButton';
 import { CityEditsRow } from './components/CityEditsRow';
 import { SelfPublishExplainer } from './components/SelfPublishExplainer';
 
@@ -135,6 +136,8 @@ export function HomeScreen() {
           <InviteExploreCard />
         </>
       )}
+
+      <MapButton />
 
       <FilterPanel
         visible={homeFilterOpen}

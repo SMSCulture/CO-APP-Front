@@ -19,8 +19,9 @@ export function MapButton() {
       onPress={() => router.push('/map')}
       style={({ pressed }) => ({
         position: 'absolute',
-        bottom: spacing.xl,
+        bottom: 78,
         alignSelf: 'center',
+        zIndex: 20,
         flexDirection: 'row',
         alignItems: 'center',
         gap: spacing.sm,
