@@ -41,8 +41,8 @@ function QuickSignal({
   return (
     <View
       style={{
-        width: 246,
-        height: 310,
+        width: 220,
+        height: 260,
         borderRadius: 28,
         overflow: 'hidden',
         backgroundColor: '#08090d',
@@ -51,12 +51,12 @@ function QuickSignal({
       <Image
         source={{ uri: event.mainImageUrl ?? undefined }}
         contentFit="cover"
-        style={{ position: 'absolute', left: 92, right: 0, top: 0, bottom: 0 }}
+        style={{ position: 'absolute', left: 78, right: 0, top: 0, bottom: 0 }}
       />
       <View
         style={{
           position: 'absolute',
-          left: 92,
+          left: 78,
           right: 0,
           top: 0,
           bottom: 0,
@@ -69,7 +69,7 @@ function QuickSignal({
           left: 0,
           top: 0,
           bottom: 0,
-          width: 112,
+          width: 94,
           backgroundColor: look.background,
         }}
       />
@@ -78,12 +78,12 @@ function QuickSignal({
         style={[
           {
             position: 'absolute',
-            width: 86,
-            height: 86,
-            borderRadius: 43,
+            width: 68,
+            height: 68,
+            borderRadius: 34,
             backgroundColor: look.accent,
-            top: 44,
-            left: 44,
+            top: 40,
+            left: 36,
           },
           accentMove,
         ]}
@@ -100,7 +100,7 @@ function QuickSignal({
         <View
           style={{
             padding: spacing.sm,
-            marginHorizontal: -4,
+            marginHorizontal: -5,
             borderRadius: 18,
             backgroundColor: 'rgba(7,8,13,.84)',
             gap: 5,
@@ -109,7 +109,7 @@ function QuickSignal({
           <Text variant="label" color={look.accent}>
             {look.label}
           </Text>
-          <Text variant="heading" color="#fff" numberOfLines={2}>
+          <Text variant="subheading" color="#fff" numberOfLines={2}>
             {event.title}
           </Text>
           <Text variant="caption" color="rgba(255,255,255,.78)" numberOfLines={1}>
@@ -122,7 +122,7 @@ function QuickSignal({
             label="Open event"
             onPress={() => router.push(`/events/${event.id}`)}
             fullWidth
-            style={{ marginTop: spacing.xs, minHeight: 48, backgroundColor: '#fff' }}
+            style={{ marginTop: spacing.xs, minHeight: 40, backgroundColor: '#fff' }}
           />
         </View>
       </View>
@@ -136,9 +136,9 @@ export function CitySignalStories({ events }: { events: EventSummary[] }) {
   return (
     <View
       style={{
-        marginTop: spacing.lg,
+        marginTop: spacing.md,
         marginHorizontal: -spacing.screenX,
-        paddingVertical: spacing.lg,
+        paddingVertical: spacing.md,
         backgroundColor: '#090a10',
       }}
     >
@@ -157,10 +157,10 @@ export function CitySignalStories({ events }: { events: EventSummary[] }) {
         horizontal
         decelerationRate="fast"
         showsHorizontalScrollIndicator={false}
-        snapToInterval={246 + spacing.md}
+        snapToInterval={220 + spacing.md}
         disableIntervalMomentum
         onMomentumScrollEnd={(e) =>
-          setActiveIndex(Math.round(e.nativeEvent.contentOffset.x / (246 + spacing.md)))
+          setActiveIndex(Math.round(e.nativeEvent.contentOffset.x / (220 + spacing.md)))
         }
         contentContainerStyle={{ paddingHorizontal: spacing.screenX, gap: spacing.md }}
       >
