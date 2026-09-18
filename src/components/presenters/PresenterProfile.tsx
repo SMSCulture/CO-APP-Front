@@ -1,9 +1,10 @@
 import { Image } from 'expo-image';
-import { Linking, Pressable, View } from 'react-native';
+import { Linking, Modal, Pressable, View } from 'react-native';
+import { useState } from 'react';
 import { AppHeader } from '../layout/AppHeader';
 import { MapPinIcon } from '../layout/icons/MenuIcons';
 import { Button, Card, Text } from '../ui';
-import { fontFamily, spacing } from '../../design/tokens';
+import { fontFamily, radius, spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
 import type { EventSummary } from '../../types/event';
 import { EventCarousel } from '../discovery/EventCarousel';
@@ -26,6 +27,7 @@ interface PresenterProfileProps {
 
 export function PresenterProfile(props: PresenterProfileProps) {
   const theme = useAppTheme();
+  const [socialsOpen, setSocialsOpen] = useState(false);
   const hero = props.imageUrl ?? 'https://picsum.photos/seed/culture-presenter/1200/800';
   return (
     <View style={{ gap: spacing.xl }}>
@@ -99,30 +101,73 @@ export function PresenterProfile(props: PresenterProfileProps) {
       {props.socialLinks?.length ? (
         <View style={{ alignItems: 'flex-start', gap: spacing.sm }}>
           <Text variant="label" muted>FOLLOW</Text>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
-            {props.socialLinks.map((social) => (
-              <Pressable
-                key={social.label}
-                accessibilityRole="link"
-                accessibilityLabel={`${props.name} on ${social.label}`}
-                onPress={() => Linking.openURL(social.url)}
-                style={({ pressed }) => ({
-                  minWidth: 44,
-                  height: 44,
-                  borderRadius: 22,
-                  paddingHorizontal: spacing.md,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: theme.colors.surface,
-                  borderWidth: 1,
-                  borderColor: theme.colors.border,
-                  opacity: pressed ? 0.65 : 1,
-                })}
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={`Open ${props.name} social links`}
+            onPress={() => setSocialsOpen(true)}
+            style={({ pressed }) => ({
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: spacing.sm,
+              minHeight: 46,
+              borderRadius: 23,
+              paddingHorizontal: spacing.lg,
+              backgroundColor: theme.colors.surface,
+              borderWidth: 1,
+              borderColor: theme.colors.border,
+              opacity: pressed ? 0.65 : 1,
+            })}
+          >
+            <Text style={{ fontSize: 19 }}>◎</Text>
+            <Text variant="bodyBold">Social links</Text>
+            <Text muted>↗</Text>
+          </Pressable>
+          <Modal visible={socialsOpen} transparent animationType="slide" onRequestClose={() => setSocialsOpen(false)}>
+            <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(3,8,13,.58)' }}>
+              <Pressable accessibilityLabel="Close social links" style={{ flex: 1 }} onPress={() => setSocialsOpen(false)} />
+              <View
+                style={{
+                  backgroundColor: theme.colors.background,
+                  borderTopLeftRadius: 28,
+                  borderTopRightRadius: 28,
+                  padding: spacing.xl,
+                  paddingBottom: 48,
+                  gap: spacing.lg,
+                }}
               >
-                <Text variant="bodyBold">{social.label}</Text>
-              </Pressable>
-            ))}
-          </View>
+                <View style={{ width: 42, height: 4, borderRadius: 2, alignSelf: 'center', backgroundColor: theme.colors.border }} />
+                <View style={{ gap: 3 }}>
+                  <Text variant="title">Follow {props.name}</Text>
+                  <Text muted>Choose a channel. It opens in its app or website.</Text>
+                </View>
+                {props.socialLinks.map((social) => (
+                  <Pressable
+                    key={social.label}
+                    accessibilityRole="link"
+                    onPress={() => Linking.openURL(social.url)}
+                    style={({ pressed }) => ({
+                      minHeight: 56,
+                      borderRadius: radius.lg,
+                      paddingHorizontal: spacing.lg,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      backgroundColor: theme.colors.surface,
+                      borderWidth: 1,
+                      borderColor: theme.colors.border,
+                      opacity: pressed ? 0.65 : 1,
+                    })}
+                  >
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
+                      <Text style={{ fontSize: 20 }}>◎</Text>
+                      <Text variant="bodyBold">{social.label}</Text>
+                    </View>
+                    <Text color={theme.colors.primary}>Open ↗</Text>
+                  </Pressable>
+                ))}
+              </View>
+            </View>
+          </Modal>
         </View>
       ) : null}
       {props.videoUrl ? (
