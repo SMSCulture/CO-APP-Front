@@ -110,7 +110,7 @@ export function FavoritesScreen() {
     <Screen>
       <DetailScreenHeader title="Saved" />
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: spacing.lg }}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0, marginBottom: spacing.lg }} contentContainerStyle={{ alignItems: 'flex-start' }}>
         <View style={{ flexDirection: 'row', gap: spacing.sm }}>
           {TABS.map((tab) => (
             <Chip

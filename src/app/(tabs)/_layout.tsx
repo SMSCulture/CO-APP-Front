@@ -56,15 +56,13 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="discover"
+        name="saved"
         options={{
-          href: null,
-          title: 'More',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name="discover" color={color} focused={focused} />
-          ),
+          title: 'Saved',
+          tabBarIcon: ({ color, focused }) => <TabBarIcon name="discover" color={color} focused={focused} />,
         }}
       />
+      <Tabs.Screen name="discover" options={{ href: null }} />
       <Tabs.Screen
         name="tickets"
         options={{
