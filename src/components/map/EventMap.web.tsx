@@ -10,10 +10,17 @@ interface Props {
   selectedEventId: string | null;
   onSelectPin: (id: string) => void;
   onViewportChange: (v: MapViewport) => void;
+  recenterTo?: { latitude: number; longitude: number } | null;
 }
 const STYLE = 'https://tiles.openfreemap.org/styles/positron';
 const SOURCE = 'cultureowl-events';
-export function EventMap({ pins, selectedEventId, onSelectPin, onViewportChange }: Props) {
+export function EventMap({
+  pins,
+  selectedEventId,
+  onSelectPin,
+  onViewportChange,
+  recenterTo,
+}: Props) {
   const host = useRef<HTMLDivElement | null>(null);
   const map = useRef<MLMap | null>(null);
   useEffect(() => {
@@ -188,6 +195,14 @@ export function EventMap({ pins, selectedEventId, onSelectPin, onViewportChange 
     if (m.isStyleLoaded()) install();
     else m.once('load', install);
   }, [pins, selectedEventId, onSelectPin]);
+  useEffect(() => {
+    if (recenterTo && map.current)
+      map.current.easeTo({
+        center: [recenterTo.longitude, recenterTo.latitude],
+        zoom: 13,
+        duration: 500,
+      });
+  }, [recenterTo]);
   return (
     <View style={{ flex: 1 }}>
       <div ref={host} style={{ position: 'absolute', inset: 0 }} />

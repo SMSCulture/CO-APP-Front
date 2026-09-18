@@ -15,6 +15,7 @@ interface Props {
   selectedEventId: string | null;
   onSelectPin: (id: string) => void;
   onViewportChange: (v: MapViewport) => void;
+  recenterTo?: { latitude: number; longitude: number } | null;
 }
 export function EventMap({ pins, selectedEventId, onSelectPin, onViewportChange }: Props) {
   const collection = useMemo<GeoJSON.FeatureCollection>(

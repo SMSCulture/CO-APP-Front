@@ -49,6 +49,9 @@ export function MapScreen() {
   const [sort, setSort] = useState<SortOption>('POPULARITY');
   const [sortOpen, setSortOpen] = useState(false);
   const [viewport, setViewport] = useState<MapViewport | null>(null);
+  const [recenterTo, setRecenterTo] = useState<{ latitude: number; longitude: number } | null>(
+    null,
+  );
   const [pendingViewport, setPendingViewport] = useState<MapViewport | null>(null);
   const { data, isLoading, isError, refetch, isFetching } = useEventsFeed({
     tagId: filters.tagIds[0],
@@ -114,6 +117,7 @@ export function MapScreen() {
           selectedEventId={selectedEventId}
           onSelectPin={(id) => setSelectedEventId(id)}
           onViewportChange={receiveViewport}
+          recenterTo={recenterTo}
         />
       )}
       <View
@@ -182,7 +186,14 @@ export function MapScreen() {
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="Use my location"
-        onPress={() => setViewport(null)}
+        onPress={() => {
+          const target = {
+            latitude: viewport?.latitude ?? 25.7743,
+            longitude: viewport?.longitude ?? -80.1937,
+          };
+          setRecenterTo(target);
+          setPendingViewport(null);
+        }}
         style={{
           position: 'absolute',
           right: spacing.md,
