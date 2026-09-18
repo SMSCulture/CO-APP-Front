@@ -9,10 +9,11 @@ import { Chip, IconButton, Screen, Text } from '../../components/ui';
 import { radius, sizes, spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
 import { useFavoritesStore } from '../../store/favoritesStore';
+import { useSocialStore } from '../../store/socialStore';
 import type { FavoriteEntityType, FavoriteItem } from '../../types/favorite';
 
-type FavoriteTab = 'ALL' | 'ACTIVE' | 'INACTIVE';
-const TABS: { value: FavoriteTab; label: string }[] = [{ value:'ALL',label:'All'},{value:'ACTIVE',label:'Active'},{value:'INACTIVE',label:'Inactive'}];
+type FavoriteTab = 'SAVED' | 'INVITES';
+const TABS: { value: FavoriteTab; label: string }[] = [{ value:'SAVED',label:'Saved'},{value:'INVITES',label:'Invites'}];
 
 /** Routes match the existing detail screens: src/app/events/[eventId].tsx, venues/[venueId].tsx, organizations/[organizationId].tsx. */
 const ENTITY_ROUTES: Record<FavoriteEntityType, (id: string) => string> = {
@@ -97,23 +98,17 @@ function FavoriteRow({ item }: { item: FavoriteItem }) {
  * for visual consistency across all four).
  */
 export function FavoritesScreen() {
-  const [activeTab, setActiveTab] = useState<FavoriteTab>('ALL');
-  const [openedAt] = useState(() => Date.now());
+  const theme = useAppTheme();
+  const [activeTab, setActiveTab] = useState<FavoriteTab>('SAVED');
+  const { invitations, users } = useSocialStore();
   const { getAllFavorites } = useFavoritesStore();
   const items = getAllFavorites();
-  const filtered = useMemo(() => {
-    if (activeTab === 'ALL') return items;
-    const now = openedAt;
-    return items.filter((item) => {
-      const eventTime = item.startDate ? new Date(item.startDate).getTime() : null;
-      const active = eventTime === null || eventTime >= now;
-      return activeTab === 'ACTIVE' ? active : !active;
-    });
-  }, [activeTab, items, openedAt]);
+  const filtered = useMemo(() => items, [items]);
+
 
   return (
     <Screen>
-      <DetailScreenHeader title="Favorites" />
+      <DetailScreenHeader title="Saved" />
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: spacing.lg }}>
         <View style={{ flexDirection: 'row', gap: spacing.sm }}>
@@ -128,7 +123,12 @@ export function FavoritesScreen() {
         </View>
       </ScrollView>
 
-      {filtered.length === 0 ? (
+      {activeTab === 'INVITES' ? (
+        <View style={{ flex: 1, justifyContent: 'center', gap: spacing.md, paddingBottom: 80 }}>
+          {invitations.map((invite) => { const inviter=users.find(u=>u.id===invite.senderUserId); return <Pressable key={invite.id} onPress={() => router.push(`/events/${invite.eventId}`)} style={{padding:spacing.lg,borderRadius:radius.lg,backgroundColor:theme.colors.surface}}><Text variant="caption" muted>{inviter?.name} invited you</Text><Text variant="subheading">View the event ›</Text></Pressable>; })}
+          {!invitations.length ? <><FavoritesIllustration/><Text variant="heading" style={{textAlign:'center'}}>No invitations yet</Text></> : null}
+        </View>
+      ) : filtered.length === 0 ? (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: spacing.md, paddingBottom: 88 }}>
           <FavoritesIllustration />
           <Text variant="heading" style={{ textAlign: 'center' }}>No favorites yet</Text>

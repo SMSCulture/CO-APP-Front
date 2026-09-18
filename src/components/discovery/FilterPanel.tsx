@@ -34,6 +34,8 @@ interface FilterPanelProps {
   onChange: (filters: EventFiltersState) => void;
   /** Which section the accordion should open on — set by which filter pill triggered this panel. Defaults to 'date'. */
   initialSection?: 'date' | 'category';
+  /** One-tap shortcuts close/apply immediately; calendar ranges still use Apply. */
+  onInstantApply?: () => void;
 }
 
 function toIsoDate(date: Date): string {
@@ -74,7 +76,7 @@ function SectionHeader({ title, expanded, onToggle }: SectionHeaderProps) {
   );
 }
 
-export function FilterPanel({ visible, onClose, filters, onChange, initialSection = 'date' }: FilterPanelProps) {
+export function FilterPanel({ visible, onClose, filters, onChange, initialSection = 'date', onInstantApply }: FilterPanelProps) {
   const theme = useAppTheme();
   const insets = useSafeAreaInsets();
   const { data: genres } = useMainGenres();
@@ -96,10 +98,8 @@ export function FilterPanel({ visible, onClose, filters, onChange, initialSectio
   // Single-select — tapping the already-selected genre clears it, tapping a
   // different one replaces the selection entirely (was multi-select before).
   const selectGenre = (genreId: string) => {
-    onChange({
-      ...filters,
-      tagIds: filters.tagIds.includes(genreId) ? [] : [genreId],
-    });
+    onChange({ ...filters, tagIds: filters.tagIds.includes(genreId) ? [] : [genreId] });
+    onInstantApply?.();
   };
 
   const selectAllDates = () => {
@@ -108,6 +108,7 @@ export function FilterPanel({ visible, onClose, filters, onChange, initialSectio
 
   const selectQuickDate = (value: 'TODAY' | 'THIS_WEEKEND') => {
     onChange({ ...filters, dateFilter: filters.dateFilter === value ? '' : value, customDate: null, customDateEnd: null });
+    onInstantApply?.();
   };
 
   const selectTomorrow = () => {
@@ -118,6 +119,7 @@ export function FilterPanel({ visible, onClose, filters, onChange, initialSectio
       customDate: filters.customDate === iso ? null : iso,
       customDateEnd: null,
     });
+    onInstantApply?.();
   };
 
   // Mirrors web's handleSelectRangeDate (date-sort-filter-controls.tsx:152-182).

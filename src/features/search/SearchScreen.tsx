@@ -189,6 +189,7 @@ export function SearchScreen() {
         visible={openFilterSection !== null}
         initialSection={openFilterSection ?? 'date'}
         onClose={() => setOpenFilterSection(null)}
+        onInstantApply={() => setOpenFilterSection(null)}
         filters={filters}
         onChange={(next) => {
           setFilters(next);

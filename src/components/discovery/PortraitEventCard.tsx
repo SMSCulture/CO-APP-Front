@@ -12,6 +12,7 @@ import type { EventSummary } from '../../types/event';
 import { MapPinIcon } from '../layout/icons/MenuIcons';
 import { Text } from '../ui';
 import { HeartButton } from './HeartButton';
+import { EventSocialContext } from '../social/EventSocialContext';
 
 // Matches the real web carousel's peek ratio, not an invented "exactly 3"
 // grid: web's genre/nearby-events rows use Swiper with slidesPerView: 2.3
@@ -84,6 +85,7 @@ export function PortraitEventCard({ event }: PortraitEventCardProps) {
               {dateLabel}
             </Text>
           ) : null}
+          <EventSocialContext eventId={event.id} compact />
           {priceText ? (
             <Text variant="caption" numberOfLines={1} style={{ fontSize: 11 }}>
               {priceText}

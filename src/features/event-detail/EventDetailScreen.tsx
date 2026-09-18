@@ -1,5 +1,6 @@
 import { router } from 'expo-router';
-import { ScrollView, View } from 'react-native';
+import { useState } from 'react';
+import { Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { EventActions } from '../../components/events/EventActions';
@@ -14,6 +15,9 @@ import { useAppTheme } from '../../design/useAppTheme';
 import { trackEvent } from '../../lib/analytics';
 import { useEvent, useEventsFeed } from '../../queries/events.queries';
 import { useFavoriteToggle } from '../../queries/favorites.queries';
+import { EventSocialContext } from '../../components/social/EventSocialContext';
+import { InviteFriendsSheet } from '../../components/social/InviteFriendsSheet';
+import { CURRENT_USER_ID, useSocialStore } from '../../store/socialStore';
 
 export function EventDetailScreen({ eventId }: { eventId: string }) {
   const theme = useAppTheme();
@@ -23,6 +27,9 @@ export function EventDetailScreen({ eventId }: { eventId: string }) {
   // Called before the early returns (rules of hooks) — useFavoriteToggle
   // tolerates `event` being undefined while still loading.
   const { isFavorite: saved, toggle } = useFavoriteToggle('event', event);
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const { attendance, toggleGoing } = useSocialStore();
+  const going = attendance.some((a) => a.userId === CURRENT_USER_ID && a.eventId === eventId && a.sources.includes('manual'));
 
   if (isLoading) {
     return (
@@ -53,6 +60,12 @@ export function EventDetailScreen({ eventId }: { eventId: string }) {
             <EventActions eventId={event.id} saved={saved} onToggleSave={toggle} />
           </View>
           <EventInfoPanel event={event} />
+          <View style={{paddingVertical:spacing.md}}><Text variant="heading">Friends going</Text><EventSocialContext eventId={event.id}/></View>
+          <View style={{flexDirection:'row',justifyContent:'space-around',paddingVertical:spacing.sm}}>
+            <Pressable onPress={toggle}><Text variant="bodyBold">{saved?'♥ Saved':'♡ Save'}</Text></Pressable>
+            <Pressable onPress={()=>toggleGoing(event.id)}><Text variant="bodyBold">{going?'✓ Going':'○ Going'}</Text></Pressable>
+            <Pressable onPress={()=>setInviteOpen(true)}><Text variant="bodyBold">＋ Invite</Text></Pressable>
+          </View>
           <Text variant="heading">About</Text>
           <Text style={{ lineHeight: 24 }}>{event.description}</Text>
           <EventOrganizerCard event={event} />
@@ -90,6 +103,7 @@ export function EventDetailScreen({ eventId }: { eventId: string }) {
           }}
         />
       </View>
+      <InviteFriendsSheet eventId={event.id} visible={inviteOpen} onClose={() => setInviteOpen(false)} />
     </View>
   );
 }

@@ -18,6 +18,9 @@ import { LocationRow } from './components/LocationRow';
 import { LowInventoryDiscovery } from './components/LowInventoryDiscovery';
 import { RestaurantsRow } from './components/RestaurantsRow';
 import { VenuesRow } from './components/VenuesRow';
+import { FriendsGoingRow } from './components/FriendsGoingRow';
+import { ThisWeekSwitcher } from '../discover/ThisWeekSwitcher';
+import { EditorialDiscovery } from './components/EditorialDiscovery';
 
 /**
  * CultureOwl Home is city-scoped and editorial: location, six genres, local
@@ -71,7 +74,12 @@ export function HomeScreen() {
         <ErrorState message="We couldn’t load events." onRetry={() => refetch()} />
       ) : (
         <>
+          <EditorialDiscovery events={events} city={city} />
           {events.length > 0 ? <>
+          <SectionHeader title="This Week" spacious />
+          <ThisWeekSwitcher events={events.slice(0, 9)} />
+          <FriendsGoingRow events={events} />
+
           {/* 4. "Events Near You" — mirrors DiscoveryEvents on web. */}
           <SectionHeader
             title="Events Near You"

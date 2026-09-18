@@ -40,7 +40,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="home"
         options={{
-          title: 'Home',
+          title: 'Discover',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name="home" color={color} focused={focused} />
           ),
@@ -49,7 +49,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="search"
         options={{
-          title: 'Search',
+          title: 'Explore',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name="search" color={color} focused={focused} />
           ),
@@ -58,7 +58,8 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="discover"
         options={{
-          title: 'Discover',
+          href: null,
+          title: 'More',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name="discover" color={color} focused={focused} />
           ),
