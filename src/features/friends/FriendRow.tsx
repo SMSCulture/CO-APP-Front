@@ -1,3 +1,54 @@
-import { Image } from 'expo-image'; import { Pressable, View } from 'react-native';
-import { Button, Text } from '../../components/ui'; import { palette } from '../../design/colors'; import { radius, spacing } from '../../design/tokens'; import type { SocialUser } from '../../types/social';
-export function FriendRow({user,action,onPress,onAction}:{user:SocialUser;action?:string;onPress?:()=>void;onAction?:()=>void}){return <View style={{flexDirection:'row',alignItems:'center',gap:spacing.md,paddingVertical:spacing.md}}><Pressable onPress={onPress} style={{flex:1,flexDirection:'row',alignItems:'center',gap:spacing.md}}><Image source={{uri:user.avatarUrl??undefined}} style={{width:52,height:52,borderRadius:26,backgroundColor:palette.blueLight}}/><View style={{flex:1}}><Text variant="bodyBold">{user.name}</Text>{user.city?<Text variant="caption" muted>{user.city}</Text>:null}</View></Pressable>{action?<Button label={action} variant="secondary" onPress={onAction??(()=>{})} style={{paddingHorizontal:14,borderRadius:radius.full}}/>:null}</View>}
+import { Image } from 'expo-image';
+import { Pressable, View } from 'react-native';
+import { Button, Text } from '../../components/ui';
+import { palette } from '../../design/colors';
+import { radius, spacing } from '../../design/tokens';
+import type { SocialUser } from '../../types/social';
+export function FriendRow({
+  user,
+  action,
+  onPress,
+  onAction,
+}: {
+  user: SocialUser;
+  action?: string;
+  onPress?: () => void;
+  onAction?: () => void;
+}) {
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: spacing.md,
+        paddingVertical: spacing.md,
+      }}
+    >
+      <Pressable
+        onPress={onPress}
+        style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: spacing.md }}
+      >
+        <Image
+          source={{ uri: user.avatarUrl ?? undefined }}
+          style={{ width: 52, height: 52, borderRadius: 26, backgroundColor: palette.blueLight }}
+        />
+        <View style={{ flex: 1 }}>
+          <Text variant="bodyBold">{user.name}</Text>
+          {user.city ? (
+            <Text variant="caption" muted>
+              {user.city}
+            </Text>
+          ) : null}
+        </View>
+      </Pressable>
+      {action ? (
+        <Button
+          label={action}
+          variant="secondary"
+          onPress={onAction ?? (() => {})}
+          style={{ paddingHorizontal: 14, borderRadius: radius.full }}
+        />
+      ) : null}
+    </View>
+  );
+}

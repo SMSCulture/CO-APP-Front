@@ -1,2 +1,46 @@
-import { useState } from 'react'; import { View } from 'react-native'; import { DetailScreenHeader } from '../../components/layout/DetailScreenHeader'; import { Input, Screen, Text } from '../../components/ui'; import { spacing } from '../../design/tokens'; import { CURRENT_USER_ID,otherUserId,useSocialStore } from '../../store/socialStore'; import { FriendRow } from './FriendRow';
-export function FindFriendsScreen(){const[q,setQ]=useState('');const{users,friendships,addFriend}=useSocialStore();const connected=new Set(friendships.filter(f=>[f.requesterUserId,f.recipientUserId].includes(CURRENT_USER_ID)&&f.status!=='declined').map(otherUserId));const results=q.trim()?users.filter(u=>u.id!==CURRENT_USER_ID&&u.name.toLowerCase().includes(q.toLowerCase())):[];return <Screen scroll><DetailScreenHeader title="Find friends"/><Input placeholder="Search by name" value={q} onChangeText={setQ}/><View style={{marginTop:spacing.lg}}>{results.map(u=><FriendRow key={u.id} user={u} action={connected.has(u.id)?'Pending':'Add'} onAction={connected.has(u.id)?undefined:()=>addFriend(u.id)}/>)}</View>{!q?<Text muted style={{textAlign:'center',marginTop:spacing['3xl']}}>Search for people already on CultureOwl.</Text>:null}</Screen>}
+import { useState } from 'react';
+import { View } from 'react-native';
+import { DetailScreenHeader } from '../../components/layout/DetailScreenHeader';
+import { Input, Screen, Text } from '../../components/ui';
+import { spacing } from '../../design/tokens';
+import { CURRENT_USER_ID, otherUserId, useSocialStore } from '../../store/socialStore';
+import { FriendRow } from './FriendRow';
+export function FindFriendsScreen() {
+  const [q, setQ] = useState('');
+  const { users, friendships, addFriend } = useSocialStore();
+  const connected = new Set(
+    friendships
+      .filter(
+        (f) =>
+          [f.requesterUserId, f.recipientUserId].includes(CURRENT_USER_ID) &&
+          f.status !== 'declined',
+      )
+      .map(otherUserId),
+  );
+  const results = q.trim()
+    ? users.filter(
+        (u) => u.id !== CURRENT_USER_ID && u.name.toLowerCase().includes(q.toLowerCase()),
+      )
+    : [];
+  return (
+    <Screen scroll>
+      <DetailScreenHeader title="Find friends" />
+      <Input placeholder="Search by name" value={q} onChangeText={setQ} />
+      <View style={{ marginTop: spacing.lg }}>
+        {results.map((u) => (
+          <FriendRow
+            key={u.id}
+            user={u}
+            action={connected.has(u.id) ? 'Pending' : 'Add'}
+            onAction={connected.has(u.id) ? undefined : () => addFriend(u.id)}
+          />
+        ))}
+      </View>
+      {!q ? (
+        <Text muted style={{ textAlign: 'center', marginTop: spacing['3xl'] }}>
+          Search for people already on CultureOwl.
+        </Text>
+      ) : null}
+    </Screen>
+  );
+}

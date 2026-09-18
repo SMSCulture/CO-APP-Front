@@ -1,2 +1,108 @@
-import { useState } from 'react'; import { Modal,Pressable,View } from 'react-native'; import { Button,Input,Text } from '../ui'; import { palette } from '../../design/colors'; import { radius,spacing } from '../../design/tokens'; import { CURRENT_USER_ID,otherUserId,useSocialStore } from '../../store/socialStore'; import { FriendRow } from '../../features/friends/FriendRow';
-export function InviteFriendsSheet({eventId,visible,onClose}:{eventId:string;visible:boolean;onClose:()=>void}){const{users,friendships,invite}=useSocialStore();const[q,setQ]=useState('');const[selected,setSelected]=useState<string[]>([]);const[sent,setSent]=useState(false);const friends=friendships.filter(f=>f.status==='accepted'&&[f.requesterUserId,f.recipientUserId].includes(CURRENT_USER_ID)).map(f=>users.find(u=>u.id===otherUserId(f))!).filter(u=>u&&u.name.toLowerCase().includes(q.toLowerCase()));const send=()=>{invite(eventId,selected);setSent(true);setTimeout(onClose,800)};return <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}><View style={{flex:1,justifyContent:'flex-end',backgroundColor:'rgba(22,23,23,.5)'}}><Pressable style={{flex:1}} onPress={onClose}/><View style={{backgroundColor:'#fff',borderTopLeftRadius:28,borderTopRightRadius:28,padding:spacing.xl,paddingBottom:48,maxHeight:'72%'}}><View style={{width:42,height:4,borderRadius:2,backgroundColor:palette.gray300,alignSelf:'center',marginBottom:spacing.lg}}/><Text variant="title">Invite Friends</Text><Input placeholder="Search friends" value={q} onChangeText={setQ}/>{friends.map(u=><Pressable key={u.id} onPress={()=>setSelected(x=>x.includes(u.id)?x.filter(i=>i!==u.id):[...x,u.id])}><View style={{flexDirection:'row',alignItems:'center'}}><View style={{flex:1}}><FriendRow user={u}/></View><View style={{width:24,height:24,borderRadius:12,borderWidth:2,borderColor:palette.blue,backgroundColor:selected.includes(u.id)?palette.blue:'#fff',alignItems:'center',justifyContent:'center'}}>{selected.includes(u.id)?<Text color="#fff">✓</Text>:null}</View></View></Pressable>)}<Button label={sent?'Invite sent ✓':'Send Invite'} disabled={!selected.length||sent} fullWidth onPress={send} style={{marginTop:spacing.md,borderRadius:radius.full}}/></View></View></Modal>}
+import { useState } from 'react';
+import { Modal, Pressable, View } from 'react-native';
+import { Button, Input, Text } from '../ui';
+import { palette } from '../../design/colors';
+import { radius, spacing } from '../../design/tokens';
+import { CURRENT_USER_ID, otherUserId, useSocialStore } from '../../store/socialStore';
+import { FriendRow } from '../../features/friends/FriendRow';
+import { useToastStore } from '../../store/toastStore';
+export function InviteFriendsSheet({
+  eventId,
+  visible,
+  onClose,
+}: {
+  eventId: string;
+  visible: boolean;
+  onClose: () => void;
+}) {
+  const { users, friendships, invite } = useSocialStore();
+  const [q, setQ] = useState('');
+  const [selected, setSelected] = useState<string[]>([]);
+  const [sent, setSent] = useState(false);
+  const showToast = useToastStore((s) => s.show);
+  const friends = friendships
+    .filter(
+      (f) =>
+        f.status === 'accepted' && [f.requesterUserId, f.recipientUserId].includes(CURRENT_USER_ID),
+    )
+    .map((f) => users.find((u) => u.id === otherUserId(f))!)
+    .filter((u) => u && u.name.toLowerCase().includes(q.toLowerCase()));
+  const send = () => {
+    const count = selected.length;
+    invite(eventId, selected);
+    setSent(true);
+    showToast(
+      {
+        message: `Invite${count === 1 ? '' : 's'} sent to ${count} friend${count === 1 ? '' : 's'}`,
+        variant: 'success',
+      },
+      3500,
+    );
+    setTimeout(onClose, 800);
+  };
+  return (
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+      <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(22,23,23,.5)' }}>
+        <Pressable style={{ flex: 1 }} onPress={onClose} />
+        <View
+          style={{
+            backgroundColor: '#fff',
+            borderTopLeftRadius: 28,
+            borderTopRightRadius: 28,
+            padding: spacing.xl,
+            paddingBottom: 48,
+            maxHeight: '72%',
+          }}
+        >
+          <View
+            style={{
+              width: 42,
+              height: 4,
+              borderRadius: 2,
+              backgroundColor: palette.gray300,
+              alignSelf: 'center',
+              marginBottom: spacing.lg,
+            }}
+          />
+          <Text variant="title">Invite Friends</Text>
+          <Input placeholder="Search friends" value={q} onChangeText={setQ} />
+          {friends.map((u) => (
+            <Pressable
+              key={u.id}
+              onPress={() =>
+                setSelected((x) => (x.includes(u.id) ? x.filter((i) => i !== u.id) : [...x, u.id]))
+              }
+            >
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ flex: 1 }}>
+                  <FriendRow user={u} />
+                </View>
+                <View
+                  style={{
+                    width: 24,
+                    height: 24,
+                    borderRadius: 12,
+                    borderWidth: 2,
+                    borderColor: palette.blue,
+                    backgroundColor: selected.includes(u.id) ? palette.blue : '#fff',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {selected.includes(u.id) ? <Text color="#fff">✓</Text> : null}
+                </View>
+              </View>
+            </Pressable>
+          ))}
+          <Button
+            label={sent ? 'Invite sent ✓' : 'Send Invite'}
+            disabled={!selected.length || sent}
+            fullWidth
+            onPress={send}
+            style={{ marginTop: spacing.md, borderRadius: radius.full }}
+          />
+        </View>
+      </View>
+    </Modal>
+  );
+}
