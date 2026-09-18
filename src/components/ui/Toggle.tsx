@@ -1,6 +1,7 @@
-import { Platform, Switch } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { palette } from '../../design/colors';
+import { shadows } from '../../design/shadows';
 import { useAppTheme } from '../../design/useAppTheme';
 
 interface ToggleProps {
@@ -8,24 +9,39 @@ interface ToggleProps {
   onValueChange: (value: boolean) => void;
 }
 
-/**
- * `theme.colors.border` for the off-track (gray200 light / gray800 dark) was
- * too close to the surface color to read as an obvious "off" state, and
- * without `ios_backgroundColor` iOS was blending its own default track color
- * with ours mid-animation, producing the odd flash the "on/off animation and
- * color is very off" report described. A dedicated neutral gray + explicit
- * ios_backgroundColor fixes both.
- */
+/** Compact CultureOwl switch: brand-blue track, white thumb and a quiet outlined off state. */
 export function Toggle({ value, onValueChange }: ToggleProps) {
   const theme = useAppTheme();
-  const offColor = theme.scheme === 'dark' ? palette.gray600 : palette.gray300;
   return (
-    <Switch
-      value={value}
-      onValueChange={onValueChange}
-      trackColor={{ true: theme.colors.primary, false: offColor }}
-      thumbColor="#ffffff"
-      ios_backgroundColor={Platform.OS === 'ios' ? offColor : undefined}
-    />
+    <Pressable
+      accessibilityRole="switch"
+      accessibilityState={{ checked: value }}
+      accessibilityLabel={value ? 'On' : 'Off'}
+      onPress={() => onValueChange(!value)}
+      style={({ pressed }) => ({
+        width: 46,
+        height: 26,
+        borderRadius: 13,
+        padding: 3,
+        justifyContent: 'center',
+        backgroundColor: value ? palette.blue : 'rgba(255,255,255,0.72)',
+        borderWidth: 1,
+        borderColor: value ? palette.blueDark : theme.colors.border,
+        opacity: pressed ? 0.82 : 1,
+      })}
+    >
+      <View
+        style={{
+          width: 20,
+          height: 20,
+          borderRadius: 10,
+          alignSelf: value ? 'flex-end' : 'flex-start',
+          backgroundColor: palette.white,
+          borderWidth: value ? 0 : 1,
+          borderColor: theme.colors.border,
+          ...shadows.card,
+        }}
+      />
+    </Pressable>
   );
 }

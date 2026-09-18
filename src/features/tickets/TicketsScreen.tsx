@@ -1,11 +1,11 @@
-import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
+import Svg, { Circle, Path, Rect } from 'react-native-svg';
 
 import { DetailScreenHeader } from '../../components/layout/DetailScreenHeader';
-import { Button, Chip, EmptyState, LoadingState, Screen, Text } from '../../components/ui';
-import { radius, spacing } from '../../design/tokens';
+import { Button, Chip, LoadingState, Screen, Text } from '../../components/ui';
+import { spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
 import { useAuth } from '../../auth/useAuth';
 import { useMyTickets } from '../../queries/tickets.queries';
@@ -14,45 +14,29 @@ import { TicketQRCodePlaceholder } from './components/TicketQRCodePlaceholder';
 
 type TicketTab = 'UPCOMING' | 'EXPIRED';
 
-const appLogo = require('../../../assets/images/icon.png');
-
-/** Branded mark for empty states — no tickets, or signed out. */
-function TicketsLogo() {
-  return <Image source={appLogo} style={{ width: 64, height: 64, borderRadius: 16 }} contentFit="cover" />;
-}
-
-/** "Already have tickets but don't see them?" nudge + Refresh, plus a Help link — shown under any empty ticket list. */
-function MissingTicketsHelp({ onRefresh, isRefreshing }: { onRefresh: () => void; isRefreshing: boolean }) {
-  const theme = useAppTheme();
+function TicketIllustration({ expired = false }: { expired?: boolean }) {
   return (
-    <View
-      style={{
-        marginTop: spacing.xl,
-        borderRadius: radius.lg,
-        borderWidth: 1,
-        borderColor: theme.colors.border,
-        padding: spacing.lg,
-        gap: spacing.sm,
-        alignItems: 'center',
-      }}
-    >
-      <Text variant="bodyBold" style={{ textAlign: 'center' }}>
-        Already got tickets and don’t see them here?
-      </Text>
-      <Text variant="caption" muted style={{ textAlign: 'center' }}>
-        A quick refresh usually pulls in anything new.
-      </Text>
-      <Button label="Refresh" variant="secondary" loading={isRefreshing} onPress={onRefresh} />
-      <Text
-        variant="caption"
-        color={theme.colors.primary}
-        style={{ marginTop: spacing.xs }}
-        onPress={() => router.push('/help')}
-      >
-        Still stuck? Our support team can help.
-      </Text>
+    <View style={{ width: 138, height: 138, borderRadius: 69, backgroundColor: expired ? '#f4f4f4' : '#e8f4fb', alignItems: 'center', justifyContent: 'center' }}>
+      <Svg width={92} height={92} viewBox="0 0 92 92">
+        <Path d="M17 30h58v10c-5 0-8 3-8 7s3 7 8 7v10H17V54c5 0 8-3 8-7s-3-7-8-7V30Z" fill={expired ? '#a9adb0' : '#ef6b62'} />
+        <Rect x="34" y="38" width="25" height="18" rx="3" fill="none" stroke="#703b3b" strokeWidth="3" />
+        <Path d="M43 47h9" stroke="#703b3b" strokeWidth="3" strokeLinecap="round" />
+        <Circle cx="17" cy="30" r="3" fill="#f47d30" />
+      </Svg>
     </View>
   );
+}
+
+function EmptyTickets({ expired = false, onRefresh, isRefreshing, signedOut = false }: { expired?: boolean; onRefresh: () => void; isRefreshing: boolean; signedOut?: boolean }) {
+  const theme = useAppTheme();
+  return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: spacing.md, paddingBottom: 70 }}>
+    <TicketIllustration expired={expired} />
+    <Text variant="title" style={{ textAlign: 'center' }}>{expired ? 'No expired tickets' : 'No active tickets'}</Text>
+    <Text muted style={{ textAlign: 'center' }}>{expired ? 'Past tickets will collect here.' : 'Bought tickets but can’t find them?'}</Text>
+    {!expired ? <Button label="Refresh" fullWidth loading={isRefreshing} onPress={onRefresh} /> : null}
+    {!expired ? <Text variant="bodyBold" color={theme.colors.primary} onPress={() => router.push('/help')}>Need help? Get support here</Text> : null}
+    {signedOut ? <Text variant="caption" muted onPress={() => router.push('/(public)/login')}>Sign in to sync tickets from your account.</Text> : null}
+  </View>;
 }
 
 export function TicketsScreen() {
@@ -86,51 +70,24 @@ export function TicketsScreen() {
         <Chip label="Expired" active={tab === 'EXPIRED'} onPress={() => setTab('EXPIRED')} />
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: spacing['3xl'] }}>
-        {!isAuthenticated ? (
-          <View style={{ alignItems: 'center', paddingTop: spacing.xl, gap: spacing.lg }}>
-            <View style={{ width: 150, height: 150, borderRadius: 75, backgroundColor: theme.colors.chipBackground, alignItems: 'center', justifyContent: 'center' }}><Text style={{ fontSize: 64 }}>🎟️</Text></View>
-            <Text variant="title">No active tickets</Text>
-            <Text muted style={{ textAlign: 'center' }}>Bought tickets but can’t find them?</Text>
-            <Button label="Refresh" fullWidth onPress={() => refetch()} />
-            <Text variant="bodyBold" color={theme.colors.primary} onPress={() => router.push('/help')}>Need help? Get support here</Text>
-            <Text variant="caption" muted onPress={() => router.push('/(public)/login')}>Sign in to sync tickets from your account.</Text>
-          </View>
-        ) : isLoading ? (
-          <LoadingState rows={2} />
-        ) : visible.length === 0 ? (
-          <>
-            {tab === 'UPCOMING' ? (
-              <View style={{ alignItems: 'center', paddingTop: spacing.xl, gap: spacing.lg }}>
-                <View style={{ width: 150, height: 150, borderRadius: 75, backgroundColor: theme.colors.chipBackground, alignItems: 'center', justifyContent: 'center' }}><Text style={{ fontSize: 64 }}>🎟️</Text></View>
-                <Text variant="title">No active tickets</Text>
-                <Text muted>Bought tickets but can’t find them?</Text>
-                <Button label="Refresh" fullWidth loading={isRefetching} onPress={() => refetch()} />
-                <Text variant="bodyBold" color={theme.colors.primary} onPress={() => router.push('/help')}>Need help? Get support here</Text>
-              </View>
-            ) : (
-              <EmptyState image={<TicketsLogo />} title="Nothing in your history yet" message="Past tickets will collect here." />
-            )}
-            {tab === 'EXPIRED' ? <MissingTicketsHelp onRefresh={() => refetch()} isRefreshing={isRefetching} /> : null}
-          </>
-        ) : (
+      {!isAuthenticated ? (
+        <EmptyTickets onRefresh={() => refetch()} isRefreshing={isRefetching} signedOut />
+      ) : isLoading ? (
+        <LoadingState rows={2} />
+      ) : visible.length === 0 ? (
+        <EmptyTickets expired={tab === 'EXPIRED'} onRefresh={() => refetch()} isRefreshing={isRefetching} />
+      ) : (
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: spacing['3xl'] }}>
           <View style={{ gap: spacing.lg }}>
             {visible.map((ticket) => (
               <View key={ticket.id} style={{ gap: spacing.lg }}>
-                <TicketCard
-                  ticket={ticket}
-                  onPress={
-                    tab === 'UPCOMING' ? () => setOpenTicketId((cur) => (cur === ticket.id ? null : ticket.id)) : undefined
-                  }
-                />
-                {tab === 'UPCOMING' && openTicketId === ticket.id && openTicket ? (
-                  <TicketQRCodePlaceholder payload={openTicket.qrPayload} />
-                ) : null}
+                <TicketCard ticket={ticket} onPress={tab === 'UPCOMING' ? () => setOpenTicketId((cur) => (cur === ticket.id ? null : ticket.id)) : undefined} />
+                {tab === 'UPCOMING' && openTicketId === ticket.id && openTicket ? <TicketQRCodePlaceholder payload={openTicket.qrPayload} /> : null}
               </View>
             ))}
           </View>
-        )}
-      </ScrollView>
+        </ScrollView>
+      )}
 
     </Screen>
   );

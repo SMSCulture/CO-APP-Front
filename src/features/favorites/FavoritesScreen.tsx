@@ -2,9 +2,10 @@ import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Image } from 'expo-image';
 import { Pressable, ScrollView, View } from 'react-native';
+import Svg, { Circle, Path } from 'react-native-svg';
 
 import { DetailScreenHeader } from '../../components/layout/DetailScreenHeader';
-import { Chip, EmptyState, IconButton, Screen, Text } from '../../components/ui';
+import { Chip, IconButton, Screen, Text } from '../../components/ui';
 import { radius, sizes, spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
 import { useFavoritesStore } from '../../store/favoritesStore';
@@ -20,6 +21,19 @@ const ENTITY_ROUTES: Record<FavoriteEntityType, (id: string) => string> = {
   'arts-group': (id) => `/organizations/${id}`,
   restaurant: (id) => `/restaurants/${id}`,
 };
+
+
+function FavoritesIllustration() {
+  return (
+    <View style={{ width: 136, height: 136, borderRadius: 68, backgroundColor: '#e8f4fb', alignItems: 'center', justifyContent: 'center' }}>
+      <Svg width={88} height={88} viewBox="0 0 88 88">
+        <Circle cx="44" cy="44" r="32" fill="#fff" />
+        <Path d="M44 64S23 51 23 36c0-7 5-12 12-12 4 0 7 2 9 6 2-4 5-6 9-6 7 0 12 5 12 12 0 15-21 28-21 28Z" fill="#ef6b62" />
+        <Path d="M29 40c-2-8 5-13 11-9" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" opacity=".75" />
+      </Svg>
+    </View>
+  );
+}
 
 function FavoriteRow({ item }: { item: FavoriteItem }) {
   const theme = useAppTheme();
@@ -98,7 +112,7 @@ export function FavoritesScreen() {
   }, [activeTab, items, openedAt]);
 
   return (
-    <Screen scroll>
+    <Screen>
       <DetailScreenHeader title="Favorites" />
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: spacing.lg }}>
@@ -115,16 +129,19 @@ export function FavoritesScreen() {
       </ScrollView>
 
       {filtered.length === 0 ? (
-        <EmptyState
-          title="No favorites yet"
-          message="Tap the heart on anything you want to save for later."
-        />
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: spacing.md, paddingBottom: 88 }}>
+          <FavoritesIllustration />
+          <Text variant="heading" style={{ textAlign: 'center' }}>No favorites yet</Text>
+          <Text muted style={{ textAlign: 'center', maxWidth: 310 }}>Tap the heart on anything you want to save for later.</Text>
+        </View>
       ) : (
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: spacing['3xl'] }}>
         <View style={{ gap: spacing.lg }}>
           {filtered.map((item) => (
             <FavoriteRow key={`${item.entityType}:${item.id}`} item={item} />
           ))}
         </View>
+        </ScrollView>
       )}
     </Screen>
   );

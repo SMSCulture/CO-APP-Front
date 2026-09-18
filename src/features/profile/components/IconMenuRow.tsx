@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Pressable, View } from 'react-native';
 
-import { radius, spacing } from '../../../design/tokens';
+import { radius, shadows, spacing } from '../../../design/tokens';
 import { useAppTheme } from '../../../design/useAppTheme';
 import { Text } from '../../../components/ui';
 
@@ -35,9 +35,10 @@ export function IconMenuRow({ icon, label, description, right, onPress, destruct
         padding: spacing.md,
         marginBottom: spacing.sm,
         borderRadius: radius.lg,
-        backgroundColor: theme.colors.surface,
+        backgroundColor: theme.scheme === 'dark' ? 'rgba(39,41,41,0.72)' : 'rgba(227,241,250,0.42)',
         borderWidth: 1,
-        borderColor: theme.colors.border,
+        borderColor: theme.scheme === 'dark' ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.92)',
+        ...shadows.card,
         opacity: pressed ? 0.7 : 1,
       })}
     >
