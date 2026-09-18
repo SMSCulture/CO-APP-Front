@@ -1,9 +1,11 @@
 import { router } from 'expo-router';
 import { Image } from 'expo-image';
-import { FlatList, Pressable, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 
+import { HorizontalCarousel } from '../../components/layout/HorizontalCarousel';
+import { NewsCard } from '../../components/news/NewsCard';
 import { EmptyState, ErrorState, LoadingState, Screen, Text } from '../../components/ui';
-import { fontFamily, radius, spacing } from '../../design/tokens';
+import { fontFamily, spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
 import { useNews } from '../../queries/news.queries';
 import type { NewsArticle } from '../../types/news';
@@ -12,60 +14,56 @@ function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
-function StoryRow({ article, staffPick = false }: { article: NewsArticle; staffPick?: boolean }) {
-  const theme = useAppTheme();
+function ArticleRail({ title, articles }: { title: string; articles: NewsArticle[] }) {
+  if (!articles.length) return null;
   return (
-    <Pressable accessibilityRole="button" onPress={() => router.push(`/news/${article.slug}`)} style={({ pressed }) => ({ flexDirection: 'row', gap: spacing.md, opacity: pressed ? 0.82 : 1 })}>
-      <View style={{ flex: 1, gap: 5 }}>
-        <Text variant="label" color={theme.colors.primary}>{staffPick ? `STAFF PICK · ${article.category ?? 'CULTURE'}` : article.category ?? 'CULTURE'}</Text>
-        <Text numberOfLines={3} style={{ fontFamily: fontFamily.bold, fontSize: 19, lineHeight: 23, fontWeight: '700' }}>{article.title}</Text>
-        {article.excerpt ? <Text variant="caption" muted numberOfLines={2}>{article.excerpt}</Text> : null}
-        <Text variant="caption" muted>{article.authorName} · {formatDate(article.publishedAt)}</Text>
+    <View style={{ gap: spacing.md }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.screenX }}>
+        <Text variant="heading" color="#3499d5">{title}</Text>
+        <Text variant="bodyBold">View All</Text>
       </View>
-      <Image source={{ uri: article.heroImageUrl ?? undefined }} contentFit="cover" style={{ width: 112, aspectRatio: 1200 / 628, borderRadius: radius.lg, backgroundColor: theme.colors.skeleton }} />
-    </Pressable>
+      <HorizontalCarousel>
+        {articles.map((article) => <NewsCard key={`${title}-${article.id}`} article={article} width={280} />)}
+      </HorizontalCarousel>
+    </View>
   );
 }
 
-/** CultureOwl Journal: feature-led editorial page, distinct from event/genre directories. */
+/** Culture News keeps the approved feature treatment over the site's familiar article rails. */
 export function NewsListScreen() {
   const theme = useAppTheme();
   const { data: articles, isLoading, isError, refetch } = useNews();
   const [lead, ...rest] = articles ?? [];
+  const groups = [...new Set(rest.map((article) => article.category ?? 'Culture'))]
+    .map((category) => ({ category, articles: rest.filter((article) => (article.category ?? 'Culture') === category) }));
 
   return (
     <Screen padded={false}>
       {isLoading ? <LoadingState /> : isError ? <ErrorState message="We couldn’t load Culture News." onRetry={() => refetch()} /> : !lead ? (
         <EmptyState title="The next story is taking shape" message="Fresh eyes on the local scene are coming soon." />
       ) : (
-        <FlatList
-          data={rest}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item, index }) => <View style={{ paddingHorizontal: spacing.screenX }}><StoryRow article={item} staffPick={index < 2} /></View>}
-          ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: theme.colors.border, marginVertical: spacing.xl }} />}
-          contentContainerStyle={{ paddingBottom: 100 }}
-          showsVerticalScrollIndicator={false}
-          ListHeaderComponent={
-            <View style={{ paddingBottom: spacing.xl }}>
-              <Pressable accessibilityRole="button" onPress={() => router.push(`/news/${lead.slug}`)} style={({ pressed }) => ({ opacity: pressed ? 0.88 : 1 })}>
-                <View style={{ height: 318 }}>
-                  <Image source={{ uri: lead.heroImageUrl ?? undefined }} contentFit="cover" style={{ position: 'absolute', inset: 0, backgroundColor: theme.colors.skeleton }} />
-                  <View style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(4,8,12,.18)' }} />
-                  <View style={{ position: 'absolute', left: spacing.screenX, top: spacing.lg }}>
-                    <Text variant="label" color="#fff" style={{ letterSpacing: 1.8 }}>THE CULTUREOWL JOURNAL</Text>
-                  </View>
-                </View>
-                <View style={{ marginTop: -38, borderTopLeftRadius: 30, borderTopRightRadius: 30, backgroundColor: theme.colors.background, paddingHorizontal: spacing.screenX, paddingTop: spacing.xl, paddingBottom: spacing.xl, gap: spacing.sm }}>
-                  <Text variant="label" color={theme.colors.primary}>FEATURED · {lead.category ?? 'CULTURE'}</Text>
-                  <Text style={{ fontFamily: fontFamily.bold, fontSize: 29, lineHeight: 35, fontWeight: '700' }}>{lead.title}</Text>
-                  {lead.excerpt ? <Text muted style={{ fontSize: 16, lineHeight: 23 }}>{lead.excerpt}</Text> : null}
-                  <Text variant="caption" muted>By {lead.authorName} · {formatDate(lead.publishedAt)}</Text>
-                </View>
-              </Pressable>
-              {rest.length ? <View style={{ paddingHorizontal: spacing.screenX, paddingTop: spacing.md }}><Text variant="heading" style={{ fontFamily: fontFamily.bold }}>Latest from the Journal</Text></View> : null}
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 110, gap: spacing.xl }}>
+          <Pressable accessibilityRole="button" onPress={() => router.push(`/news/${lead.slug}`)} style={({ pressed }) => ({ opacity: pressed ? 0.88 : 1 })}>
+            <View style={{ height: 318 }}>
+              <Image source={{ uri: lead.heroImageUrl ?? undefined }} contentFit="cover" style={{ position: 'absolute', inset: 0, backgroundColor: theme.colors.skeleton }} />
+              <View style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(4,8,12,.18)' }} />
             </View>
-          }
-        />
+            <View style={{ marginTop: -38, borderTopLeftRadius: 30, borderTopRightRadius: 30, backgroundColor: theme.colors.background, paddingHorizontal: spacing.screenX, paddingTop: spacing.xl, paddingBottom: spacing.md, gap: spacing.sm }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
+                <View style={{ borderRadius: 999, paddingHorizontal: spacing.sm, paddingVertical: 4, backgroundColor: theme.colors.primary }}>
+                  <Text variant="caption" color="#fff">{lead.category ?? 'Culture'}</Text>
+                </View>
+                <Text variant="caption" muted>{formatDate(lead.publishedAt)}</Text>
+              </View>
+              <Text style={{ fontFamily: fontFamily.bold, fontSize: 29, lineHeight: 35, fontWeight: '700' }}>{lead.title}</Text>
+              {lead.excerpt ? <Text muted style={{ fontSize: 16, lineHeight: 23 }}>{lead.excerpt}</Text> : null}
+              <Text variant="caption" muted>By {lead.authorName}</Text>
+            </View>
+          </Pressable>
+
+          {rest.length ? <ArticleRail title="Latest Culture News" articles={rest} /> : null}
+          {groups.map(({ category, articles: groupArticles }) => <ArticleRail key={category} title={category} articles={groupArticles} />)}
+        </ScrollView>
       )}
     </Screen>
   );

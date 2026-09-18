@@ -39,13 +39,13 @@ export function NewsCard({ article, width }: NewsCardProps) {
         transition={200}
         accessibilityLabel={article.heroImageAlt ?? article.title}
       />
-      <View style={{ paddingTop: spacing.sm, gap: spacing.xs / 2 }}>
-        {article.category ? <Badge label={article.category} color={theme.colors.primary} /> : null}
-        <Text variant="subheading" numberOfLines={2}>
+      <View style={{ paddingTop: spacing.sm, gap: spacing.sm }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
+          {article.category ? <Badge label={article.category} color={theme.colors.primary} /> : null}
+          <Text variant="caption" muted>{formatDate(article.publishedAt)}</Text>
+        </View>
+        <Text variant="subheading" numberOfLines={3}>
           {article.title}
-        </Text>
-        <Text variant="caption" muted>
-          {formatDate(article.publishedAt)}
         </Text>
       </View>
     </Pressable>

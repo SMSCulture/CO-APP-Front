@@ -45,9 +45,6 @@ export function NewsArticleScreen({ slug }: { slug: string }) {
     <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
         <View style={{ paddingHorizontal: spacing.screenX, paddingTop: insets.top + 64, gap: spacing.md }}>
-          <View style={{ borderTopWidth: 1, borderBottomWidth: 1, borderColor: theme.colors.text, paddingVertical: spacing.sm }}>
-            <Text variant="label" style={{ textAlign: 'center', letterSpacing: 1.8 }}>THE CULTUREOWL JOURNAL</Text>
-          </View>
           {article.category ? <Text variant="label" color={theme.colors.primary}>{article.category}</Text> : null}
           <Text style={{ fontFamily: fontFamily.bold, fontSize: 34, lineHeight: 39, fontWeight: '700' }}>{article.title}</Text>
           {article.excerpt ? <Text muted style={{ fontFamily: fontFamily.regular, fontSize: 18, lineHeight: 27 }}>{article.excerpt}</Text> : null}
@@ -81,7 +78,7 @@ export function NewsArticleScreen({ slug }: { slug: string }) {
 
           {related.length ? (
             <View style={{ borderTopWidth: 1, borderTopColor: theme.colors.text, marginTop: spacing.xl, paddingTop: spacing.lg, gap: spacing.lg }}>
-              <Text variant="heading" style={{ fontFamily: fontFamily.bold }}>Keep Exploring</Text>
+              <Text variant="heading" style={{ fontFamily: fontFamily.bold }}>More Culture News</Text>
               {related.map((item) => (
                 <Pressable key={item.id} onPress={() => router.push(`/news/${item.slug}`)} style={({ pressed }) => ({ flexDirection: 'row', gap: spacing.md, opacity: pressed ? 0.82 : 1 })}>
                   <View style={{ flex: 1, gap: 4 }}>
