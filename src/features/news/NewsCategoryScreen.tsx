@@ -15,19 +15,25 @@ function categoryFor(article: NewsArticle) {
 }
 
 const collections = [
-  { label: 'Things to do', key: 'things-to-do' },
-  { label: 'Free', key: 'free' },
-  { label: 'Kids events', key: 'kids-events' },
+  { label: 'This month', key: 'this-month' },
+  { label: 'This summer', key: 'this-summer' },
+  { label: 'With kids', key: 'with-kids' },
+  { label: 'Free with kids', key: 'free-with-kids' },
+  { label: 'For free', key: 'for-free' },
+  { label: 'Trending now', key: 'trending-now' },
 ] as const;
 
 function inCollection(article: NewsArticle, collection?: string) {
-  if (!collection || collection === 'things-to-do') return true;
+  if (!collection || ['this-month', 'this-summer', 'trending-now'].includes(collection)) return true;
   const haystack = [article.title, article.excerpt, article.category, ...article.discoveryTags.vibe]
     .filter(Boolean)
     .join(' ')
     .toLowerCase();
-  if (collection === 'free') return haystack.includes('free');
-  if (collection === 'kids-events') return /kids|children|family/.test(haystack);
+  if (collection === 'for-free') return haystack.includes('free');
+  if (collection === 'with-kids') return /kids|children|family/.test(haystack);
+  if (collection === 'free-with-kids') {
+    return haystack.includes('free') && /kids|children|family/.test(haystack);
+  }
   return true;
 }
 
@@ -176,6 +182,44 @@ export function NewsCategoryScreen({
                 );
               })}
             </ScrollView>
+          </View>
+
+          <View
+            style={{
+              marginHorizontal: spacing.screenX,
+              padding: spacing.lg,
+              borderRadius: radius.xl,
+              backgroundColor: theme.colors.surface,
+              gap: spacing.md,
+            }}
+          >
+            <View style={{ gap: 3 }}>
+              <Text variant="label" color={theme.colors.primary}>RIGHT NOW</Text>
+              <Text variant="heading">Trending now</Text>
+            </View>
+            {(articles ?? []).slice(0, 3).map((article, index) => (
+              <Pressable
+                key={`trending-${article.id}`}
+                accessibilityRole="link"
+                onPress={() => router.push(`/news/${article.slug}`)}
+                style={({ pressed }) => ({
+                  flexDirection: 'row',
+                  gap: spacing.md,
+                  paddingTop: index ? spacing.md : 0,
+                  borderTopWidth: index ? 1 : 0,
+                  borderTopColor: theme.colors.border,
+                  opacity: pressed ? 0.65 : 1,
+                })}
+              >
+                <Text color={theme.colors.primary} style={{ fontFamily: fontFamily.bold, fontSize: 22 }}>
+                  {String(index + 1).padStart(2, '0')}
+                </Text>
+                <View style={{ flex: 1, gap: 3 }}>
+                  <Text variant="bodyBold">{article.title}</Text>
+                  <Text variant="caption" muted>{article.category ?? 'Culture News'}</Text>
+                </View>
+              </Pressable>
+            ))}
           </View>
 
           <View style={{ paddingHorizontal: spacing.screenX, gap: spacing.lg }}>
