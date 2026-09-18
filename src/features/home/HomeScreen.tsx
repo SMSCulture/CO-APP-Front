@@ -24,6 +24,8 @@ import { EditorialDiscovery } from './components/EditorialDiscovery';
 import { FirstVisitMuse } from './components/FirstVisitMuse';
 import { CollectionsRow } from './components/CollectionsRow';
 import { Reveal } from '../../components/motion/Reveal';
+import { CitySignalStories } from './components/CitySignalStories';
+import { CityEditsRow } from './components/CityEditsRow';
 
 /**
  * CultureOwl Home is city-scoped and editorial: location, six genres, local
@@ -69,7 +71,9 @@ export function HomeScreen() {
       <SectionHeader title="Explore by mood" />
       <CategoryRectangleRow
         variant="row"
-        onSelect={(genreId) => genreId && router.push({ pathname: '/(tabs)/search', params: { tagIds: genreId } })}
+        onSelect={(genreId) =>
+          genreId && router.push({ pathname: '/(tabs)/search', params: { tagIds: genreId } })
+        }
       />
 
       {isLoading ? (
@@ -78,21 +82,31 @@ export function HomeScreen() {
         <ErrorState message="We couldn’t load events." onRetry={() => refetch()} />
       ) : (
         <>
-          <Reveal><EditorialDiscovery events={events} city={city} /></Reveal>
-          {events.length > 0 ? <>
-          <SectionHeader title={`This week in ${city}`} spacious />
-          <Reveal delay={70}><ThisWeekSwitcher events={events.slice(0, 9)} /></Reveal>
-          <FriendsGoingRow events={events} />
+          <CitySignalStories events={events} />
+          <CityEditsRow events={events} />
+          <Reveal>
+            <EditorialDiscovery events={events} city={city} />
+          </Reveal>
+          {events.length > 0 ? (
+            <>
+              <SectionHeader title={`This week in ${city}`} spacious />
+              <Reveal delay={70}>
+                <ThisWeekSwitcher events={events.slice(0, 9)} />
+              </Reveal>
+              <FriendsGoingRow events={events} />
 
-          {/* 4. "Events Near You" — mirrors DiscoveryEvents on web. */}
-          <SectionHeader
-            title="Worth leaving home for"
-            actionLabel="View All"
-            onAction={() => router.push('/(tabs)/search')}
-            spacious
-          />
-          <Reveal delay={110}><EventCarousel events={events} /></Reveal>
-          </> : null}
+              {/* 4. "Events Near You" — mirrors DiscoveryEvents on web. */}
+              <SectionHeader
+                title="Worth leaving home for"
+                actionLabel="View All"
+                onAction={() => router.push('/(tabs)/search')}
+                spacious
+              />
+              <Reveal delay={110}>
+                <EventCarousel events={events} />
+              </Reveal>
+            </>
+          ) : null}
 
           <CollectionsRow />
           <LowInventoryDiscovery city={city} eventCount={events.length} />
@@ -107,7 +121,12 @@ export function HomeScreen() {
           <RestaurantsRow city={city} />
 
           {/* 7. Culture News — mirrors CulturalNewsSection on web. */}
-          <SectionHeader title="From the CultureOwl Journal" actionLabel="View All" onAction={goToNews} spacious />
+          <SectionHeader
+            title="From the CultureOwl Journal"
+            actionLabel="View All"
+            onAction={goToNews}
+            spacious
+          />
           <CultureNewsSection />
 
           {/* 8. Invite Friends / Explore — brand-voice closer at the bottom of Home. */}
