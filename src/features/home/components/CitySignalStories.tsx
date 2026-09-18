@@ -41,8 +41,8 @@ function QuickSignal({
   return (
     <View
       style={{
-        width: 318,
-        height: 420,
+        width: 246,
+        height: 310,
         borderRadius: 28,
         overflow: 'hidden',
         backgroundColor: '#08090d',
@@ -51,12 +51,12 @@ function QuickSignal({
       <Image
         source={{ uri: event.mainImageUrl ?? undefined }}
         contentFit="cover"
-        style={{ position: 'absolute', left: 116, right: 0, top: 0, bottom: 0 }}
+        style={{ position: 'absolute', left: 92, right: 0, top: 0, bottom: 0 }}
       />
       <View
         style={{
           position: 'absolute',
-          left: 116,
+          left: 92,
           right: 0,
           top: 0,
           bottom: 0,
@@ -69,7 +69,7 @@ function QuickSignal({
           left: 0,
           top: 0,
           bottom: 0,
-          width: 142,
+          width: 112,
           backgroundColor: look.background,
         }}
       />
@@ -78,17 +78,17 @@ function QuickSignal({
         style={[
           {
             position: 'absolute',
-            width: 126,
-            height: 126,
-            borderRadius: 63,
+            width: 86,
+            height: 86,
+            borderRadius: 43,
             backgroundColor: look.accent,
-            top: 56,
-            left: 60,
+            top: 44,
+            left: 44,
           },
           accentMove,
         ]}
       />
-      <View style={{ flex: 1, padding: spacing.lg, justifyContent: 'space-between' }}>
+      <View style={{ flex: 1, padding: spacing.md, justifyContent: 'space-between' }}>
         <View style={{ gap: 7 }}>
           <Text variant="label" color="#fff">
             CITY SIGNAL · 0{index + 1}
@@ -138,11 +138,11 @@ export function CitySignalStories({ events }: { events: EventSummary[] }) {
       style={{
         marginTop: spacing.lg,
         marginHorizontal: -spacing.screenX,
-        paddingVertical: spacing.xl,
+        paddingVertical: spacing.lg,
         backgroundColor: '#090a10',
       }}
     >
-      <View style={{ paddingHorizontal: spacing.screenX, marginBottom: spacing.lg, gap: 5 }}>
+      <View style={{ paddingHorizontal: spacing.screenX, marginBottom: spacing.md, gap: 5 }}>
         <Text variant="label" color={palette.orange}>
           QUICK · ACTIONABLE
         </Text>
@@ -157,10 +157,10 @@ export function CitySignalStories({ events }: { events: EventSummary[] }) {
         horizontal
         decelerationRate="fast"
         showsHorizontalScrollIndicator={false}
-        snapToInterval={318 + spacing.md}
+        snapToInterval={246 + spacing.md}
         disableIntervalMomentum
         onMomentumScrollEnd={(e) =>
-          setActiveIndex(Math.round(e.nativeEvent.contentOffset.x / (318 + spacing.md)))
+          setActiveIndex(Math.round(e.nativeEvent.contentOffset.x / (246 + spacing.md)))
         }
         contentContainerStyle={{ paddingHorizontal: spacing.screenX, gap: spacing.md }}
       >

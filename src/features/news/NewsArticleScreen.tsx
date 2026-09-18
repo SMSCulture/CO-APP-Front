@@ -7,6 +7,8 @@ import { ErrorState, LoadingState, Screen, Text } from '../../components/ui';
 import { fontFamily, radius, spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
 import { useNews, useNewsArticle } from '../../queries/news.queries';
+import { useEventsFeed } from '../../queries/events.queries';
+import { EventCarousel } from '../../components/discovery/EventCarousel';
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
@@ -29,6 +31,7 @@ export function NewsArticleScreen({ slug }: { slug: string }) {
   const insets = useSafeAreaInsets();
   const { data: article, isLoading, isError, refetch } = useNewsArticle(slug);
   const { data: articles } = useNews();
+  const { data: eventFeed } = useEventsFeed({ tagId: article?.discoveryTags.category[0], limit: 4 });
 
   if (isLoading) return <Screen><LoadingState rows={1} /></Screen>;
   if (isError || !article) return <Screen><ErrorState message="We couldn’t load this article." onRetry={() => refetch()} /></Screen>;
@@ -65,6 +68,14 @@ export function NewsArticleScreen({ slug }: { slug: string }) {
               </Text>
             ))}
           </View>
+
+          {(eventFeed?.events.length ?? 0) > 0 ? (
+            <View style={{ borderTopWidth: 1, borderTopColor: theme.colors.text, marginTop: spacing.xl, paddingTop: spacing.lg, gap: spacing.lg }}>
+              <Text variant="heading">Go from reading to doing</Text>
+              <Text variant="caption" muted>Experiences matched by category, neighborhood and vibe.</Text>
+              <EventCarousel events={eventFeed?.events ?? []} />
+            </View>
+          ) : null}
 
           {related.length ? (
             <View style={{ borderTopWidth: 1, borderTopColor: theme.colors.text, marginTop: spacing.xl, paddingTop: spacing.lg, gap: spacing.lg }}>

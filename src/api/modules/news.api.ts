@@ -62,6 +62,11 @@ function mapNewsNode(node: RawNewsNode): NewsArticle {
     publishedAt: node.publishedAt,
     excerpt: null,
     category: node.categories?.[0]?.name ?? null,
+    discoveryTags: {
+      category: node.categories?.map((item) => item.name.toLowerCase()) ?? [],
+      neighborhood: [],
+      vibe: [],
+    },
   };
 }
 

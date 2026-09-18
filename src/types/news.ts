@@ -9,6 +9,7 @@ export interface NewsArticle {
   publishedAt: string;
   excerpt: string | null;
   category: string | null;
+  discoveryTags: { category: string[]; neighborhood: string[]; vibe: string[] };
 }
 
 /** Article detail — adds body (HTML). */

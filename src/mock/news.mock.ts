@@ -11,6 +11,7 @@ export const mockNews: NewsArticle[] = [
     publishedAt: '2026-07-01',
     excerpt: 'Three new installations are transforming warehouse spaces into walk-through worlds.',
     category: 'Visual Arts',
+    discoveryTags: { category: ['art', 'immersive'], neighborhood: ['wynwood'], vibe: ['immersive', 'new'] },
   },
   {
     id: 'news-2',
@@ -22,6 +23,7 @@ export const mockNews: NewsArticle[] = [
     publishedAt: '2026-06-28',
     excerpt: 'Swan Lake returns alongside two world premieres from resident choreographers.',
     category: 'Dance',
+    discoveryTags: { category: ['dance', 'theatre'], neighborhood: ['miami-beach'], vibe: ['performance', 'season'] },
   },
   {
     id: 'news-3',
@@ -33,6 +35,7 @@ export const mockNews: NewsArticle[] = [
     publishedAt: '2026-06-20',
     excerpt: 'From Frost Science after-dark to PAMM free Fridays — plan your month.',
     category: 'Museums',
+    discoveryTags: { category: ['museums'], neighborhood: ['downtown'], vibe: ['after-dark', 'free'] },
   },
 ];
 

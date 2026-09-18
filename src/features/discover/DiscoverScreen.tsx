@@ -9,11 +9,15 @@ import {
   RestaurantIcon,
 } from '../../components/layout/icons/MenuIcons';
 import { CategoryRectangleRow } from '../../components/discovery/CategoryRectangleRow';
-import { Screen } from '../../components/ui';
+import { Screen, Text } from '../../components/ui';
 import { CitySignalStories } from '../home/components/CitySignalStories';
 import { useAppTheme } from '../../design/useAppTheme';
 import { DEFAULT_CITY } from '../../config/constants';
 import { useEventsFeed } from '../../queries/events.queries';
+import { useNews } from '../../queries/news.queries';
+import { Image } from 'expo-image';
+import { Pressable, View } from 'react-native';
+import { radius, spacing } from '../../design/tokens';
 import { useLocationStore } from '../../store/locationStore';
 import { CultureNewsSection } from '../home/components/CultureNewsSection';
 import { IconMenuRow } from '../profile/components/IconMenuRow';
@@ -25,6 +29,8 @@ export function DiscoverScreen() {
   const { selectedCity } = useLocationStore();
   const city = selectedCity?.city ?? DEFAULT_CITY;
   const { data } = useEventsFeed({ city, limit: 9 });
+  const { data: articles } = useNews();
+  const immersiveArticles = (articles ?? []).filter((article) => article.discoveryTags.vibe.includes('immersive') || article.discoveryTags.category.includes('immersive')).slice(0, 2);
 
   return (
     <Screen scroll>
@@ -34,6 +40,25 @@ export function DiscoverScreen() {
 
       <SectionHeader title="Explore Categories" spacious />
       <CategoryRectangleRow onSelect={(genreId) => genreId && router.push(`/genres/${genreId}`)} />
+
+
+      {immersiveArticles.length ? (
+        <>
+          <SectionHeader title="Inside immersive culture" spacious actionLabel="View All" onAction={() => router.push('/news')} />
+          <View style={{ gap: spacing.md }}>
+            {immersiveArticles.map((article) => (
+              <Pressable key={article.id} onPress={() => router.push(`/news/${article.slug}`)} style={({ pressed }) => ({ flexDirection: 'row', gap: spacing.md, opacity: pressed ? .82 : 1 })}>
+                <Image source={{ uri: article.heroImageUrl ?? undefined }} contentFit="cover" style={{ width: 112, aspectRatio: 1, borderRadius: radius.lg }} />
+                <View style={{ flex: 1, justifyContent: 'center', gap: 5 }}>
+                  <Text variant="label" color={theme.colors.primary}>MATCHED TO THIS WORLD</Text>
+                  <Text variant="subheading" numberOfLines={3}>{article.title}</Text>
+                  <Text variant="caption" muted numberOfLines={2}>{article.excerpt}</Text>
+                </View>
+              </Pressable>
+            ))}
+          </View>
+        </>
+      ) : null}
 
       <SectionHeader
         title="Culture News"
