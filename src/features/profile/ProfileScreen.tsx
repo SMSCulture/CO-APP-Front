@@ -102,7 +102,7 @@ export function ProfileScreen() {
       />
       <IconMenuRow
         icon={<HeartIcon color={iconColor} />}
-        label="Favorites"
+        label="My Favorites"
         description="Find your favorite events, art organizations and destinations"
         right={favoritesCount > 0 ? <Text muted>{favoritesCount}</Text> : undefined}
         onPress={() => router.push('/favorites')}
