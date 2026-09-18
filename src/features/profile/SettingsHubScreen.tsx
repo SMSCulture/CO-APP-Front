@@ -17,6 +17,7 @@ import { SectionHeader } from '../../components/layout/SectionHeader';
 import { Screen, Toggle } from '../../components/ui';
 import { useAppTheme } from '../../design/useAppTheme';
 import { useAuth } from '../../auth/useAuth';
+import { useSocialStore } from '../../store/socialStore';
 import { trackEvent } from '../../lib/analytics';
 import { IconMenuRow } from './components/IconMenuRow';
 
@@ -37,6 +38,7 @@ export function SettingsHubScreen() {
   const iconColor = String(theme.colors.text);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [emailEnabled, setEmailEnabled] = useState(true);
+  const { attendanceVisibility, setAttendanceVisibility } = useSocialStore();
 
   return (
     <Screen scroll>
@@ -58,6 +60,9 @@ export function SettingsHubScreen() {
         description="Culture news, city guides and account updates"
         right={<Toggle value={emailEnabled} onValueChange={setEmailEnabled} />}
       />
+
+      <SectionHeader title="Attendance Privacy" />
+      <IconMenuRow icon={<ShieldIcon color={iconColor} />} label="Friends can see I’m going" description="Saved events and ticket details always stay private" right={<Toggle value={attendanceVisibility === 'friends'} onValueChange={(v) => setAttendanceVisibility(v ? 'friends' : 'private')} />} />
 
       <SectionHeader title="Location Permission" />
       <IconMenuRow

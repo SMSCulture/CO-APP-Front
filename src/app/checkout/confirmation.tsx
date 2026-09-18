@@ -1,9 +1,7 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { View } from 'react-native';
 import { Button, Screen, Text } from '../../components/ui';
-import { spacing } from '../../design/tokens';
-
-export default function ConfirmationRoute() {
-  const { event } = useLocalSearchParams<{ demo?: string; event?: string }>();
-  return <Screen><View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: spacing.lg }}><Text variant="display">Order preview</Text><Text variant="title" style={{ textAlign: 'center' }}>{event ?? 'Your local arts event'}</Text><Text muted style={{ textAlign: 'center' }}>The V1 journey is complete, but this is not a purchase. Nothing was charged and no ticket was issued. Real order details and QR access activate with the consumer ticket backend.</Text><Button label="Browse more events" onPress={() => router.replace('/(tabs)/home')} /><Button label="See ticket wallet" variant="ghost" onPress={() => router.replace('/(tabs)/tickets')} /></View></Screen>;
-}
+import { EventSocialContext } from '../../components/social/EventSocialContext';
+import { palette } from '../../design/colors';
+import { radius, spacing } from '../../design/tokens';
+export default function ConfirmationRoute(){const{event,eventId='evt-1'}=useLocalSearchParams<{event?:string;eventId?:string}>();return <Screen scroll><View style={{alignItems:'center',paddingVertical:spacing['3xl'],gap:spacing.lg}}><View style={{width:88,height:88,borderRadius:44,backgroundColor:palette.blueLight,alignItems:'center',justifyContent:'center'}}><Text style={{fontSize:42}}>🎉</Text></View><Text variant="display">You’re going</Text><Text variant="title" style={{textAlign:'center'}}>{event??'Your local arts event'}</Text><Text muted style={{textAlign:'center'}}>This demo confirms the journey only. Nothing was charged and no ticket was issued.</Text></View><View style={{borderRadius:radius.xl,backgroundColor:palette.blueLight,padding:spacing.xl,gap:spacing.md}}><Text variant="heading">Who else is going?</Text><EventSocialContext eventId={eventId}/><Button label="Invite Friends" onPress={()=>router.push(`/events/${eventId}`)}/></View><View style={{gap:spacing.sm,marginTop:spacing.xl}}><Button label="Add to Apple Wallet" variant="secondary" onPress={()=>{}}/><Button label="Add to Google Wallet" variant="secondary" onPress={()=>{}}/><Text variant="caption" muted style={{textAlign:'center'}}>Wallet passes activate with the ticket backend.</Text><Button label="See ticket wallet" variant="ghost" onPress={()=>router.replace('/(tabs)/tickets')}/></View></Screen>}
