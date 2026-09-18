@@ -2,6 +2,7 @@ import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { Pressable, ScrollView, useWindowDimensions, View } from 'react-native';
 
+import { CultureEnvironmentNav } from '../../components/layout/CultureEnvironmentNav';
 import { NewsCard } from '../../components/news/NewsCard';
 import { EmptyState, ErrorState, LoadingState, Screen, Text } from '../../components/ui';
 import { fontFamily, radius, spacing } from '../../design/tokens';
@@ -153,6 +154,7 @@ export function NewsCategoryScreen({ category }: { category: string }) {
           </View>
         </ScrollView>
       )}
+      <CultureEnvironmentNav />
     </Screen>
   );
 }

@@ -3,6 +3,7 @@ import { Image } from 'expo-image';
 import { Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { CultureEnvironmentNav } from '../../components/layout/CultureEnvironmentNav';
 import { ErrorState, LoadingState, Screen, Text } from '../../components/ui';
 import { fontFamily, radius, spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
@@ -44,7 +45,22 @@ export function NewsArticleScreen({ slug }: { slug: string }) {
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
-        <View style={{ paddingHorizontal: spacing.screenX, paddingTop: insets.top + 64, gap: spacing.md }}>
+        <View style={{ paddingHorizontal: spacing.screenX, paddingTop: insets.top + spacing.md, gap: spacing.md }}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Back to Culture News"
+            onPress={() => router.back()}
+            style={({ pressed }) => ({
+              alignSelf: 'flex-start',
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 7,
+              opacity: pressed ? 0.6 : 1,
+            })}
+          >
+            <Text style={{ fontSize: 24, lineHeight: 24 }}>‹</Text>
+            <Text variant="bodyBold">Culture News</Text>
+          </Pressable>
           {article.category ? <Text variant="label" color={theme.colors.primary}>{article.category}</Text> : null}
           <Text style={{ fontFamily: fontFamily.bold, fontSize: 34, lineHeight: 39, fontWeight: '700' }}>{article.title}</Text>
           {article.excerpt ? <Text muted style={{ fontFamily: fontFamily.regular, fontSize: 18, lineHeight: 27 }}>{article.excerpt}</Text> : null}
@@ -92,7 +108,7 @@ export function NewsArticleScreen({ slug }: { slug: string }) {
           ) : null}
         </View>
       </ScrollView>
-
+      <CultureEnvironmentNav />
     </View>
   );
 }
