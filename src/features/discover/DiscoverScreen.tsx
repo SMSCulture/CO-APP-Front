@@ -2,9 +2,15 @@ import { router } from 'expo-router';
 
 import { AppHeader } from '../../components/layout/AppHeader';
 import { SectionHeader } from '../../components/layout/SectionHeader';
-import { BuildingIcon, MapIcon, NewspaperIcon, RestaurantIcon } from '../../components/layout/icons/MenuIcons';
+import {
+  BuildingIcon,
+  MapIcon,
+  NewspaperIcon,
+  RestaurantIcon,
+} from '../../components/layout/icons/MenuIcons';
 import { CategoryRectangleRow } from '../../components/discovery/CategoryRectangleRow';
 import { Screen } from '../../components/ui';
+import { CitySignalStories } from '../home/components/CitySignalStories';
 import { useAppTheme } from '../../design/useAppTheme';
 import { DEFAULT_CITY } from '../../config/constants';
 import { useEventsFeed } from '../../queries/events.queries';
@@ -18,24 +24,46 @@ export function DiscoverScreen() {
   const iconColor = String(theme.colors.text);
   const { selectedCity } = useLocationStore();
   const city = selectedCity?.city ?? DEFAULT_CITY;
-  useEventsFeed({ city, limit: 9 });
+  const { data } = useEventsFeed({ city, limit: 9 });
 
   return (
     <Screen scroll>
       <AppHeader title="Discover" />
 
+      <CitySignalStories events={data?.events ?? []} />
 
       <SectionHeader title="Explore Categories" spacious />
       <CategoryRectangleRow onSelect={(genreId) => genreId && router.push(`/genres/${genreId}`)} />
 
-      <SectionHeader title="Culture News" spacious actionLabel="View All" onAction={() => router.push('/news')} />
+      <SectionHeader
+        title="Culture News"
+        spacious
+        actionLabel="View All"
+        onAction={() => router.push('/news')}
+      />
       <CultureNewsSection />
 
       <SectionHeader title="Explore CultureOwl" spacious />
-      <IconMenuRow icon={<BuildingIcon color={iconColor} />} label="Art Organizations" onPress={() => router.push('/organizations')} />
-      <IconMenuRow icon={<RestaurantIcon color={iconColor} />} label="Art & Dine" onPress={() => router.push('/art-and-dine')} />
-      <IconMenuRow icon={<NewspaperIcon color={iconColor} />} label="Culture News" onPress={() => router.push('/news')} />
-      <IconMenuRow icon={<MapIcon color={iconColor} size={22} />} label="Explore The Map" onPress={() => router.push('/map')} />
+      <IconMenuRow
+        icon={<BuildingIcon color={iconColor} />}
+        label="Art Organizations"
+        onPress={() => router.push('/organizations')}
+      />
+      <IconMenuRow
+        icon={<RestaurantIcon color={iconColor} />}
+        label="Art & Dine"
+        onPress={() => router.push('/art-and-dine')}
+      />
+      <IconMenuRow
+        icon={<NewspaperIcon color={iconColor} />}
+        label="Culture News"
+        onPress={() => router.push('/news')}
+      />
+      <IconMenuRow
+        icon={<MapIcon color={iconColor} size={22} />}
+        label="Explore The Map"
+        onPress={() => router.push('/map')}
+      />
     </Screen>
   );
 }

@@ -65,7 +65,12 @@ export function EventMap({ pins, selectedEventId, onSelectPin, onViewportChange 
           type: 'Point',
           coordinates: [pin.coordinate.longitude, pin.coordinate.latitude],
         },
-        properties: { eventId: pin.eventId, title: pin.title, priceLabel: pin.priceLabel },
+        properties: {
+          eventId: pin.eventId,
+          title: pin.title,
+          priceLabel: pin.priceLabel,
+          category: pin.category ?? 'event',
+        },
       })),
     };
     const install = () => {
@@ -75,7 +80,19 @@ export function EventMap({ pins, selectedEventId, onSelectPin, onViewportChange 
           'case',
           ['==', ['get', 'eventId'], selectedEventId ?? ''],
           '#f47d30',
-          '#3d98d3',
+          [
+            'match',
+            ['get', 'category'],
+            'food',
+            '#f47d30',
+            'art',
+            '#8b55d9',
+            'music',
+            '#2a9d8f',
+            'theatre',
+            '#cc3b7a',
+            '#3d98d3',
+          ],
         ]);
         return;
       }
@@ -117,7 +134,19 @@ export function EventMap({ pins, selectedEventId, onSelectPin, onViewportChange 
             'case',
             ['==', ['get', 'eventId'], selectedEventId ?? ''],
             '#f47d30',
-            '#3d98d3',
+            [
+              'match',
+              ['get', 'category'],
+              'food',
+              '#f47d30',
+              'art',
+              '#8b55d9',
+              'music',
+              '#2a9d8f',
+              'theatre',
+              '#cc3b7a',
+              '#3d98d3',
+            ],
           ],
           'circle-stroke-width': 3,
           'circle-stroke-color': '#fff',

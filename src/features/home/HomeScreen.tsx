@@ -24,10 +24,7 @@ import { EditorialDiscovery } from './components/EditorialDiscovery';
 import { FirstVisitMuse } from './components/FirstVisitMuse';
 import { CollectionsRow } from './components/CollectionsRow';
 import { Reveal } from '../../components/motion/Reveal';
-import { CitySignalStories } from './components/CitySignalStories';
 import { MapButton } from '../../components/discovery/MapButton';
-import { CityEditsRow } from './components/CityEditsRow';
-import { SelfPublishExplainer } from './components/SelfPublishExplainer';
 
 /**
  * CultureOwl Home is city-scoped and editorial: location, six genres, local
@@ -84,9 +81,6 @@ export function HomeScreen() {
         <ErrorState message="We couldn’t load events." onRetry={() => refetch()} />
       ) : (
         <>
-          <CitySignalStories events={events} />
-          <CityEditsRow events={events} />
-          <SelfPublishExplainer />
           <Reveal>
             <EditorialDiscovery events={events} city={city} />
           </Reveal>
