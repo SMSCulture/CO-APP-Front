@@ -1,10 +1,11 @@
+import { Image } from 'expo-image';
 import { View } from 'react-native';
 import { DetailScreenHeader } from '../../components/layout/DetailScreenHeader';
 import { Button, Screen, Text } from '../../components/ui';
-import { spacing } from '../../design/tokens';
+import { palette } from '../../design/colors';
+import { radius, spacing } from '../../design/tokens';
 import { CURRENT_USER_ID, useSocialStore } from '../../store/socialStore';
 import { useToastStore } from '../../store/toastStore';
-import { FriendRow } from './FriendRow';
 
 export function FriendRequestsScreen() {
   const { users, friendships, accept, decline, restoreFriendship } = useSocialStore();
@@ -33,30 +34,61 @@ export function FriendRequestsScreen() {
   };
   return (
     <Screen scroll>
-      <DetailScreenHeader title="Friend requests" />
-      {req.map((f) => {
-        const u = users.find((x) => x.id === f.requesterUserId)!;
-        return (
-          <View key={u.id}>
-            <FriendRow user={u} />
+      <DetailScreenHeader title="Friend requests" subtitle="People who want to connect with you" />
+      <View style={{ gap: spacing.xs }}>
+        {req.map((f) => {
+          const u = users.find((x) => x.id === f.requesterUserId)!;
+          return (
             <View
+              key={u.id}
               style={{
                 flexDirection: 'row',
-                gap: spacing.sm,
-                marginLeft: 64,
-                marginBottom: spacing.md,
+                alignItems: 'center',
+                gap: spacing.md,
+                paddingVertical: spacing.md,
               }}
             >
-              <Button label="Accept" onPress={() => acceptRequest(u.id, u.name)} />
-              <Button
-                label="Decline"
-                variant="secondary"
-                onPress={() => declineRequest(u.id, u.name)}
+              <Image
+                source={{ uri: u.avatarUrl ?? undefined }}
+                style={{
+                  width: 52,
+                  height: 52,
+                  borderRadius: 26,
+                  backgroundColor: palette.blueLight,
+                }}
               />
+              <View style={{ flex: 1 }}>
+                <Text variant="bodyBold">{u.name}</Text>
+                <Text variant="caption" muted>
+                  {u.city}
+                </Text>
+              </View>
+              <View style={{ flexDirection: 'row', gap: spacing.xs }}>
+                <Button
+                  label="Accept"
+                  onPress={() => acceptRequest(u.id, u.name)}
+                  style={{
+                    minHeight: 40,
+                    paddingVertical: spacing.xs,
+                    paddingHorizontal: spacing.md,
+                  }}
+                />
+                <Button
+                  label="Decline"
+                  variant="secondary"
+                  onPress={() => declineRequest(u.id, u.name)}
+                  style={{
+                    minHeight: 40,
+                    paddingVertical: spacing.xs,
+                    paddingHorizontal: spacing.md,
+                    borderRadius: radius.full,
+                  }}
+                />
+              </View>
             </View>
-          </View>
-        );
-      })}
+          );
+        })}
+      </View>
       {!req.length ? (
         <Text muted style={{ textAlign: 'center', marginTop: spacing['3xl'] }}>
           You’re all caught up.
