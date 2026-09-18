@@ -6,15 +6,13 @@ import { useAppTheme } from '../../design/useAppTheme';
 import { formatDateSlot } from '../../lib/formatDate';
 import { formatEventLocation } from '../../lib/formatLocation';
 import { formatEventPrice } from '../../lib/formatPrice';
-import { useFavoritesStore } from '../../store/favoritesStore';
+import { useFavoriteToggle } from '../../queries/favorites.queries';
 import type { EventSummary } from '../../types/event';
-import { toFavoriteItem } from '../../types/favorite';
 import { Badge, Text } from '../ui';
 const IMAGE_SIZE = 132;
 export function MapPreviewCard({ event }: { event: EventSummary }) {
   const theme = useAppTheme();
-  const favorite = useFavoritesStore((s) => s.isFavorite('event', event.id));
-  const toggle = useFavoritesStore((s) => s.toggleFavorite);
+  const { isFavorite: favorite, toggle } = useFavoriteToggle('event', event);
   const moreDates = event.nextEventDate ? 0 : 0;
   return (
     <Pressable
@@ -36,7 +34,7 @@ export function MapPreviewCard({ event }: { event: EventSummary }) {
           accessibilityLabel={favorite ? 'Remove from saved' : 'Save event'}
           onPress={(e) => {
             e.stopPropagation();
-            toggle(toFavoriteItem('event', event));
+            void toggle();
           }}
           style={{
             position: 'absolute',

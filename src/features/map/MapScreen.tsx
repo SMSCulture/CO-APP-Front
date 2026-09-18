@@ -8,8 +8,8 @@ import { SearchBarPill } from '../../components/discovery/SearchBarPill';
 import { FilterPanel } from '../../components/discovery/FilterPanel';
 import { FilterPillRow } from '../../components/discovery/FilterPillRow';
 import { SortModal, type SortOption } from '../../components/discovery/SortModal';
-import { ChevronLeftIcon, MapPinIcon } from '../../components/layout/icons/MenuIcons';
-import { IconButton, ErrorState, LoadingState, Text } from '../../components/ui';
+import { MapPinIcon } from '../../components/layout/icons/MenuIcons';
+import { ErrorState, LoadingState, Text } from '../../components/ui';
 import { radius, shadows, spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
 import { formatEventPrice } from '../../lib/formatPrice';
@@ -129,23 +129,13 @@ export function MapScreen() {
           gap: spacing.sm,
         }}
       >
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
-          <IconButton
-            accessibilityLabel="Back to list"
-            onPress={() => router.replace('/(tabs)/search')}
-          >
-            <ChevronLeftIcon color={String(theme.colors.text)} size={22} />
-          </IconButton>
-          <View style={{ flex: 1 }}>
-            <SearchBarPill
-              mode="input"
-              placeholder="Discover events, venues, restaurants…"
-              value={query}
-              onChangeText={setQuery}
-              showFilterIcon={false}
-            />
-          </View>
-        </View>
+        <SearchBarPill
+          mode="input"
+          placeholder="Discover events, venues, restaurants…"
+          value={query}
+          onChangeText={setQuery}
+          showFilterIcon={false}
+        />
         <FilterPillRow
           dateActive={!!filters.dateFilter || !!filters.customDate}
           categoryActive={!!filters.tagIds.length}

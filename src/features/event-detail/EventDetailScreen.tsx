@@ -6,11 +6,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EventHero } from '../../components/events/EventHero';
 import { EventOrganizerCard } from '../../components/events/EventOrganizerCard';
 import { SimilarEvents } from '../../components/events/SimilarEvents';
-import { ChevronLeftIcon, MapPinIcon } from '../../components/layout/icons/MenuIcons';
+import { MapPinIcon } from '../../components/layout/icons/MenuIcons';
 import { TicketTabIcon } from '../../components/layout/icons/TabIcons';
 import { EventSocialContext } from '../../components/social/EventSocialContext';
 import { InviteFriendsSheet } from '../../components/social/InviteFriendsSheet';
-import { Button, Card, ErrorState, IconButton, LoadingState, Screen, Text } from '../../components/ui';
+import { Button, Card, ErrorState, LoadingState, Screen, Text } from '../../components/ui';
 import { palette, radius, shadows, spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
 import { trackEvent } from '../../lib/analytics';
@@ -101,7 +101,6 @@ export function EventDetailScreen({ eventId }: { eventId: string }) {
       </View>
     </ScrollView>
 
-    <View style={{position:'absolute',top:insets.top+spacing.sm,left:spacing.lg}}><IconButton accessibilityLabel="Go back" onPress={()=>router.back()}><ChevronLeftIcon color="#fff" size={20}/></IconButton></View>
     <View style={{position:'absolute',left:0,right:0,bottom:0,paddingHorizontal:spacing.lg,paddingTop:spacing.md,paddingBottom:insets.bottom+spacing.md,backgroundColor:theme.colors.surfaceElevated,borderTopWidth:1,borderTopColor:theme.colors.border,flexDirection:'row',alignItems:'center',gap:spacing.lg,...shadows.raised}}>
       <View style={{minWidth:80}}><Text variant="caption" muted>{event.free?'Admission':'Tickets'}</Text><Text variant="heading">{priceText}</Text></View>
       <Button label={event.free?'Get details':'Get tickets'} fullWidth style={{flex:1}} onPress={()=>{trackEvent('get_tickets_tap',{eventId:event.id});router.push(`/checkout/${event.id}`)}}/>

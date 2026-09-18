@@ -15,7 +15,12 @@ interface Props {
 const STYLE: StyleSpecification = {
   version: 8,
   sources: {
-    openmaptiles: { type: 'vector', url: 'https://tiles.openfreemap.org/planet' },
+    openmaptiles: {
+      type: 'vector',
+      tiles: ['https://tiles.openfreemap.org/planet/20260913_164504_pt/{z}/{x}/{y}.pbf'],
+      minzoom: 0,
+      maxzoom: 14,
+    },
   },
   layers: [
     { id: 'background', type: 'background', paint: { 'background-color': '#f2f3f0' } },
@@ -87,7 +92,11 @@ export function EventMap({
         });
       }, 280);
     };
-    m.on('load', publish);
+    m.on('load', () => {
+      m.resize();
+      m.triggerRepaint();
+      publish();
+    });
     m.on('moveend', publish);
     return () => {
       if (timer) clearTimeout(timer);

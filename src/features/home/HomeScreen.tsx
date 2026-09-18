@@ -1,5 +1,6 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
+import { View } from 'react-native';
 
 import { SectionHeader } from '../../components/layout/SectionHeader';
 import { CategoryRectangleRow } from '../../components/discovery/CategoryRectangleRow';
@@ -59,6 +60,7 @@ export function HomeScreen() {
   };
 
   return (
+    <View style={{ flex: 1 }}>
     <Screen scroll>
       <HomeHeader onFilterPress={() => setHomeFilterOpen(true)} />
       <FirstVisitMuse />
@@ -131,8 +133,6 @@ export function HomeScreen() {
         </>
       )}
 
-      <MapButton />
-
       <FilterPanel
         visible={homeFilterOpen}
         onClose={() => setHomeFilterOpen(false)}
@@ -140,5 +140,7 @@ export function HomeScreen() {
         onChange={applyFilterAndGoToSearch}
       />
     </Screen>
+    <MapButton />
+    </View>
   );
 }

@@ -3,8 +3,7 @@ import { Image } from 'expo-image';
 import { Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ChevronLeftIcon } from '../../components/layout/icons/MenuIcons';
-import { ErrorState, IconButton, LoadingState, Screen, Text } from '../../components/ui';
+import { ErrorState, LoadingState, Screen, Text } from '../../components/ui';
 import { fontFamily, radius, spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
 import { useNews, useNewsArticle } from '../../queries/news.queries';
@@ -84,11 +83,6 @@ export function NewsArticleScreen({ slug }: { slug: string }) {
         </View>
       </ScrollView>
 
-      <View style={{ position: 'absolute', top: insets.top + spacing.sm, left: spacing.lg }}>
-        <IconButton accessibilityLabel="Go back" onPress={() => router.back()}>
-          <ChevronLeftIcon color={String(theme.colors.text)} size={20} />
-        </IconButton>
-      </View>
     </View>
   );
 }

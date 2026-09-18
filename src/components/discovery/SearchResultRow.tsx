@@ -8,8 +8,7 @@ import { useAppTheme } from '../../design/useAppTheme';
 import { formatDateSlot } from '../../lib/formatDate';
 import { formatEventLocation } from '../../lib/formatLocation';
 import { formatEventPrice } from '../../lib/formatPrice';
-import { useFavoritesStore } from '../../store/favoritesStore';
-import { toFavoriteItem } from '../../types/favorite';
+import { useFavoriteToggle } from '../../queries/favorites.queries';
 import type { EventSummary } from '../../types/event';
 import { BuildingIcon } from '../layout/icons/MenuIcons';
 import { HeartButton } from './HeartButton';
@@ -20,15 +19,14 @@ interface SearchResultRowProps { event: EventSummary; }
 /** Rich horizontal search result with image, save, venue, title, time and price. */
 export function SearchResultRow({ event }: SearchResultRowProps) {
   const theme = useAppTheme();
-  const isFavorite = useFavoritesStore((state) => state.isFavorite('event', event.id));
-  const toggleFavorite = useFavoritesStore((state) => state.toggleFavorite);
+  const { isFavorite, toggle } = useFavoriteToggle('event', event);
   const venueName = formatEventLocation(event);
   const dateLabel = formatDateSlot(event.nextEventDate, event.startDate);
   const priceText = formatEventPrice(event);
 
   const save = (pressEvent: GestureResponderEvent) => {
     pressEvent.stopPropagation();
-    toggleFavorite(toFavoriteItem('event', event));
+    void toggle();
   };
 
   return (

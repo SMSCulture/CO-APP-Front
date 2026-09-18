@@ -3,7 +3,6 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, Share, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
-import { ChevronLeftIcon } from '../../../components/layout/icons/MenuIcons';
 import { IconButton, Text } from '../../../components/ui';
 import { palette, radius, shadows, spacing } from '../../../design/tokens';
 import { formatDateSlot } from '../../../lib/formatDate';
@@ -164,9 +163,6 @@ export default function CollectionDetail() {
           </View>
         </View>
       </ScrollView>
-      <View style={{ position: 'absolute', top: 48, left: spacing.md }}>
-        <IconButton accessibilityLabel="Go back" onPress={() => router.back()}><ChevronLeftIcon color="#fff" /></IconButton>
-      </View>
       <View style={{ position: 'absolute', top: 48, right: spacing.md }}>
         <IconButton accessibilityLabel="Share collection" onPress={share}><ShareIcon /></IconButton>
       </View>
