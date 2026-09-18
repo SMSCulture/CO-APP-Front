@@ -68,6 +68,7 @@ export function MapScreen() {
     null,
   );
   const [pendingViewport, setPendingViewport] = useState<MapViewport | null>(null);
+  const [areaControlDismissed, setAreaControlDismissed] = useState(false);
   const { data, isLoading, isError, refetch, isFetching } = useEventsFeed({
     tagId: filters.tagIds[0],
     latitude: viewport?.latitude,
@@ -107,6 +108,7 @@ export function MapScreen() {
   });
   const selected = events.find((e) => e.id === selectedEventId) ?? null;
   const mapMoved =
+    !areaControlDismissed &&
     pendingViewport &&
     viewport &&
     (Math.abs(pendingViewport.latitude - viewport.latitude) > 0.001 ||
@@ -114,11 +116,19 @@ export function MapScreen() {
       Math.abs(pendingViewport.zoom - viewport.zoom) > 0.05);
   const receiveViewport = (next: MapViewport) => {
     if (!viewport) setViewport(next);
-    else setPendingViewport(next);
+    else {
+      setPendingViewport(next);
+      const movedFromAppliedArea =
+        Math.abs(next.latitude - viewport.latitude) > 0.001 ||
+        Math.abs(next.longitude - viewport.longitude) > 0.001 ||
+        Math.abs(next.zoom - viewport.zoom) > 0.05;
+      if (movedFromAppliedArea) setAreaControlDismissed(false);
+    }
   };
   const applyArea = () => {
     if (pendingViewport) setViewport(pendingViewport);
     setPendingViewport(null);
+    setAreaControlDismissed(true);
     setSelectedEventId(null);
   };
   return (
