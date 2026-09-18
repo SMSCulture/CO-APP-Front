@@ -1,4 +1,3 @@
-import { Image } from 'expo-image';
 import { useState } from 'react';
 import { Modal, Pressable, Share, View } from 'react-native';
 import { DetailScreenHeader } from '../../components/layout/DetailScreenHeader';
