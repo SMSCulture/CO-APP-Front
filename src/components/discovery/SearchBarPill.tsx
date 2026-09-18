@@ -64,7 +64,7 @@ export function SearchBarPill({
   const pillStyle = {
     flexDirection: 'row' as const,
     alignItems: 'center' as const,
-    minHeight: 49,
+    minHeight: 42,
     backgroundColor: theme.scheme === 'dark' ? 'rgba(29,45,59,.78)' : 'rgba(255,255,255,.78)',
     borderWidth: 1,
     borderColor: theme.scheme === 'dark' ? 'rgba(255,255,255,.14)' : 'rgba(255,255,255,.92)',
