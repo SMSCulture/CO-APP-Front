@@ -85,7 +85,8 @@ function FavoriteRow({ item }: { item: FavoriteItem }) {
 export function FavoritesScreen() {
   const [activeTab, setActiveTab] = useState<FavoriteTab>('ALL');
   const [openedAt] = useState(() => Date.now());
-  const items = useFavoritesStore((state) => state.getAllFavorites());
+  const { getAllFavorites } = useFavoritesStore();
+  const items = getAllFavorites();
   const filtered = useMemo(() => {
     if (activeTab === 'ALL') return items;
     const now = openedAt;

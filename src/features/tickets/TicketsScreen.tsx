@@ -131,20 +131,6 @@ export function TicketsScreen() {
         )}
       </ScrollView>
 
-      {!isAuthenticated ? (
-        <View
-          style={{
-            marginHorizontal: -spacing.screenX,
-            padding: spacing.lg,
-            paddingBottom: insets.bottom + spacing.md,
-            backgroundColor: theme.colors.background,
-            borderTopWidth: 1,
-            borderTopColor: theme.colors.border,
-          }}
-        >
-          <Button label="Sign in" fullWidth onPress={() => router.push('/(public)/login')} />
-        </View>
-      ) : null}
     </Screen>
   );
 }
