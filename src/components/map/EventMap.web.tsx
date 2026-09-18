@@ -23,6 +23,14 @@ export function EventMap({
 }: Props) {
   const host = useRef<HTMLDivElement | null>(null);
   const map = useRef<MLMap | null>(null);
+  const onViewportChangeRef = useRef(onViewportChange);
+  const onSelectPinRef = useRef(onSelectPin);
+  useEffect(() => {
+    onViewportChangeRef.current = onViewportChange;
+  }, [onViewportChange]);
+  useEffect(() => {
+    onSelectPinRef.current = onSelectPin;
+  }, [onSelectPin]);
   useEffect(() => {
     if (!host.current || map.current) return;
     const m = new maplibregl.Map({
@@ -49,7 +57,7 @@ export function EventMap({
       timer = setTimeout(() => {
         const b = m.getBounds(),
           c = m.getCenter();
-        onViewportChange({
+        onViewportChangeRef.current({
           latitude: c.lat,
           longitude: c.lng,
           zoom: m.getZoom(),
@@ -69,7 +77,7 @@ export function EventMap({
       m.remove();
       map.current = null;
     };
-  }, [onViewportChange]);
+  }, []);
   useEffect(() => {
     const m = map.current;
     if (!m) return;
@@ -188,7 +196,7 @@ export function EventMap({
       const select = (e: MapMouseEvent) => {
         const feature = m.queryRenderedFeatures(e.point, { layers: ['event-pins'] })[0];
         const id = feature?.properties?.eventId as string | undefined;
-        if (id) onSelectPin(id);
+        if (id) onSelectPinRef.current(id);
       };
       m.on('click', 'event-clusters', expand);
       m.on('click', 'event-pins', select);
@@ -203,7 +211,7 @@ export function EventMap({
     };
     if (m.isStyleLoaded()) install();
     else m.once('load', install);
-  }, [pins, selectedEventId, onSelectPin]);
+  }, [pins, selectedEventId]);
   useEffect(() => {
     if (recenterTo && map.current)
       map.current.easeTo({
