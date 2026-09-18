@@ -64,6 +64,7 @@ export function MapScreen() {
   const [sort, setSort] = useState<SortOption>('POPULARITY');
   const [sortOpen, setSortOpen] = useState(false);
   const [resultsOpen, setResultsOpen] = useState(false);
+  const [clusterEventIds, setClusterEventIds] = useState<string[] | null>(null);
   const [viewport, setViewport] = useState<MapViewport | null>(null);
   const [recenterTo, setRecenterTo] = useState<{ latitude: number; longitude: number } | null>(
     null,
@@ -108,6 +109,9 @@ export function MapScreen() {
     };
   });
   const selected = events.find((e) => e.id === selectedEventId) ?? null;
+  const drawerEvents = clusterEventIds
+    ? events.filter((event) => clusterEventIds.includes(event.id))
+    : events;
   const mapMoved =
     !areaControlDismissed &&
     pendingViewport &&
@@ -147,6 +151,11 @@ export function MapScreen() {
           pins={pins}
           selectedEventId={selectedEventId}
           onSelectPin={(id) => setSelectedEventId(id)}
+          onOpenCluster={(eventIds) => {
+            setClusterEventIds(eventIds);
+            setResultsOpen(true);
+            setSelectedEventId(null);
+          }}
           onViewportChange={receiveViewport}
           recenterTo={recenterTo}
         />
@@ -273,7 +282,10 @@ export function MapScreen() {
         </View>
       ) : null}
       <Pressable
-        onPress={() => setResultsOpen(true)}
+        onPress={() => {
+          setClusterEventIds(null);
+          setResultsOpen(true);
+        }}
         style={({ pressed }) => ({
           position: 'absolute',
           bottom: insets.bottom + spacing.md,
@@ -336,9 +348,9 @@ export function MapScreen() {
               }}
             >
               <View>
-                <Text variant="heading">{events.length} experiences</Text>
+                <Text variant="heading">{drawerEvents.length} experiences</Text>
                 <Text variant="caption" muted>
-                  In this map area
+                  {clusterEventIds ? 'In the selected cluster' : 'In this map area'}
                 </Text>
               </View>
               <Pressable onPress={() => setResultsOpen(false)} hitSlop={10}>
@@ -349,7 +361,7 @@ export function MapScreen() {
               showsVerticalScrollIndicator={false}
               contentContainerStyle={{ paddingHorizontal: spacing.lg, gap: spacing.md }}
             >
-              {events.map((event) => (
+              {drawerEvents.map((event) => (
                 <View
                   key={event.id}
                   style={{

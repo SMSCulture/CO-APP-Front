@@ -17,9 +17,10 @@ interface Props {
   selectedEventId: string | null;
   onSelectPin: (id: string) => void;
   onViewportChange: (v: MapViewport) => void;
+  onOpenCluster: (eventIds: string[]) => void;
   recenterTo?: { latitude: number; longitude: number } | null;
 }
-export function EventMap({ pins, selectedEventId, onSelectPin, onViewportChange }: Props) {
+export function EventMap({ pins, selectedEventId, onSelectPin, onViewportChange, onOpenCluster }: Props) {
   const camera = useRef<CameraRef>(null);
   const source = useRef<GeoJSONSourceRef>(null);
   const collection = useMemo<GeoJSON.FeatureCollection>(
@@ -70,7 +71,15 @@ export function EventMap({ pins, selectedEventId, onSelectPin, onViewportChange 
             const pointCount = feature?.properties?.point_count;
             if (clusterId == null || pointCount == null || !source.current || !camera.current)
               return;
-            await source.current.getClusterLeaves(Number(clusterId), Number(pointCount), 0);
+            const leaves = await source.current.getClusterLeaves(
+              Number(clusterId),
+              Number(pointCount),
+              0,
+            );
+            const eventIds = leaves
+              .map((leaf) => leaf.properties?.eventId)
+              .filter((eventId): eventId is string => typeof eventId === 'string');
+            onOpenCluster(eventIds);
             const center = (feature.geometry as GeoJSON.Point).coordinates as [number, number];
             camera.current.easeTo({ center, zoom: 14.5, duration: 560 });
           }}

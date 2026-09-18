@@ -10,6 +10,7 @@ interface Props {
   selectedEventId: string | null;
   onSelectPin: (id: string) => void;
   onViewportChange: (v: MapViewport) => void;
+  onOpenCluster: (eventIds: string[]) => void;
   recenterTo?: { latitude: number; longitude: number } | null;
 }
 const STYLE: StyleSpecification = {
@@ -83,18 +84,23 @@ export function EventMap({
   selectedEventId,
   onSelectPin,
   onViewportChange,
+  onOpenCluster,
   recenterTo,
 }: Props) {
   const host = useRef<HTMLDivElement | null>(null);
   const map = useRef<MLMap | null>(null);
   const onViewportChangeRef = useRef(onViewportChange);
   const onSelectPinRef = useRef(onSelectPin);
+  const onOpenClusterRef = useRef(onOpenCluster);
   useEffect(() => {
     onViewportChangeRef.current = onViewportChange;
   }, [onViewportChange]);
   useEffect(() => {
     onSelectPinRef.current = onSelectPin;
   }, [onSelectPin]);
+  useEffect(() => {
+    onOpenClusterRef.current = onOpenCluster;
+  }, [onOpenCluster]);
   useEffect(() => {
     if (!host.current || map.current) return;
     if (!workerConfigured) {
@@ -245,7 +251,11 @@ export function EventMap({
         // Read every leaf first so the interaction is tied to this exact cluster,
         // then zoom beyond clusterMaxZoom. At zoom 14+ MapLibre renders leaves,
         // not another tier of count bubbles.
-        await source.getClusterLeaves(clusterId, pointCount, 0);
+        const leaves = await source.getClusterLeaves(clusterId, pointCount, 0);
+        const eventIds = leaves
+          .map((leaf) => leaf.properties?.eventId)
+          .filter((id): id is string => typeof id === 'string');
+        onOpenClusterRef.current(eventIds);
         const center = (feature.geometry as GeoJSON.Point).coordinates as [number, number];
         m.easeTo({ center, zoom: 14.5, duration: 560 });
       };
