@@ -82,7 +82,7 @@ function QuickSignal({
             height: 126,
             borderRadius: 63,
             backgroundColor: look.accent,
-            top: 76,
+            top: 56,
             left: 60,
           },
           accentMove,
@@ -99,7 +99,7 @@ function QuickSignal({
         </View>
         <View
           style={{
-            padding: spacing.md,
+            padding: spacing.sm,
             marginHorizontal: -4,
             borderRadius: 18,
             backgroundColor: 'rgba(7,8,13,.84)',
