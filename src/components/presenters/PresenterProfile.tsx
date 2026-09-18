@@ -18,6 +18,7 @@ interface PresenterProfileProps {
   address?: string | null;
   websiteUrl?: string | null;
   videoUrl?: string | null;
+  coordinates?: { latitude: number; longitude: number } | null;
   events: EventSummary[];
 }
 
@@ -136,15 +137,40 @@ export function PresenterProfile(props: PresenterProfileProps) {
           </Text>
         </Pressable>
       ) : null}
-      {props.address ? (
-        <Card variant="tinted">
-          <View style={{ flexDirection: 'row', gap: spacing.md }}>
-            <MapPinIcon color={String(theme.colors.primary)} />
-            <View style={{ flex: 1 }}>
-              <Text variant="bodyBold">Visit</Text>
-              <Text muted>{props.address}</Text>
+      {props.address || props.websiteUrl || props.videoUrl || props.coordinates ? (
+        <Card variant="tinted" style={{ gap: spacing.md }}>
+          <Text variant="heading">Venue details</Text>
+          {props.address ? (
+            <View style={{ flexDirection: 'row', gap: spacing.md }}>
+              <MapPinIcon color={String(theme.colors.primary)} />
+              <View style={{ flex: 1, gap: 2 }}>
+                <Text variant="bodyBold">Address</Text>
+                <Text muted>{props.address}</Text>
+              </View>
             </View>
-          </View>
+          ) : null}
+          {props.coordinates ? (
+            <View style={{ gap: 2 }}>
+              <Text variant="bodyBold">Map location</Text>
+              <Text muted>
+                {props.coordinates.latitude.toFixed(4)}, {props.coordinates.longitude.toFixed(4)}
+              </Text>
+            </View>
+          ) : null}
+          {props.websiteUrl ? (
+            <View style={{ gap: 2 }}>
+              <Text variant="bodyBold">Website</Text>
+              <Text color={theme.colors.primary}>{props.websiteUrl}</Text>
+            </View>
+          ) : null}
+          {props.videoUrl ? (
+            <View style={{ gap: 2 }}>
+              <Text variant="bodyBold">Video</Text>
+              <Text color={theme.colors.primary} numberOfLines={1}>
+                {props.videoUrl}
+              </Text>
+            </View>
+          ) : null}
         </Card>
       ) : null}
       <View style={{ gap: spacing.md }}>

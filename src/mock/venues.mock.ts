@@ -33,7 +33,7 @@ export const mockVenues: Venue[] = [
     state: 'FL',
     address: '1300 Biscayne Blvd, Miami, FL 33132',
     imageUrl: 'https://picsum.photos/seed/arsht/1200/800',
-    description: 'Miami’s home for ballet, opera, Broadway, and jazz.',
+    description: 'The Adrienne Arsht Center is Miami’s home for ballet, opera, Broadway, jazz and community programming. Its campus brings world-class performance, education and public gatherings together in the heart of downtown Miami.',
     coordinates: { latitude: 25.7862, longitude: -80.1885 },
     venueType: 'PERFORMING_ARTS_CENTER',
     websiteUrl: 'https://www.arshtcenter.org',
