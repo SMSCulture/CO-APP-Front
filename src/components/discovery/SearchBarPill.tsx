@@ -16,7 +16,7 @@ import { Pressable, TextInput, View } from 'react-native';
 import Svg, { Line } from 'react-native-svg';
 
 import { SearchTabIcon } from '../layout/icons/TabIcons';
-import { fontFamily, radius, spacing } from '../../design/tokens';
+import { fontFamily, radius, shadows, spacing } from '../../design/tokens';
 import { useAppTheme } from '../../design/useAppTheme';
 import { Text } from '../ui';
 
@@ -65,12 +65,13 @@ export function SearchBarPill({
     flexDirection: 'row' as const,
     alignItems: 'center' as const,
     minHeight: 49,
-    backgroundColor: theme.colors.surface,
+    backgroundColor: theme.scheme === 'dark' ? 'rgba(29,45,59,.78)' : 'rgba(255,255,255,.78)',
     borderWidth: 1,
-    borderColor: theme.colors.border,
+    borderColor: theme.scheme === 'dark' ? 'rgba(255,255,255,.14)' : 'rgba(255,255,255,.92)',
     borderRadius: radius.full,
     paddingLeft: spacing.md,
     paddingRight: spacing.xs,
+    ...shadows.raised,
   };
 
   const content = (
