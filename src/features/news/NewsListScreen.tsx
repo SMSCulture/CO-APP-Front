@@ -250,6 +250,7 @@ function RefreshedArticlesRow({ articles }: { articles: NewsArticle[] }) {
 
 function ArticleRail({ title, articles }: { title: string; articles: NewsArticle[] }) {
   if (!articles.length) return null;
+  const categoryHref = `/news/category/${encodeURIComponent(title)}` as const;
   return (
     <View style={{ gap: spacing.md }}>
       <View
@@ -263,7 +264,14 @@ function ArticleRail({ title, articles }: { title: string; articles: NewsArticle
         <Text variant="heading" color="#3499d5">
           {title}
         </Text>
-        <Text variant="bodyBold">View All</Text>
+        <Pressable
+          accessibilityRole="link"
+          accessibilityLabel={`View all ${title} articles`}
+          onPress={() => router.push(categoryHref)}
+          style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+        >
+          <Text variant="bodyBold">View all</Text>
+        </Pressable>
       </View>
       <HorizontalCarousel>
         {articles.map((article) => (
