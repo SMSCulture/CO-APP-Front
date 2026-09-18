@@ -9,8 +9,18 @@ import { Text } from '../ui';
 
 const WEEKDAY_LABELS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 const MONTH_LABELS = [
-  'JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
-  'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER',
+  'JANUARY',
+  'FEBRUARY',
+  'MARCH',
+  'APRIL',
+  'MAY',
+  'JUNE',
+  'JULY',
+  'AUGUST',
+  'SEPTEMBER',
+  'OCTOBER',
+  'NOVEMBER',
+  'DECEMBER',
 ];
 
 // Matches web's hardcoded range-picker colors (app/calendar/events/components/date-sort-filter-controls.tsx:242,275) exactly — not theme tokens, since web itself hardcodes these hex values in both light and dark.
@@ -52,7 +62,9 @@ interface MonthCalendarProps {
 export function MonthCalendar({ selectedDate, rangeEnd, onSelectDate }: MonthCalendarProps) {
   const theme = useAppTheme();
   const today = startOfToday();
-  const [viewDate, setViewDate] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
+  const [viewDate, setViewDate] = useState(
+    () => new Date(today.getFullYear(), today.getMonth(), 1),
+  );
 
   const year = viewDate.getFullYear();
   const month = viewDate.getMonth();
@@ -69,7 +81,14 @@ export function MonthCalendar({ selectedDate, rangeEnd, onSelectDate }: MonthCal
 
   return (
     <View>
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.md }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: spacing.md,
+        }}
+      >
         <Pressable
           accessibilityLabel="Previous month"
           hitSlop={8}
@@ -114,19 +133,31 @@ export function MonthCalendar({ selectedDate, rangeEnd, onSelectDate }: MonthCal
           const isEndpoint = isRangeStart || isRangeEnd;
 
           return (
-            <View key={iso} style={{ width: `${100 / 7}%`, aspectRatio: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <View
+              key={iso}
+              style={{
+                width: `${100 / 7}%`,
+                aspectRatio: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel={iso}
                 disabled={isPast}
                 onPress={() => onSelectDate(iso)}
                 style={{
-                  width: 34,
-                  height: 34,
-                  borderRadius: isRangeMiddle ? radius.sm : radius.full,
+                  width: 38,
+                  height: 38,
+                  borderRadius: isRangeMiddle ? 9 : radius.full,
                   alignItems: 'center',
                   justifyContent: 'center',
-                  backgroundColor: isEndpoint ? palette.blue : isRangeMiddle ? RANGE_MIDDLE_BG : 'transparent',
+                  backgroundColor: isEndpoint
+                    ? palette.blue
+                    : isRangeMiddle
+                      ? RANGE_MIDDLE_BG
+                      : 'transparent',
                   borderWidth: isToday && !isEndpoint ? 1.5 : 0,
                   borderColor: palette.blue,
                 }}
@@ -134,7 +165,15 @@ export function MonthCalendar({ selectedDate, rangeEnd, onSelectDate }: MonthCal
                 <Text
                   variant="body"
                   style={{ opacity: isPast ? 0.5 : 1 }}
-                  color={isEndpoint ? '#ffffff' : isRangeMiddle ? RANGE_MIDDLE_TEXT : isPast ? theme.colors.textMuted : theme.colors.text}
+                  color={
+                    isEndpoint
+                      ? '#ffffff'
+                      : isRangeMiddle
+                        ? RANGE_MIDDLE_TEXT
+                        : isPast
+                          ? theme.colors.textMuted
+                          : theme.colors.text
+                  }
                 >
                   {date.getDate()}
                 </Text>

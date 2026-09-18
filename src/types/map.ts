@@ -11,13 +11,14 @@ export interface MapViewport {
   zoom: number;
   bounds: MapBounds;
 }
-/** Generic shape deliberately supports future map layers while V1 renders events only. */
-export type MapEntityKind = 'event' | 'venue' | 'organization' | 'attraction' | 'story';
+/** The five user-facing map layers. New backends can populate every layer without changing the renderer. */
+export type MapPinKind = 'organization' | 'venue' | 'art-dine' | 'event' | 'free';
 export interface EventMapPin {
-  entityKind: 'event';
+  entityKind: MapPinKind;
   eventId: string;
   title: string;
   coordinate: { latitude: number; longitude: number };
   priceLabel: string;
   category?: string;
+  color: string;
 }

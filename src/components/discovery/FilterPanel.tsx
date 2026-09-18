@@ -76,7 +76,14 @@ function SectionHeader({ title, expanded, onToggle }: SectionHeaderProps) {
   );
 }
 
-export function FilterPanel({ visible, onClose, filters, onChange, initialSection = 'date', onInstantApply }: FilterPanelProps) {
+export function FilterPanel({
+  visible,
+  onClose,
+  filters,
+  onChange,
+  initialSection = 'date',
+  onInstantApply,
+}: FilterPanelProps) {
   const theme = useAppTheme();
   const insets = useSafeAreaInsets();
   const { data: genres } = useMainGenres();
@@ -107,7 +114,12 @@ export function FilterPanel({ visible, onClose, filters, onChange, initialSectio
   };
 
   const selectQuickDate = (value: 'TODAY' | 'THIS_WEEKEND') => {
-    onChange({ ...filters, dateFilter: filters.dateFilter === value ? '' : value, customDate: null, customDateEnd: null });
+    onChange({
+      ...filters,
+      dateFilter: filters.dateFilter === value ? '' : value,
+      customDate: null,
+      customDateEnd: null,
+    });
     onInstantApply?.();
   };
 
@@ -145,7 +157,12 @@ export function FilterPanel({ visible, onClose, filters, onChange, initialSectio
   };
 
   return (
-    <Modal visible={visible} animationType="slide" onRequestClose={onClose} presentationStyle="fullScreen">
+    <Modal
+      visible={visible}
+      animationType="slide"
+      onRequestClose={onClose}
+      presentationStyle="fullScreen"
+    >
       <View style={{ flex: 1, backgroundColor: theme.colors.background, paddingTop: insets.top }}>
         <View
           style={{
@@ -167,13 +184,36 @@ export function FilterPanel({ visible, onClose, filters, onChange, initialSectio
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingHorizontal: spacing.lg, paddingBottom: 120 }}
         >
-          <SectionHeader title="Date" expanded={dateExpanded} onToggle={() => setExpandedSection('date')} />
+          <SectionHeader
+            title="Date Range"
+            expanded={dateExpanded}
+            onToggle={() => setExpandedSection('date')}
+          />
           {dateExpanded ? (
             <View style={{ marginBottom: spacing.lg }}>
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginBottom: spacing.lg }}>
-                <Chip label="All dates" active={!filters.dateFilter && !filters.customDate && !filters.customDateEnd} onPress={selectAllDates} />
-                <Chip label="Today" active={filters.dateFilter === 'TODAY'} onPress={() => selectQuickDate('TODAY')} />
-                <Chip label="Tomorrow" active={filters.customDate === tomorrowIso() && !filters.customDateEnd} onPress={selectTomorrow} />
+              <View
+                style={{
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  gap: spacing.sm,
+                  marginBottom: spacing.lg,
+                }}
+              >
+                <Chip
+                  label="All dates"
+                  active={!filters.dateFilter && !filters.customDate && !filters.customDateEnd}
+                  onPress={selectAllDates}
+                />
+                <Chip
+                  label="Today"
+                  active={filters.dateFilter === 'TODAY'}
+                  onPress={() => selectQuickDate('TODAY')}
+                />
+                <Chip
+                  label="Tomorrow"
+                  active={filters.customDate === tomorrowIso() && !filters.customDateEnd}
+                  onPress={selectTomorrow}
+                />
                 <Chip
                   label="This weekend"
                   active={filters.dateFilter === 'THIS_WEEKEND'}
@@ -188,9 +228,15 @@ export function FilterPanel({ visible, onClose, filters, onChange, initialSectio
             </View>
           ) : null}
 
-          <View style={{ height: 1, backgroundColor: theme.colors.border, marginBottom: spacing.sm }} />
+          <View
+            style={{ height: 1, backgroundColor: theme.colors.border, marginBottom: spacing.sm }}
+          />
 
-          <SectionHeader title="Category" expanded={categoryExpanded} onToggle={() => setExpandedSection('category')} />
+          <SectionHeader
+            title="Category"
+            expanded={categoryExpanded}
+            onToggle={() => setExpandedSection('category')}
+          />
           {categoryExpanded ? (
             <View style={{ gap: spacing.sm, marginBottom: spacing.lg }}>
               {(genres ?? []).map((genre) => {
@@ -214,8 +260,15 @@ export function FilterPanel({ visible, onClose, filters, onChange, initialSectio
                     })}
                   >
                     <Image
-                      source={{ uri: genre.iconUrl ?? `https://picsum.photos/seed/${genre.id}/120/120` }}
-                      style={{ width: 48, height: 48, borderRadius: radius.md, backgroundColor: theme.colors.skeleton }}
+                      source={{
+                        uri: genre.iconUrl ?? `https://picsum.photos/seed/${genre.id}/120/120`,
+                      }}
+                      style={{
+                        width: 48,
+                        height: 48,
+                        borderRadius: radius.md,
+                        backgroundColor: theme.colors.skeleton,
+                      }}
                       contentFit="cover"
                     />
                     <Text variant="bodyBold" style={{ flex: 1 }}>

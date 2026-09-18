@@ -33,19 +33,13 @@ export function PresenterProfile(props: PresenterProfileProps) {
           contentFit="cover"
           style={{ width: '100%', aspectRatio: 16 / 10, backgroundColor: theme.colors.skeleton }}
         />
-        <View style={{ marginTop: -54, paddingHorizontal: spacing.screenX, gap: spacing.md }}>
-          <Image
-            source={{ uri: hero }}
-            contentFit="cover"
-            style={{
-              width: 104,
-              height: 104,
-              borderRadius: 52,
-              borderWidth: 4,
-              borderColor: theme.colors.background,
-              backgroundColor: theme.colors.skeleton,
-            }}
-          />
+        <View
+          style={{
+            paddingHorizontal: spacing.screenX,
+            paddingTop: spacing.lg,
+            gap: spacing.md,
+          }}
+        >
           <View style={{ gap: 6 }}>
             <Text variant="label" color={theme.colors.primary}>
               {props.kind.toUpperCase()} · {(props.category ?? 'CULTURE').replaceAll('_', ' ')}

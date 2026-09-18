@@ -24,12 +24,56 @@ const STYLE: StyleSpecification = {
   },
   layers: [
     { id: 'background', type: 'background', paint: { 'background-color': '#f2f3f0' } },
-    { id: 'parks', type: 'fill', source: 'openmaptiles', 'source-layer': 'park', paint: { 'fill-color': '#e4ebe2', 'fill-opacity': 0.9 } },
-    { id: 'water', type: 'fill', source: 'openmaptiles', 'source-layer': 'water', paint: { 'fill-color': '#c5dce8' } },
-    { id: 'buildings', type: 'fill', source: 'openmaptiles', 'source-layer': 'building', minzoom: 12, paint: { 'fill-color': '#dedbd5', 'fill-outline-color': '#d1cec8' } },
-    { id: 'roads', type: 'line', source: 'openmaptiles', 'source-layer': 'transportation', paint: { 'line-color': '#ffffff', 'line-width': ['interpolate', ['linear'], ['zoom'], 8, 0.6, 14, 3] } },
-    { id: 'road-casing', type: 'line', source: 'openmaptiles', 'source-layer': 'transportation', filter: ['match', ['get', 'class'], ['motorway', 'trunk', 'primary'], true, false], paint: { 'line-color': '#d8d4cc', 'line-width': ['interpolate', ['linear'], ['zoom'], 8, 0.8, 14, 1.5] } },
-    { id: 'boundaries', type: 'line', source: 'openmaptiles', 'source-layer': 'boundary', paint: { 'line-color': '#b7bcc0', 'line-width': 0.8, 'line-dasharray': [3, 2] } },
+    {
+      id: 'parks',
+      type: 'fill',
+      source: 'openmaptiles',
+      'source-layer': 'park',
+      paint: { 'fill-color': '#e4ebe2', 'fill-opacity': 0.9 },
+    },
+    {
+      id: 'water',
+      type: 'fill',
+      source: 'openmaptiles',
+      'source-layer': 'water',
+      paint: { 'fill-color': '#c5dce8' },
+    },
+    {
+      id: 'buildings',
+      type: 'fill',
+      source: 'openmaptiles',
+      'source-layer': 'building',
+      minzoom: 12,
+      paint: { 'fill-color': '#dedbd5', 'fill-outline-color': '#d1cec8' },
+    },
+    {
+      id: 'roads',
+      type: 'line',
+      source: 'openmaptiles',
+      'source-layer': 'transportation',
+      paint: {
+        'line-color': '#ffffff',
+        'line-width': ['interpolate', ['linear'], ['zoom'], 8, 0.6, 14, 3],
+      },
+    },
+    {
+      id: 'road-casing',
+      type: 'line',
+      source: 'openmaptiles',
+      'source-layer': 'transportation',
+      filter: ['match', ['get', 'class'], ['motorway', 'trunk', 'primary'], true, false],
+      paint: {
+        'line-color': '#d8d4cc',
+        'line-width': ['interpolate', ['linear'], ['zoom'], 8, 0.8, 14, 1.5],
+      },
+    },
+    {
+      id: 'boundaries',
+      type: 'line',
+      source: 'openmaptiles',
+      'source-layer': 'boundary',
+      paint: { 'line-color': '#b7bcc0', 'line-width': 0.8, 'line-dasharray': [3, 2] },
+    },
   ],
 };
 const SOURCE = 'cultureowl-events';
@@ -125,6 +169,7 @@ export function EventMap({
           title: pin.title,
           priceLabel: pin.priceLabel,
           category: pin.category ?? 'event',
+          color: pin.color,
         },
       })),
     };
@@ -135,19 +180,7 @@ export function EventMap({
           'case',
           ['==', ['get', 'eventId'], selectedEventId ?? ''],
           '#f47d30',
-          [
-            'match',
-            ['get', 'category'],
-            'food',
-            '#f47d30',
-            'art',
-            '#8b55d9',
-            'music',
-            '#2a9d8f',
-            'theatre',
-            '#cc3b7a',
-            '#3d98d3',
-          ],
+          ['get', 'color'],
         ]);
         return;
       }
@@ -189,19 +222,7 @@ export function EventMap({
             'case',
             ['==', ['get', 'eventId'], selectedEventId ?? ''],
             '#f47d30',
-            [
-              'match',
-              ['get', 'category'],
-              'food',
-              '#f47d30',
-              'art',
-              '#8b55d9',
-              'music',
-              '#2a9d8f',
-              'theatre',
-              '#cc3b7a',
-              '#3d98d3',
-            ],
+            ['get', 'color'],
           ],
           'circle-stroke-width': 3,
           'circle-stroke-color': '#fff',
@@ -218,11 +239,24 @@ export function EventMap({
       const expand = async (e: MapMouseEvent) => {
         const feature = m.queryRenderedFeatures(e.point, { layers: ['event-clusters'] })[0];
         if (!feature?.properties) return;
-        const zoom = await (m.getSource(SOURCE) as GeoJSONSource).getClusterExpansionZoom(
-          Number(feature.properties.cluster_id),
+        const source = m.getSource(SOURCE) as GeoJSONSource;
+        const clusterId = Number(feature.properties.cluster_id);
+        const pointCount = Number(feature.properties.point_count);
+        const leaves = await source.getClusterLeaves(clusterId, pointCount, 0);
+        const coordinates = leaves.map(
+          (leaf) => (leaf.geometry as GeoJSON.Point).coordinates as [number, number],
         );
-        const coordinates = (feature.geometry as GeoJSON.Point).coordinates as [number, number];
-        m.easeTo({ center: coordinates, zoom, duration: 360 });
+        if (coordinates.length > 1) {
+          const bounds = coordinates.reduce(
+            (box, coordinate) => box.extend(coordinate),
+            new maplibregl.LngLatBounds(coordinates[0], coordinates[0]),
+          );
+          m.fitBounds(bounds, { padding: 72, maxZoom: 16, duration: 520 });
+        } else {
+          const zoom = await source.getClusterExpansionZoom(clusterId);
+          const center = (feature.geometry as GeoJSON.Point).coordinates as [number, number];
+          m.easeTo({ center, zoom: Math.min(zoom, 16), duration: 520 });
+        }
       };
       const select = (e: MapMouseEvent) => {
         const feature = m.queryRenderedFeatures(e.point, { layers: ['event-pins'] })[0];
@@ -253,10 +287,7 @@ export function EventMap({
   }, [recenterTo]);
   return (
     <View style={{ flex: 1 }}>
-      <div
-        ref={host}
-        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
-      />
+      <div ref={host} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
     </View>
   );
 }

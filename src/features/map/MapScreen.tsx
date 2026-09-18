@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EventMap } from '../../components/map/EventMap';
 import { MapPreviewCard } from '../../components/map/MapPreviewCard';
@@ -15,9 +15,19 @@ import { useAppTheme } from '../../design/useAppTheme';
 import { formatEventPrice } from '../../lib/formatPrice';
 import { useEventsFeed } from '../../queries/events.queries';
 import { DEFAULT_EVENT_FILTERS, type EventFiltersState } from '../../types/filters';
-import type { EventMapPin, MapViewport } from '../../types/map';
+import type { EventMapPin, MapPinKind, MapViewport } from '../../types/map';
 import type { EventSummary } from '../../types/event';
 import type { MapRouteParams } from '../../types/navigation';
+
+const MAP_PIN_TYPES: { kind: MapPinKind; label: string; color: string }[] = [
+  { kind: 'organization', label: 'Arts Organizations', color: '#8B55D9' },
+  { kind: 'venue', label: 'Venues', color: '#2A9D8F' },
+  { kind: 'art-dine', label: 'Art & Dine', color: '#F47D30' },
+  { kind: 'event', label: 'Events', color: '#3D98D3' },
+  { kind: 'free', label: 'Free', color: '#E74E3D' },
+];
+const pinTypeForEvent = (event: EventSummary): MapPinKind =>
+  event.free ? 'free' : event.tags.some((tag) => tag.id === 'food') ? 'art-dine' : 'event';
 
 const starts = (event: EventSummary) =>
   new Date(`${event.startDate}T${event.nextEventDate?.startTime ?? '00:00'}`).getTime();
@@ -83,14 +93,18 @@ export function MapScreen() {
         ? visible.sort((a, b) => price(a) - price(b))
         : visible;
   }, [data?.events, filters, query, sort, viewport]);
-  const pins: EventMapPin[] = events.map((e) => ({
-    entityKind: 'event',
-    eventId: e.id,
-    title: e.title,
-    coordinate: e.coordinates!,
-    priceLabel: formatEventPrice(e),
-    category: e.tags[0]?.id ?? 'event',
-  }));
+  const pins: EventMapPin[] = events.map((e) => {
+    const entityKind = pinTypeForEvent(e);
+    return {
+      entityKind,
+      eventId: e.id,
+      title: e.title,
+      coordinate: e.coordinates!,
+      priceLabel: formatEventPrice(e),
+      category: e.tags[0]?.id ?? 'event',
+      color: MAP_PIN_TYPES.find((type) => type.kind === entityKind)!.color,
+    };
+  });
   const selected = events.find((e) => e.id === selectedEventId) ?? null;
   const mapMoved =
     pendingViewport &&
@@ -155,6 +169,32 @@ export function MapScreen() {
           }}
           onSortPress={() => setSortOpen(true)}
         />
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ gap: spacing.sm, paddingHorizontal: 2 }}
+        >
+          {MAP_PIN_TYPES.map((type) => (
+            <View
+              key={type.kind}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 6,
+                backgroundColor: 'rgba(255,255,255,.94)',
+                borderRadius: radius.full,
+                paddingVertical: 6,
+                paddingHorizontal: 10,
+                ...shadows.card,
+              }}
+            >
+              <View style={{ width: 9, height: 9, borderRadius: 5, backgroundColor: type.color }} />
+              <Text variant="caption" color="#17212a">
+                {type.label}
+              </Text>
+            </View>
+          ))}
+        </ScrollView>
         {mapMoved ? (
           <Pressable
             onPress={applyArea}
