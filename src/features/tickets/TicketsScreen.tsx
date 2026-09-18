@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DetailScreenHeader } from '../../components/layout/DetailScreenHeader';
@@ -74,7 +74,10 @@ export function TicketsScreen() {
     // outside the scrollable area so it stays pinned to the bottom instead
     // of scrolling away with the ticket list.
     <Screen>
-      <DetailScreenHeader title="Tickets" showBack={false} />
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{ flex: 1 }}><DetailScreenHeader title="Tickets" /></View>
+        <Pressable accessibilityRole="button" accessibilityLabel="Open ticket help" onPress={() => router.push('/help')} style={{ position: 'absolute', right: 0, width: 40, height: 40, borderRadius: 20, borderWidth: 1, borderColor: theme.colors.border, alignItems: 'center', justifyContent: 'center' }}><Text variant="bodyBold">?</Text></Pressable>
+      </View>
 
       {/* Upcoming/Expired pills show even signed out — people should be able
           to see the shape of the feature before signing in, not just a wall
@@ -97,17 +100,17 @@ export function TicketsScreen() {
         ) : visible.length === 0 ? (
           <>
             {tab === 'UPCOMING' ? (
-              <EmptyState
-                image={<TicketsLogo />}
-                title="No active tickets"
-                message="Grab tickets to something and they’ll land right here."
-                actionLabel="Discover events"
-                onAction={() => router.push('/(tabs)/home')}
-              />
+              <View style={{ alignItems: 'center', paddingTop: spacing.xl, gap: spacing.lg }}>
+                <View style={{ width: 150, height: 150, borderRadius: 75, backgroundColor: theme.colors.chipBackground, alignItems: 'center', justifyContent: 'center' }}><Text style={{ fontSize: 64 }}>🎟️</Text></View>
+                <Text variant="title">No active tickets</Text>
+                <Text muted>Bought tickets but can’t find them?</Text>
+                <Button label="Refresh" fullWidth loading={isRefetching} onPress={() => refetch()} />
+                <Text variant="bodyBold" color={theme.colors.primary} onPress={() => router.push('/help')}>Need help? Get support here</Text>
+              </View>
             ) : (
               <EmptyState image={<TicketsLogo />} title="Nothing in your history yet" message="Past tickets will collect here." />
             )}
-            <MissingTicketsHelp onRefresh={() => refetch()} isRefreshing={isRefetching} />
+            {tab === 'EXPIRED' ? <MissingTicketsHelp onRefresh={() => refetch()} isRefreshing={isRefetching} /> : null}
           </>
         ) : (
           <View style={{ gap: spacing.lg }}>

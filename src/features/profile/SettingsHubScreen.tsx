@@ -7,14 +7,11 @@ import {
   BellIcon,
   CreditCardIcon,
   EditIcon,
-  StarIcon,
-  TicketIcon,
   FileTextIcon,
   LogoutIcon,
   MailIcon,
   MapPinIcon,
   ShieldIcon,
-  TrashIcon,
 } from '../../components/layout/icons/MenuIcons';
 import { SectionHeader } from '../../components/layout/SectionHeader';
 import { Screen, Toggle } from '../../components/ui';
@@ -40,34 +37,25 @@ export function SettingsHubScreen() {
   const iconColor = String(theme.colors.text);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [emailEnabled, setEmailEnabled] = useState(true);
-  const [weeklyGuideEnabled, setWeeklyGuideEnabled] = useState(true);
 
   return (
     <Screen scroll>
-      <DetailScreenHeader title="Settings" />
+      <DetailScreenHeader title="Account settings" />
 
       <SectionHeader title="Profile" />
       <IconMenuRow icon={<EditIcon color={iconColor} />} label="Edit Profile" onPress={() => router.push('/profile/edit')} />
-
-      <SectionHeader title="Discovery" />
-      <IconMenuRow icon={<StarIcon color={iconColor} />} label="Interests" description="Shape your recommendations" onPress={() => router.push('/profile/interests')} />
-      <IconMenuRow icon={<TicketIcon color={iconColor} />} label="Vouchers & credits" description="Available offers and CultureOwl credit" onPress={() => trackEvent('vouchers_placeholder_tap')} />
 
       <SectionHeader title="Communication Preferences" />
       <IconMenuRow
         icon={<BellIcon color={iconColor} />}
         label="Notifications"
+        description="Personalized updates about culture in your city"
         right={<Toggle value={notificationsEnabled} onValueChange={setNotificationsEnabled} />}
       />
       <IconMenuRow
         icon={<MailIcon color={iconColor} />}
-        label="Weekly local guide"
-        description="A short city edit, not another newsletter"
-        right={<Toggle value={weeklyGuideEnabled} onValueChange={setWeeklyGuideEnabled} />}
-      />
-      <IconMenuRow
-        icon={<MailIcon color={iconColor} />}
         label="Email"
+        description="Culture news, city guides and account updates"
         right={<Toggle value={emailEnabled} onValueChange={setEmailEnabled} />}
       />
 
@@ -98,10 +86,10 @@ export function SettingsHubScreen() {
         onPress={() => trackEvent('delete_payment_methods_placeholder_tap')}
       />
       <IconMenuRow
-        icon={<TrashIcon color={String(theme.colors.danger)} />}
-        label="Delete Account"
-        destructive
-        onPress={() => trackEvent('delete_account_placeholder_tap')}
+        icon={<FileTextIcon color={iconColor} />}
+        label="Request my file"
+        description="Download a copy of your CultureOwl data"
+        onPress={() => trackEvent('request_file_placeholder_tap')}
       />
       <IconMenuRow
         icon={<LogoutIcon color={String(theme.colors.danger)} />}

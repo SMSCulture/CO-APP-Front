@@ -1,9 +1,9 @@
+import { router } from 'expo-router';
 import { View } from 'react-native';
 
 import { Card, Text } from '../../../components/ui';
 import { radius, spacing } from '../../../design/tokens';
 import { useAppTheme } from '../../../design/useAppTheme';
-import { trackEvent } from '../../../lib/analytics';
 
 /**
  * Friends block (top of Profile) — placeholder until the social/friends
@@ -12,7 +12,7 @@ import { trackEvent } from '../../../lib/analytics';
 export function FriendsSection() {
   const theme = useAppTheme();
   return (
-    <Card onPress={() => trackEvent('invite_friends_placeholder_tap')}>
+    <Card onPress={() => router.push('/profile/invite')}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
         <View
           style={{
@@ -27,9 +27,9 @@ export function FriendsSection() {
           <Text variant="subheading">👥</Text>
         </View>
         <View style={{ flex: 1 }}>
-          <Text variant="subheading">Friends</Text>
+          <Text variant="subheading">Invite a friend</Text>
           <Text variant="caption" muted>
-            Invite friends and see what they’re going to — coming soon.
+            Bring someone along to your next culture find.
           </Text>
         </View>
         <Text muted>›</Text>

@@ -3,7 +3,6 @@ import { useMemo, useState } from 'react';
 import { Image } from 'expo-image';
 import { Pressable, ScrollView, View } from 'react-native';
 
-import { SearchBarPill } from '../../components/discovery/SearchBarPill';
 import { DetailScreenHeader } from '../../components/layout/DetailScreenHeader';
 import { Chip, EmptyState, IconButton, Screen, Text } from '../../components/ui';
 import { radius, sizes, spacing } from '../../design/tokens';
@@ -11,19 +10,15 @@ import { useAppTheme } from '../../design/useAppTheme';
 import { useFavoritesStore } from '../../store/favoritesStore';
 import type { FavoriteEntityType, FavoriteItem } from '../../types/favorite';
 
-const TABS: { type: FavoriteEntityType; label: string }[] = [
-  { type: 'event', label: 'Events' },
-  { type: 'venue', label: 'Venues' },
-  { type: 'arts-group', label: 'Art Organizations' },
-  { type: 'restaurant', label: 'Restaurants' },
-];
+type FavoriteTab = 'ALL' | 'ACTIVE' | 'INACTIVE';
+const TABS: { value: FavoriteTab; label: string }[] = [{ value:'ALL',label:'All'},{value:'ACTIVE',label:'Active'},{value:'INACTIVE',label:'Inactive'}];
 
 /** Routes match the existing detail screens: src/app/events/[eventId].tsx, venues/[venueId].tsx, organizations/[organizationId].tsx. */
 const ENTITY_ROUTES: Record<FavoriteEntityType, (id: string) => string> = {
   event: (id) => `/events/${id}`,
   venue: (id) => `/venues/${id}`,
   'arts-group': (id) => `/organizations/${id}`,
-  restaurant: (id) => `/venues/${id}`, // no dedicated restaurant detail route yet
+  restaurant: (id) => `/restaurants/${id}`,
 };
 
 function FavoriteRow({ item }: { item: FavoriteItem }) {
@@ -88,31 +83,31 @@ function FavoriteRow({ item }: { item: FavoriteItem }) {
  * for visual consistency across all four).
  */
 export function FavoritesScreen() {
-  const [activeTab, setActiveTab] = useState<FavoriteEntityType>('event');
-  const [query, setQuery] = useState('');
-  const { getFavoritesByType } = useFavoritesStore();
-  const items = getFavoritesByType(activeTab);
+  const [activeTab, setActiveTab] = useState<FavoriteTab>('ALL');
+  const [openedAt] = useState(() => Date.now());
+  const items = useFavoritesStore((state) => state.getAllFavorites());
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return q ? items.filter((item) => item.title.toLowerCase().includes(q)) : items;
-  }, [items, query]);
+    if (activeTab === 'ALL') return items;
+    const now = openedAt;
+    return items.filter((item) => {
+      const eventTime = item.startDate ? new Date(item.startDate).getTime() : null;
+      const active = eventTime === null || eventTime >= now;
+      return activeTab === 'ACTIVE' ? active : !active;
+    });
+  }, [activeTab, items, openedAt]);
 
   return (
     <Screen scroll>
       <DetailScreenHeader title="Favorites" />
 
-      <View style={{ marginBottom: spacing.md }}>
-        <SearchBarPill mode="input" placeholder="Search favorites" value={query} onChangeText={setQuery} showFilterIcon={false} />
-      </View>
-
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: spacing.lg }}>
         <View style={{ flexDirection: 'row', gap: spacing.sm }}>
           {TABS.map((tab) => (
             <Chip
-              key={tab.type}
+              key={tab.value}
               label={tab.label}
-              active={activeTab === tab.type}
-              onPress={() => setActiveTab(tab.type)}
+              active={activeTab === tab.value}
+              onPress={() => setActiveTab(tab.value)}
             />
           ))}
         </View>
