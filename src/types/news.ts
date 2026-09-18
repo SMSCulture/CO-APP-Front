@@ -1,3 +1,5 @@
+import type { DiscoveryTags } from './discovery';
+
 /** Mirrors the web frontend's news module (lib/graphql/news.ts). */
 export interface NewsArticle {
   id: string;
@@ -9,7 +11,7 @@ export interface NewsArticle {
   publishedAt: string;
   excerpt: string | null;
   category: string | null;
-  discoveryTags: { category: string[]; neighborhood: string[]; vibe: string[] };
+  discoveryTags: DiscoveryTags;
 }
 
 /** Article detail — adds body (HTML). */

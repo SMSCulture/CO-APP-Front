@@ -19,6 +19,7 @@ import { Image } from 'expo-image';
 import { Pressable, View } from 'react-native';
 import { radius, spacing } from '../../design/tokens';
 import { useLocationStore } from '../../store/locationStore';
+import { matchingArticles } from '../../lib/discoveryMatching';
 import { CultureNewsSection } from '../home/components/CultureNewsSection';
 import { IconMenuRow } from '../profile/components/IconMenuRow';
 
@@ -30,7 +31,10 @@ export function DiscoverScreen() {
   const city = selectedCity?.city ?? DEFAULT_CITY;
   const { data } = useEventsFeed({ city, limit: 9 });
   const { data: articles } = useNews();
-  const immersiveArticles = (articles ?? []).filter((article) => article.discoveryTags.vibe.includes('immersive') || article.discoveryTags.category.includes('immersive')).slice(0, 2);
+  const immersiveArticles = matchingArticles(
+    { category: ['immersive', 'art'], neighborhood: [], vibe: ['immersive'] },
+    articles ?? [],
+  );
 
   return (
     <Screen scroll>
