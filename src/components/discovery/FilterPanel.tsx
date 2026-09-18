@@ -102,6 +102,10 @@ export function FilterPanel({ visible, onClose, filters, onChange, initialSectio
     });
   };
 
+  const selectAllDates = () => {
+    onChange({ ...filters, dateFilter: '', customDate: null, customDateEnd: null });
+  };
+
   const selectQuickDate = (value: 'TODAY' | 'THIS_WEEKEND') => {
     onChange({ ...filters, dateFilter: filters.dateFilter === value ? '' : value, customDate: null, customDateEnd: null });
   };
@@ -164,7 +168,8 @@ export function FilterPanel({ visible, onClose, filters, onChange, initialSectio
           <SectionHeader title="Date" expanded={dateExpanded} onToggle={() => setExpandedSection('date')} />
           {dateExpanded ? (
             <View style={{ marginBottom: spacing.lg }}>
-              <View style={{ flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.lg }}>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginBottom: spacing.lg }}>
+                <Chip label="All dates" active={!filters.dateFilter && !filters.customDate && !filters.customDateEnd} onPress={selectAllDates} />
                 <Chip label="Today" active={filters.dateFilter === 'TODAY'} onPress={() => selectQuickDate('TODAY')} />
                 <Chip label="Tomorrow" active={filters.customDate === tomorrowIso() && !filters.customDateEnd} onPress={selectTomorrow} />
                 <Chip
