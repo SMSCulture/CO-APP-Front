@@ -70,28 +70,9 @@ export function EventMap({ pins, selectedEventId, onSelectPin, onViewportChange 
             const pointCount = feature?.properties?.point_count;
             if (clusterId == null || pointCount == null || !source.current || !camera.current)
               return;
-            const leaves = await source.current.getClusterLeaves(
-              Number(clusterId),
-              Number(pointCount),
-              0,
-            );
-            const points = leaves.map(
-              (leaf) => (leaf.geometry as GeoJSON.Point).coordinates as [number, number],
-            );
-            if (points.length > 1) {
-              const west = Math.min(...points.map((point) => point[0]));
-              const east = Math.max(...points.map((point) => point[0]));
-              const south = Math.min(...points.map((point) => point[1]));
-              const north = Math.max(...points.map((point) => point[1]));
-              camera.current.fitBounds([west, south, east, north], {
-                padding: { top: 72, right: 72, bottom: 72, left: 72 },
-                duration: 520,
-              });
-            } else {
-              const zoom = await source.current.getClusterExpansionZoom(Number(clusterId));
-              const center = (feature.geometry as GeoJSON.Point).coordinates as [number, number];
-              camera.current.easeTo({ center, zoom: Math.min(zoom, 16), duration: 520 });
-            }
+            await source.current.getClusterLeaves(Number(clusterId), Number(pointCount), 0);
+            const center = (feature.geometry as GeoJSON.Point).coordinates as [number, number];
+            camera.current.easeTo({ center, zoom: 14.5, duration: 560 });
           }}
         >
           <Layer

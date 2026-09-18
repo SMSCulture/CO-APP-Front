@@ -118,6 +118,7 @@ export function MapScreen() {
   };
   const applyArea = () => {
     if (pendingViewport) setViewport(pendingViewport);
+    setPendingViewport(null);
     setSelectedEventId(null);
   };
   return (

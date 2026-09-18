@@ -242,21 +242,12 @@ export function EventMap({
         const source = m.getSource(SOURCE) as GeoJSONSource;
         const clusterId = Number(feature.properties.cluster_id);
         const pointCount = Number(feature.properties.point_count);
-        const leaves = await source.getClusterLeaves(clusterId, pointCount, 0);
-        const coordinates = leaves.map(
-          (leaf) => (leaf.geometry as GeoJSON.Point).coordinates as [number, number],
-        );
-        if (coordinates.length > 1) {
-          const bounds = coordinates.reduce(
-            (box, coordinate) => box.extend(coordinate),
-            new maplibregl.LngLatBounds(coordinates[0], coordinates[0]),
-          );
-          m.fitBounds(bounds, { padding: 72, maxZoom: 16, duration: 520 });
-        } else {
-          const zoom = await source.getClusterExpansionZoom(clusterId);
-          const center = (feature.geometry as GeoJSON.Point).coordinates as [number, number];
-          m.easeTo({ center, zoom: Math.min(zoom, 16), duration: 520 });
-        }
+        // Read every leaf first so the interaction is tied to this exact cluster,
+        // then zoom beyond clusterMaxZoom. At zoom 14+ MapLibre renders leaves,
+        // not another tier of count bubbles.
+        await source.getClusterLeaves(clusterId, pointCount, 0);
+        const center = (feature.geometry as GeoJSON.Point).coordinates as [number, number];
+        m.easeTo({ center, zoom: 14.5, duration: 560 });
       };
       const select = (e: MapMouseEvent) => {
         const feature = m.queryRenderedFeatures(e.point, { layers: ['event-pins'] })[0];
